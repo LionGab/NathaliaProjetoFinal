@@ -1,0 +1,84 @@
+import React from "react";
+import { View, Image, ImageSourcePropType, ViewStyle } from "react-native";
+import { Ionicons } from "@expo/vector-icons";
+import { cn } from "../../utils/cn";
+
+export interface AvatarProps {
+  size?: number;
+  source?: ImageSourcePropType | { uri: string } | null;
+  fallbackIcon?: keyof typeof Ionicons.glyphMap;
+  fallbackColor?: string;
+  fallbackBgColor?: string;
+  isNathalia?: boolean; // Se true, usa o avatar padrão da Nathália
+  isNathIA?: boolean; // Se true, usa o avatar da NathIA (assistente virtual)
+  isCommunity?: boolean; // Se true, usa o avatar de Comunidade/Mundo da Nath
+  className?: string;
+  style?: ViewStyle;
+}
+
+export default function Avatar({
+  size = 40,
+  source,
+  fallbackIcon = "person",
+  fallbackColor = "#9E7269",
+  fallbackBgColor = "rgba(188, 139, 123, 0.15)",
+  isNathalia = false,
+  isNathIA = false,
+  isCommunity = false,
+  className,
+  style,
+}: AvatarProps) {
+  // Prioridade: NathIA > Comunidade > Nathália > source customizado
+  let imageSource: ImageSourcePropType | { uri: string } | null = null;
+  
+  if (isNathIA) {
+    imageSource = require("../../../assets/nathia-avatar.jpg");
+  } else if (isCommunity) {
+    imageSource = require("../../../assets/community-avatar.jpg");
+  } else if (isNathalia) {
+    imageSource = require("../../../assets/nathalia-avatar.jpg");
+  } else {
+    imageSource = source || null;
+  }
+
+  return (
+    <View
+      className={cn("rounded-full items-center justify-center overflow-hidden", className)}
+      style={[
+        {
+          width: size,
+          height: size,
+          backgroundColor: imageSource ? "transparent" : fallbackBgColor,
+        },
+        style,
+      ]}
+    >
+      {imageSource ? (
+        <Image
+          source={imageSource}
+          style={{ width: size, height: size }}
+          className="rounded-full"
+          resizeMode="cover"
+          accessibilityRole="image"
+          accessibilityLabel={
+            isNathIA
+              ? "Avatar da NathIA, assistente virtual"
+              : isCommunity
+              ? "Avatar da Comunidade Mundo da Nath"
+              : isNathalia
+              ? "Avatar de Nathália Valente"
+              : "Avatar do usuário"
+          }
+        />
+      ) : (
+        <Ionicons
+          name={fallbackIcon}
+          size={size * 0.6}
+          color={fallbackColor}
+          accessibilityLabel="Ícone de avatar padrão"
+        />
+      )}
+    </View>
+  );
+}
+
