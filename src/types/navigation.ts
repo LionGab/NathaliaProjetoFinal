@@ -4,18 +4,40 @@ import { CompositeScreenProps, NavigatorScreenParams } from "@react-navigation/n
 
 // Root Stack Navigator
 export type RootStackParamList = {
+  // Auth Flow (new)
+  Login: undefined;
+  NotificationPermission: undefined;
+  NathIAOnboarding: undefined;
+
+  // Main App
   Onboarding: undefined;
   MainTabs: NavigatorScreenParams<MainTabParamList>;
+
+  // Community
   PostDetail: { postId: string };
   NewPost: undefined;
   GroupDetail: { groupId: string };
+
+  // Profile
   EditProfile: undefined;
   NotificationSettings: undefined;
   PrivacySettings: undefined;
+
+  // Tools
   WeightCalculator: undefined;
   DailyLog: { date?: string };
   Affirmations: undefined;
+
+  // Habits
   Habits: undefined;
+  HabitsEnhanced: undefined;
+  MaeValenteProgress: undefined;
+
+  // Wellness (new)
+  BreathingExercise: undefined;
+  RestSounds: undefined;
+
+  // Other
   Legal: undefined;
   ComingSoon: {
     title?: string;

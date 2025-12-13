@@ -1,11 +1,30 @@
-import React from "react";
+/**
+ * Nossa Maternidade - Root Navigator
+ * 4-stage authentication flow:
+ * 1. !isAuthenticated → LoginScreen
+ * 2. !notificationSetup → NotificationPermissionScreen
+ * 3. !nathIAOnboardingComplete → NathIAOnboardingScreen
+ * 4. Authenticated → MainTabs + Modal Screens
+ */
+
+import React, { useEffect, useState } from "react";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { RootStackParamList } from "../types/navigation";
 import { useAppStore } from "../state/store";
+import { useNathIAOnboardingStore } from "../state/nathia-onboarding-store";
+import { hasAskedNotificationPermission } from "../services/notifications";
+import { COLORS } from "../theme/design-system";
 
-// Screens
+// Auth & Onboarding Screens
+import LoginScreen from "../screens/LoginScreen";
+import NotificationPermissionScreen from "../screens/NotificationPermissionScreen";
+import NathIAOnboardingScreen from "../screens/NathIAOnboardingScreen";
 import OnboardingScreen from "../screens/OnboardingScreen";
+
+// Main Navigator
 import MainTabNavigator from "./MainTabNavigator";
+
+// Feature Screens
 import PostDetailScreen from "../screens/PostDetailScreen";
 import NewPostScreen from "../screens/NewPostScreen";
 import WeightCalculatorScreen from "../screens/WeightCalculatorScreen";
@@ -15,24 +34,96 @@ import HabitsScreen from "../screens/HabitsScreen";
 import LegalScreen from "../screens/LegalScreen";
 import ComingSoonScreen from "../screens/ComingSoonScreen";
 
+// New Premium Screens
+import BreathingExerciseScreen from "../screens/BreathingExerciseScreen";
+import RestSoundsScreen from "../screens/RestSoundsScreen";
+import HabitsEnhancedScreen from "../screens/HabitsEnhancedScreen";
+import MaeValenteProgressScreen from "../screens/MaeValenteProgressScreen";
+
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
 export default function RootNavigator() {
+  // App state
+  const isAuthenticated = useAppStore((s) => s.isAuthenticated);
   const isOnboardingComplete = useAppStore((s) => s.isOnboardingComplete);
+
+  // NathIA onboarding state
+  const isNathIAOnboardingComplete = useNathIAOnboardingStore((s) => s.isComplete);
+
+  // Notification permission state
+  const [notificationSetupDone, setNotificationSetupDone] = useState<boolean | null>(null);
+
+  // Check notification permission status on mount
+  useEffect(() => {
+    const checkNotificationSetup = async () => {
+      const hasAsked = await hasAskedNotificationPermission();
+      setNotificationSetupDone(hasAsked);
+    };
+    checkNotificationSetup();
+  }, []);
+
+  // Loading state while checking notification permission
+  if (notificationSetupDone === null) {
+    return null;
+  }
+
+  // Determine which screen to show based on auth state
+  const shouldShowLogin = !isAuthenticated;
+  const shouldShowNotificationPermission = isAuthenticated && !notificationSetupDone;
+  const shouldShowNathIAOnboarding = isAuthenticated && notificationSetupDone && !isNathIAOnboardingComplete;
+  const shouldShowLegacyOnboarding = isAuthenticated && notificationSetupDone && isNathIAOnboardingComplete && !isOnboardingComplete;
+  const shouldShowMainApp = isAuthenticated && notificationSetupDone && isNathIAOnboardingComplete && isOnboardingComplete;
 
   return (
     <Stack.Navigator
       screenOptions={{
         headerShown: false,
         animation: "slide_from_right",
-        contentStyle: { backgroundColor: "#FFFCF9" },
+        contentStyle: { backgroundColor: COLORS.background.primary },
       }}
     >
-      {!isOnboardingComplete ? (
-        <Stack.Screen name="Onboarding" component={OnboardingScreen} />
-      ) : (
+      {/* Stage 1: Login */}
+      {shouldShowLogin && (
+        <Stack.Screen
+          name="Login"
+          component={LoginScreen}
+          options={{ animation: "fade" }}
+        />
+      )}
+
+      {/* Stage 2: Notification Permission */}
+      {shouldShowNotificationPermission && (
+        <Stack.Screen
+          name="NotificationPermission"
+          component={NotificationPermissionScreen}
+          options={{ animation: "fade" }}
+        />
+      )}
+
+      {/* Stage 3: NathIA Onboarding */}
+      {shouldShowNathIAOnboarding && (
+        <Stack.Screen
+          name="NathIAOnboarding"
+          component={NathIAOnboardingScreen}
+          options={{ animation: "fade" }}
+        />
+      )}
+
+      {/* Stage 3.5: Legacy Onboarding (if still needed) */}
+      {shouldShowLegacyOnboarding && (
+        <Stack.Screen
+          name="Onboarding"
+          component={OnboardingScreen}
+          options={{ animation: "fade" }}
+        />
+      )}
+
+      {/* Stage 4: Main App */}
+      {shouldShowMainApp && (
         <>
           <Stack.Screen name="MainTabs" component={MainTabNavigator} />
+
+          {/* Feature Screens */}
           <Stack.Screen
             name="PostDetail"
             component={PostDetailScreen}
@@ -40,8 +131,8 @@ export default function RootNavigator() {
               headerShown: true,
               headerTitle: "Post",
               headerBackTitle: "Voltar",
-              headerTintColor: "#9E7269",
-              headerStyle: { backgroundColor: "#FFFCF9" },
+              headerTintColor: COLORS.primary[600],
+              headerStyle: { backgroundColor: COLORS.background.primary },
             }}
           />
           <Stack.Screen
@@ -50,17 +141,15 @@ export default function RootNavigator() {
             options={{
               presentation: "modal",
               headerShown: true,
-              headerTitle: "Nova Publicacao",
-              headerTintColor: "#9E7269",
-              headerStyle: { backgroundColor: "#FFFCF9" },
+              headerTitle: "Nova Publicação",
+              headerTintColor: COLORS.primary[600],
+              headerStyle: { backgroundColor: COLORS.background.primary },
             }}
           />
           <Stack.Screen
             name="WeightCalculator"
             component={WeightCalculatorScreen}
-            options={{
-              headerShown: false,
-            }}
+            options={{ headerShown: false }}
           />
           <Stack.Screen
             name="DailyLog"
@@ -85,8 +174,8 @@ export default function RootNavigator() {
               headerShown: true,
               headerTitle: "Meus Hábitos",
               headerBackTitle: "Voltar",
-              headerTintColor: "#9E7269",
-              headerStyle: { backgroundColor: "#FFFCF9" },
+              headerTintColor: COLORS.primary[600],
+              headerStyle: { backgroundColor: COLORS.background.primary },
             }}
           />
           <Stack.Screen
@@ -103,6 +192,42 @@ export default function RootNavigator() {
             options={{
               headerShown: false,
               presentation: "modal",
+            }}
+          />
+
+          {/* Premium Wellness Screens */}
+          <Stack.Screen
+            name="BreathingExercise"
+            component={BreathingExerciseScreen}
+            options={{
+              headerShown: false,
+              presentation: "modal",
+              animation: "fade",
+            }}
+          />
+          <Stack.Screen
+            name="RestSounds"
+            component={RestSoundsScreen}
+            options={{
+              headerShown: false,
+              presentation: "modal",
+              animation: "slide_from_bottom",
+            }}
+          />
+          <Stack.Screen
+            name="HabitsEnhanced"
+            component={HabitsEnhancedScreen}
+            options={{
+              headerShown: false,
+              animation: "slide_from_right",
+            }}
+          />
+          <Stack.Screen
+            name="MaeValenteProgress"
+            component={MaeValenteProgressScreen}
+            options={{
+              headerShown: false,
+              animation: "slide_from_right",
             }}
           />
         </>

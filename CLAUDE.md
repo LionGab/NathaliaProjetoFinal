@@ -26,8 +26,14 @@ bun start            # Start Expo dev server
 bun run ios          # Run on iOS simulator
 bun run android      # Run on Android emulator
 
-# Type checking
+# Quality checks
 bunx tsc --noEmit    # Check TypeScript errors
+bun run lint         # Run ESLint
+bun run typecheck    # Same as tsc --noEmit
+
+# Build preparation
+bun run check-build-ready  # Verify app is ready for build
+bun run setup-secrets      # Setup environment secrets
 ```
 
 ## Architecture
@@ -104,13 +110,28 @@ generateImage(prompt)      // Uses gpt-image-1
 
 ### Design Tokens
 
+**Current system** (based on "Boa Noite Mãe" design):
+
 ```
-Primary: rose-600 (#E11D48)
-Background: cream (#FFFCF9)
-Accent: blush (#BC8B7B)
-Fertility: violet-500 (#8B5CF6)
+Primary: #f4258c (vibrant pink)
+Secondary: #89CFF0 (baby blue)
+Background: #f8f5f7 (soft pink-white)
+Text Dark: #1a2b4b (deep blue)
 Fonts: DMSans (body), DMSerifDisplay (headers)
 ```
+
+**Centralized color system**: `src/utils/colors.ts`
+- Import and use `Colors` object for consistency
+- Helper functions: `getFeelingColor()`, `getGradient()`
+- Constants: `PRIMARY_COLOR`, `SECONDARY_COLOR`, `TEXT_DARK`
+
+**Feeling colors** (for daily check-ins):
+- Bem (sunny): #eab308 (yellow)
+- Cansada (cloud): #60a5fa (blue)
+- Enjoada (rainy): #818cf8 (indigo)
+- Amada (heart): #f4258c (pink)
+
+See [docs/COLOR_SYSTEM.md](docs/COLOR_SYSTEM.md) for complete documentation.
 
 ## Animation & Gestures
 
@@ -161,7 +182,10 @@ src/
 ├── navigation/    # RootNavigator, MainTabNavigator
 ├── state/         # Zustand stores (store.ts)
 ├── types/         # TypeScript definitions
-└── utils/         # Helpers (cn.ts, logger.ts)
+└── utils/         # Helpers (cn.ts, colors.ts, logger.ts, shadow.ts)
+
+docs/              # Technical documentation
+scripts/           # Build and setup scripts
 ```
 
 ## Key Files
@@ -171,5 +195,24 @@ src/
 | `App.tsx` | Root component, font loading, providers |
 | `src/state/store.ts` | All Zustand stores |
 | `src/navigation/RootNavigator.tsx` | Navigation config |
-| `tailwind.config.js` | Theme colors, fonts |
+| `src/utils/colors.ts` | Centralized color system |
+| `tailwind.config.js` | Theme colors, fonts, Tailwind config |
 | `app.json` | Expo config (bundle ID, permissions) |
+| `app.config.js` | Dynamic Expo config with env vars |
+| `scripts/fix-lightningcss.js` | Windows compatibility fix (runs on postinstall) |
+
+## Important Notes
+
+### Windows Development
+- The project includes a `postinstall` script that automatically fixes LightningCSS binary issues on Windows x64
+- This runs automatically after `bun install` - no manual intervention needed
+
+### Color System Migration
+- The app has migrated from the old rose-based palette to the new "Boa Noite Mãe" design
+- Always use `Colors` from `src/utils/colors.ts` instead of hardcoded hex values
+- Tailwind classes are auto-generated from the color system in `tailwind.config.js`
+
+### Safe Area Handling
+- Always use `SafeAreaView` from `react-native-safe-area-context`, NEVER from `react-native`
+- `SafeAreaProvider` is already configured in `App.tsx`
+- See [docs/SAFE_AREA_MIGRATION.md](docs/SAFE_AREA_MIGRATION.md) for details

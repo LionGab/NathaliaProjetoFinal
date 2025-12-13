@@ -10,12 +10,21 @@
  * ✅ New Architecture ready
  */
 
-// Design System Colors (Nossa Maternidade Theme)
+// Design System Colors (Nossa Maternidade Theme - "Boa Noite Mãe")
 const COLORS = {
-  primary: '#E11D48', // Rose principal
-  primaryDark: '#BC1A3E',
-  background: '#FFFCF9', // Cream
-  splash: '#E11D48',
+  primary: '#f4258c', // Primary pink - Rosa vibrante
+  primaryDark: '#ec4899', // Rosa mais escuro
+  secondary: '#89CFF0', // Baby blue - Azul claro suave
+  background: '#f8f5f7', // Rosa muito claro
+  textDark: '#1a2b4b', // Azul escuro para textos
+  splash: '#f4258c', // Mesma cor primária
+  // Cores de sentimentos
+  feeling: {
+    sunny: '#eab308', // Amarelo - Bem
+    cloud: '#60a5fa', // Azul - Cansada
+    rainy: '#818cf8', // Índigo - Enjoada
+    heart: '#f4258c', // Rosa - Amada
+  },
 };
 
 module.exports = {
@@ -85,8 +94,8 @@ module.exports = {
     android: {
       package: 'com.nossamaternidade.app',
       versionCode: 1,
-      targetSdkVersion: 34,
-      compileSdkVersion: 34,
+      targetSdkVersion: 35,
+      compileSdkVersion: 35,
       minSdkVersion: 24, // Android 7.0 (95%+ market coverage)
       icon: './assets/icon.png',
       adaptiveIcon: {

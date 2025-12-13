@@ -132,49 +132,37 @@ export default function MyCareScreen({ navigation }: MainTabScreenProps<"MyCare"
     } else if (id === "feelings") {
       navigation.navigate("DailyLog", {});
     } else if (id === "breathe") {
-      navigation.navigate("ComingSoon", {
-        title: "Respira Comigo",
-        description: "Em breve teremos exercícios guiados de respiração para te ajudar a relaxar.",
-        emoji: "🧘",
-        primaryCtaLabel: "Voltar",
-        secondaryCtaLabel: "Falar com NathIA",
-        relatedRoute: "Assistant",
-      });
+      navigation.navigate("BreathingExercise");
     } else if (id === "rest") {
-      navigation.navigate("ComingSoon", {
-        title: "Descanso",
-        description: "Em breve teremos sons relaxantes e meditações guiadas para você.",
-        emoji: "🌙",
-        primaryCtaLabel: "Voltar",
-        secondaryCtaLabel: "Ver Afirmações",
-        relatedRoute: "Assistant",
-      });
+      navigation.navigate("RestSounds");
     }
   };
 
   const handleQuickSupport = async (id: string) => {
     await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
 
+    // Direct navigation for implemented features
+    if (id === "self") {
+      navigation.navigate("HabitsEnhanced");
+      return;
+    }
+
+    if (id === "anxiety") {
+      navigation.navigate("BreathingExercise");
+      return;
+    }
+
+    if (id === "sleep") {
+      navigation.navigate("RestSounds");
+      return;
+    }
+
+    // Coming soon for features not yet implemented
     const supportConfig: Record<string, { title: string; description: string; emoji: string }> = {
-      anxiety: {
-        title: "Ansiedade",
-        description: "Em breve teremos técnicas de alívio e exercícios para ajudar com a ansiedade.",
-        emoji: "🫂",
-      },
-      sleep: {
-        title: "Sono do Bebê",
-        description: "Em breve teremos dicas práticas para ajudar seu bebê a dormir melhor.",
-        emoji: "😴",
-      },
       feeding: {
         title: "Amamentação",
         description: "Em breve teremos guias completos e apoio para amamentação.",
         emoji: "🤱",
-      },
-      self: {
-        title: "Autocuidado",
-        description: "Em breve teremos sugestões de momentos de autocuidado para você.",
-        emoji: "💆‍♀️",
       },
     };
 
@@ -686,7 +674,7 @@ export default function MyCareScreen({ navigation }: MainTabScreenProps<"MyCare"
               </Text>
             </Pressable>
             <Pressable
-              onPress={() => navigation.navigate("Habits")}
+              onPress={() => navigation.navigate("HabitsEnhanced")}
               style={{
                 flex: 1,
                 marginHorizontal: 6,

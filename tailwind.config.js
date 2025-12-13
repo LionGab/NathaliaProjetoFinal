@@ -12,10 +12,39 @@ module.exports = {
     // NOTE to AI: You can extend the theme with custom colors or styles here.
     extend: {
       colors: {
-        // Nossa Maternidade - Refined, sophisticated color palette
+        // Nossa Maternidade Premium - Sistema de cores 2025
+        // Primary Rose - Rosa vibrante principal
+        primary: {
+          DEFAULT: "#F43F5E", // Primary rose
+          50: "#FFF1F2",
+          100: "#FFE4E6",
+          200: "#FECDD3",
+          300: "#FDA4AF",
+          400: "#FB7185",
+          500: "#F43F5E", // Main primary
+          600: "#E11D48",
+          700: "#BE123C",
+          800: "#9F1239",
+          900: "#881337",
+        },
+        // Secondary Purple - Roxo vibrante
+        secondary: {
+          DEFAULT: "#A855F7", // Purple
+          50: "#FAF5FF",
+          100: "#F3E8FF",
+          200: "#E9D5FF",
+          300: "#D8B4FE",
+          400: "#C084FC",
+          500: "#A855F7", // Main secondary
+          600: "#9333EA",
+          700: "#7C3AED",
+          800: "#6B21A8",
+          900: "#581C87",
+        },
+        // Rose (alinhado com primary)
         rose: {
-          50: "#FFF5F7",
-          100: "#FFEEF2",
+          50: "#FFF1F2",
+          100: "#FFE4E6",
           200: "#FECDD3",
           300: "#FDA4AF",
           400: "#FB7185",
@@ -62,6 +91,54 @@ module.exports = {
           900: "#2A4C36",
         },
         warmGray: {
+          50: "#FAFAF9",
+          100: "#F5F5F4",
+          200: "#E7E5E4",
+          300: "#D6D3D1",
+          400: "#A8A29E",
+          500: "#78716C",
+          600: "#57534E",
+          700: "#44403C",
+          800: "#292524",
+          900: "#1C1917",
+        },
+        // Cores de sentimentos (Daily Feelings)
+        feeling: {
+          sunny: {
+            DEFAULT: "#F59E0B", // Amarelo - Ótima
+            light: "#FEF3C7",
+          },
+          cloud: {
+            DEFAULT: "#60A5FA", // Azul - Bem
+            light: "#DBEAFE",
+          },
+          rainy: {
+            DEFAULT: "#A855F7", // Purple - Cansada
+            light: "#F3E8FF",
+          },
+          heart: {
+            DEFAULT: "#F43F5E", // Rose - Ansiosa
+            light: "#FFE4E6",
+          },
+        },
+        // Text colors
+        text: {
+          dark: "#1a2b4b", // Azul escuro para textos principais
+          DEFAULT: "#1a2b4b",
+          light: "#64748b",
+          muted: "#94a3b8",
+        },
+        // Background colors
+        background: {
+          DEFAULT: "#FFFCF9", // Creme suave
+          primary: "#FFFCF9",
+          secondary: "#F8F5F7",
+          tertiary: "#F5F5F4",
+          elevated: "#FFFFFF",
+        },
+        // Neutral colors
+        neutral: {
+          0: "#FFFFFF",
           50: "#FAFAF9",
           100: "#F5F5F4",
           200: "#E7E5E4",

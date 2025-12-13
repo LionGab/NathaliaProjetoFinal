@@ -7,8 +7,8 @@
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "automatic",
-    "primaryColor": "#E11D48",
-    "backgroundColor": "#FFFCF9",
+    "primaryColor": "#f4258c",
+    "backgroundColor": "#f8f5f7",
     "newArchEnabled": true,
     "owner": "liongab",
     "splash": {
