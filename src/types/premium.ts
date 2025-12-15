@@ -3,7 +3,7 @@
  * Tipos para gerenciamento de assinaturas premium
  */
 
-import type { CustomerInfo, PurchasesPackage } from "react-native-purchases";
+import type { CustomerInfo } from "react-native-purchases";
 
 // Tiers de assinatura
 export type SubscriptionTier = "free" | "premium";

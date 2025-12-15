@@ -1,5 +1,5 @@
-import React, { useState, useCallback } from "react";
-import { View, Text, ScrollView, FlatList, Pressable, TextInput, Share, ListRenderItem } from "react-native";
+import React, { useState } from "react";
+import { View, Text, ScrollView, FlatList, Pressable, TextInput, Share } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
@@ -129,6 +129,7 @@ export default function CommunityScreen({ navigation }: MainTabScreenProps<"Comm
   };
 
   const handleJoinGroup = async (groupId: string) => {
+    void groupId;
     await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
     navigation.navigate("ComingSoon", {
       title: "Participar do Grupo",

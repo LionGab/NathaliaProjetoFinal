@@ -4,7 +4,7 @@
  */
 
 import React, { useState, useEffect, useCallback } from "react";
-import { View, Text, Pressable, Dimensions } from "react-native";
+import { View, Text, Pressable } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import Animated, {
   useSharedValue,
@@ -23,8 +23,6 @@ import {
   RADIUS,
   TYPOGRAPHY,
 } from "../theme/design-system";
-
-const { width } = Dimensions.get("window");
 
 type BreathingTechnique = "box" | "478" | "calm";
 

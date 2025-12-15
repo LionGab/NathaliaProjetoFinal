@@ -13,7 +13,7 @@ import {
   SubscriptionDetails,
   ENTITLEMENTS,
 } from "../types/premium";
-import { getCustomerInfo, checkPremiumStatus as checkRevenueCatPremium } from "../services/purchases";
+import { getCustomerInfo } from "../services/purchases";
 import { logger } from "../utils/logger";
 
 // Estado inicial da subscription

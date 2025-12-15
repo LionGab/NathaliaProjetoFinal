@@ -8,7 +8,6 @@ import { MainTabScreenProps } from "../types/navigation";
 import { useAppStore } from "../state/store";
 import * as Haptics from "expo-haptics";
 import { useTheme } from "../hooks/useTheme";
-import { useSpacing } from "../hooks/useSpacing";
 
 interface MenuItem {
   id: string;
@@ -30,7 +29,6 @@ interface MenuItem {
 export default function ProfileScreen({ navigation }: MainTabScreenProps<"Profile">) {
   const insets = useSafeAreaInsets();
   const { colors, theme, setTheme } = useTheme();
-  const s = useSpacing();
   const user = useAppStore((s) => s.user);
   const setOnboardingComplete = useAppStore((s) => s.setOnboardingComplete);
 

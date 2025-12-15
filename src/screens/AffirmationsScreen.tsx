@@ -17,7 +17,7 @@ import { useAffirmationsStore } from "../state/store";
 import { RootStackScreenProps, Affirmation } from "../types/navigation";
 import { useTheme } from "../hooks/useTheme";
 
-const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get("window");
+const { height: SCREEN_HEIGHT } = Dimensions.get("window");
 
 const AFFIRMATIONS: Affirmation[] = [
   { id: "1", text: "Eu transformo meus sonhos em objetivos, meus objetivos em passos e meus passos em acao.", category: "motivacao" },

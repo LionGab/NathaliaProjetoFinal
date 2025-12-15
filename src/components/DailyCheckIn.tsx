@@ -3,7 +3,7 @@ import { View, Text, Pressable, Modal } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import Animated, { FadeIn, FadeInUp, ZoomIn } from "react-native-reanimated";
 import * as Haptics from "expo-haptics";
-import { useCheckInStore, DailyCheckIn as DailyCheckInType } from "../state/store";
+import { useCheckInStore } from "../state/store";
 
 const MOOD_OPTIONS = [
   { value: 1, emoji: "😢", label: "Difícil" },

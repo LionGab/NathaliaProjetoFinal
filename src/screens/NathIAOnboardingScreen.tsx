@@ -46,7 +46,6 @@ import {
   COLORS,
   SPACING,
   RADIUS,
-  SHADOWS,
   TYPOGRAPHY,
 } from "../theme/design-system";
 import { RootStackScreenProps } from "../types/navigation";
@@ -1209,6 +1208,7 @@ const PreferencesScreen = ({ onComplete }: { onComplete: () => void }) => {
 
 // Main Onboarding Screen
 export default function NathIAOnboardingScreen({ navigation }: Props) {
+  void navigation;
   const insets = useSafeAreaInsets();
   const { currentStep, nextStep, prevStep, getProgress } =
     useNathIAOnboardingStore();

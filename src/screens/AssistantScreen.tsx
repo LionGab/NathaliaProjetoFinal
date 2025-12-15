@@ -35,7 +35,6 @@ import {
   getRandomFallbackMessage,
   containsSensitiveTopic,
   SENSITIVE_TOPIC_DISCLAIMER,
-  NATHIA_API_CONFIG,
 } from "../config/nathia";
 import { logger } from "../utils/logger";
 import { VoiceMessagePlayer } from "../components/VoiceMessagePlayer";
@@ -673,7 +672,7 @@ MessageBubble.displayName = 'MessageBubble';
                 <Text className="text-warmGray-400 text-base mt-4">Nenhuma conversa ainda</Text>
               </View>
             ) : (
-              groupedConversations.map((group, groupIndex) => (
+              groupedConversations.map((group) => (
                 <View key={group.title} className="px-4 py-3">
                   <Text className="text-warmGray-400 text-xs font-medium uppercase tracking-wider mb-2">
                     {group.title}

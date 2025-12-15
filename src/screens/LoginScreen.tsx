@@ -270,6 +270,7 @@ const CustomAlert = ({
 };
 
 export default function LoginScreen({ navigation }: Props) {
+  void navigation;
   const insets = useSafeAreaInsets();
   const { colors, isDark } = useTheme();
   const [isLogin, setIsLogin] = useState(true);

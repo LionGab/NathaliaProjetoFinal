@@ -4,7 +4,7 @@
  */
 
 import React, { useState } from "react";
-import { View, Text, Pressable, ScrollView, Dimensions } from "react-native";
+import { View, Text, Pressable, ScrollView } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { LinearGradient } from "expo-linear-gradient";
 import Animated, { FadeInDown } from "react-native-reanimated";
@@ -18,8 +18,6 @@ import {
   SHADOWS,
   TYPOGRAPHY,
 } from "../theme/design-system";
-
-const { width } = Dimensions.get("window");
 
 type ViewMode = "week" | "month" | "year";
 

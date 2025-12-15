@@ -57,7 +57,7 @@ export async function getNathIAResponse(
     }
 
     // 2. Decidir provider
-    let provider = "claude"; // Default: melhor persona
+    let provider: EdgeFunctionPayload["provider"] = "claude"; // Default: melhor persona
     let grounding = false;
 
     if (context.requiresGrounding) {

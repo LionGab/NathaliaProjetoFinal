@@ -45,6 +45,7 @@ export default function RootNavigator() {
   // App state
   const isAuthenticated = useAppStore((s) => s.isAuthenticated);
   const isOnboardingComplete = useAppStore((s) => s.isOnboardingComplete);
+  void isOnboardingComplete;
 
   // NathIA onboarding state
   const isNathIAOnboardingComplete = useNathIAOnboardingStore((s) => s.isComplete);

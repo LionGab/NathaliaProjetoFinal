@@ -19,7 +19,7 @@ class Logger {
   private logHistory: LogEntry[] = [];
   private maxHistorySize = 100;
 
-  private formatMessage(level: LogLevel, message: string, context?: string): string {
+  private formatMessage(message: string, context?: string): string {
     const prefix = context ? `[${context}]` : '';
     return `${prefix} ${message}`;
   }
@@ -45,7 +45,7 @@ class Logger {
 
     // Em desenvolvimento, sempre logar no console
     if (this.isDevelopment) {
-      const formattedMessage = this.formatMessage(level, message, context);
+      const formattedMessage = this.formatMessage(message, context);
       
       switch (level) {
         case 'info':

@@ -166,6 +166,7 @@ export function onAuthStateChange(callback: (user: AuthUser | null) => void) {
   const {
     data: { subscription },
   } = client.auth.onAuthStateChange((event, session) => {
+    void event;
     if (session?.user) {
       callback({
         id: session.user.id,

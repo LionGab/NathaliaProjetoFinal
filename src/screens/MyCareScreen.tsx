@@ -1,5 +1,5 @@
 import React, { useMemo } from "react";
-import { View, Text, ScrollView, Pressable, Dimensions } from "react-native";
+import { View, Text, ScrollView, Pressable } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { LinearGradient } from "expo-linear-gradient";
 import { Ionicons } from "@expo/vector-icons";
@@ -9,8 +9,6 @@ import { useAppStore } from "../state/store";
 import * as Haptics from "expo-haptics";
 import { useTheme } from "../hooks/useTheme";
 import { IconName } from "../types/icons";
-
-const { width: SCREEN_WIDTH } = Dimensions.get("window");
 
 // Paleta suave e acolhedora
 const COLORS = {

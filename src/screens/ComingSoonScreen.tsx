@@ -6,6 +6,7 @@ import Animated, { FadeIn, FadeInUp } from "react-native-reanimated";
 import { RootStackScreenProps } from "../types/navigation";
 import * as Haptics from "expo-haptics";
 import { useTheme } from "../hooks/useTheme";
+import { getIconName } from "../types/icons";
 
 interface ComingSoonParams {
   title?: string;
@@ -34,6 +35,8 @@ export default function ComingSoonScreen({
     secondaryCtaLabel,
     relatedRoute,
   } = params;
+
+  const iconName = getIconName(icon, "construct-outline");
 
   const handlePrimaryAction = async () => {
     await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
@@ -88,7 +91,8 @@ export default function ComingSoonScreen({
                 shadowRadius: 24,
               }}
             >
-              <Text style={{ fontSize: 48 }}>{emoji}</Text>
+              <Ionicons name={iconName} size={40} color={colors.primary[500]} />
+              <Text style={{ fontSize: 28, marginTop: 6 }}>{emoji}</Text>
             </View>
           </Animated.View>
 

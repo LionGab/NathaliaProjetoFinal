@@ -12,6 +12,7 @@ import { ToastProvider } from "./src/context/ToastContext";
 import { useNetworkStatus } from "./src/hooks/useNetworkStatus";
 import { useTheme } from "./src/hooks/useTheme";
 import { useDeepLinking } from "./src/hooks/useDeepLinking";
+import { navigationRef } from "./src/navigation/navigationRef";
 
 /*
 IMPORTANT NOTICE: DO NOT REMOVE
@@ -68,7 +69,7 @@ export default function App() {
           <ToastProvider>
             {/* Offline Banner - appears on top when no connection */}
             {isOffline && <OfflineBanner onRetry={retry} isRetrying={isChecking} />}
-            <NavigationContainer>
+            <NavigationContainer ref={navigationRef}>
               <StatusBar style={isDark ? "light" : "dark"} />
               <RootNavigator />
             </NavigationContainer>

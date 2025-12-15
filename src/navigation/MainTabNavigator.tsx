@@ -20,7 +20,6 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import {
   COLORS,
   SPACING,
-  RADIUS,
   SHADOWS,
 } from "../theme/design-system";
 

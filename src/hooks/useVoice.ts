@@ -77,7 +77,6 @@ export function useVoice(): UseVoiceReturn {
 
   // Refs
   const soundRef = useRef<Audio.Sound | null>(null);
-  const playbackStatusSubscription = useRef<((status: AVPlaybackStatus) => void) | null>(null);
 
   // Premium access
   const hasVoiceAccess = useHasVoiceAccess();

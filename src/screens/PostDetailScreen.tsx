@@ -3,7 +3,6 @@ import { View, Text, ScrollView, Pressable, TextInput, Share } from "react-nativ
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
 import { RootStackScreenProps } from "../types/navigation";
-import { useCommunityStore } from "../state/store";
 import * as Haptics from "expo-haptics";
 import { useTheme } from "../hooks/useTheme";
 
@@ -11,6 +10,7 @@ export default function PostDetailScreen({ route, navigation }: RootStackScreenP
   const insets = useSafeAreaInsets();
   const { colors } = useTheme();
   const { postId } = route.params;
+  void navigation;
   const [comment, setComment] = useState("");
   const [isLiked, setIsLiked] = useState(false);
   const [likesCount, setLikesCount] = useState(45);
@@ -30,7 +30,7 @@ export default function PostDetailScreen({ route, navigation }: RootStackScreenP
     await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
     try {
       await Share.share({
-        message: "Acabei de descobrir que estou grávida! Estou tão feliz e nervosa ao mesmo tempo. - via Nossa Maternidade",
+        message: `Acabei de descobrir que estou grávida! Estou tão feliz e nervosa ao mesmo tempo. (post ${postId}) - via Nossa Maternidade`,
       });
     } catch (error) {
       // Handle error silently

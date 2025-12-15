@@ -3,14 +3,11 @@
  * Navegação direta para telas específicas via URLs
  */
 
-import { useEffect, useCallback } from "react";
+import { useEffect, useCallback, useRef } from "react";
 import * as Linking from "expo-linking";
-import { useNavigation } from "@react-navigation/native";
 import { RootStackParamList } from "../types/navigation";
-import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { logger } from "../utils/logger";
-
-type NavigationProp = NativeStackNavigationProp<RootStackParamList>;
+import { navigationRef } from "../navigation/navigationRef";
 
 const SCHEME = "nossamaternidade";
 
@@ -68,7 +65,7 @@ function findRoute(path: string): DeepLinkConfig | null {
 }
 
 export function useDeepLinking() {
-  const navigation = useNavigation<NavigationProp>();
+  const pendingUrlRef = useRef<string | null>(null);
 
   const handleDeepLink = useCallback((url: string) => {
     try {
@@ -78,21 +75,34 @@ export function useDeepLinking() {
         return;
       }
 
+      // Se a navegação ainda não está pronta (ex.: web / inicialização),
+      // guardar a URL e tentar novamente quando o NavigationContainer estiver ready.
+      if (!navigationRef.isReady()) {
+        pendingUrlRef.current = url;
+        logger.warn("Navigation not ready yet. Queued deep link.", "DeepLinking", { url });
+        return;
+      }
+
       const path = parsed.path || "/";
       const route = findRoute(path);
 
       if (route) {
-        const params = route.getParams 
-          ? route.getParams(parsed.queryParams?.id as string)
+        const queryId =
+          typeof parsed.queryParams?.id === "string" ? parsed.queryParams.id : undefined;
+
+        const params = route.getParams
+          ? route.getParams(queryId)
           : route.staticParams || {};
         
         // Type-safe navigation
         if (route.screen === "PostDetail" && "postId" in params) {
-          navigation.navigate("PostDetail", { postId: params.postId as string });
+          navigationRef.navigate("PostDetail", { postId: params.postId as string });
         } else if (route.screen === "MainTabs" && "screen" in params) {
           const screenName = params.screen as string;
           if (screenName === "Home" || screenName === "Community" || screenName === "Assistant") {
-            navigation.navigate("MainTabs", { screen: screenName as "Home" | "Community" | "Assistant" });
+            navigationRef.navigate("MainTabs", {
+              screen: screenName as "Home" | "Community" | "Assistant",
+            });
           }
         }
         
@@ -103,7 +113,7 @@ export function useDeepLinking() {
     } catch (error) {
       logger.error("Error handling deep link", "DeepLinking", error instanceof Error ? error : new Error(String(error)));
     }
-  }, [navigation]);
+  }, []);
 
   useEffect(() => {
     // Handle initial URL (app opened via deep link)
@@ -124,6 +134,20 @@ export function useDeepLinking() {
     return () => {
       subscription.remove();
     };
+  }, [handleDeepLink]);
+
+  useEffect(() => {
+    // Se houve deep link antes da navegação estar pronta,
+    // tenta reenfileirar quando a ref estiver pronta.
+    const interval = setInterval(() => {
+      if (pendingUrlRef.current && navigationRef.isReady()) {
+        const url = pendingUrlRef.current;
+        pendingUrlRef.current = null;
+        handleDeepLink(url);
+      }
+    }, 150);
+
+    return () => clearInterval(interval);
   }, [handleDeepLink]);
 
   return {

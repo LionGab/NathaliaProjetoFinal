@@ -5,7 +5,7 @@
  */
 
 import React, { useState } from "react";
-import { View, Text, Pressable, Dimensions } from "react-native";
+import { View, Text, Pressable } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import Animated, {
   FadeInDown,
@@ -33,8 +33,6 @@ import {
 import { RootStackScreenProps } from "../types/navigation";
 
 type Props = RootStackScreenProps<"NotificationPermission">;
-
-const { width: SCREEN_WIDTH } = Dimensions.get("window");
 
 // Notification preview component - shows how notifications will look
 const NotificationPreview = ({ delay }: { delay: number }) => (
@@ -144,6 +142,7 @@ const NotificationPreview2 = ({ delay }: { delay: number }) => (
 );
 
 export default function NotificationPermissionScreen({ navigation }: Props) {
+  void navigation;
   const insets = useSafeAreaInsets();
   const [isLoading, setIsLoading] = useState(false);
 

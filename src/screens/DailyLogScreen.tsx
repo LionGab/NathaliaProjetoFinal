@@ -78,7 +78,7 @@ export default function DailyLogScreen({ navigation, route }: RootStackScreenPro
       onPanResponderGrant: () => {
         Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
       },
-      onPanResponderMove: (evt, gestureState) => {
+      onPanResponderMove: (_evt, gestureState) => {
         const containerX = (SCREEN_WIDTH - SLIDER_WIDTH) / 2;
         const relativeX = gestureState.moveX - containerX;
         const newValue = relativeX / SLIDER_WIDTH;

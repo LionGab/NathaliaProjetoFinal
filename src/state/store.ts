@@ -96,7 +96,7 @@ interface ChatState {
 // Main App Store (persisted)
 export const useAppStore = create<AppState>()(
   persist(
-    (set, get) => ({
+    (set) => ({
       user: null,
       authUserId: null,
       isAuthenticated: false,

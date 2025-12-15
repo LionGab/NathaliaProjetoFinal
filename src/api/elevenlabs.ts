@@ -6,16 +6,10 @@
  * Audio playback gerenciado pelo expo-av.
  */
 
-import * as FileSystemModule from "expo-file-system";
-import { Audio, AVPlaybackStatus } from "expo-av";
+import * as FileSystem from "expo-file-system/legacy";
+import { Audio } from "expo-av";
 import Constants from "expo-constants";
 import { logger } from "../utils/logger";
-
-// Type workaround for expo-file-system
-const FileSystem = FileSystemModule as typeof FileSystemModule & {
-  cacheDirectory: string | null;
-  EncodingType: { Base64: string; UTF8: string };
-};
 
 // ============================================
 // CONFIGURACAO
@@ -61,7 +55,6 @@ interface GenerateSpeechOptions {
   text: string;
   voiceId?: string;
   modelId?: string;
-  outputFormat?: "mp3_44100_128" | "mp3_22050_32" | "pcm_16000";
   voiceSettings?: typeof NATHIA_VOICE_SETTINGS;
 }
 
@@ -102,7 +95,6 @@ export async function generateSpeech(options: GenerateSpeechOptions): Promise<st
     text,
     voiceId = NATHIA_VOICE_ID,
     modelId = MODELS.MULTILINGUAL_V2,
-    outputFormat = "mp3_44100_128",
     voiceSettings = NATHIA_VOICE_SETTINGS,
   } = options;
 
@@ -166,6 +158,10 @@ export async function generateSpeech(options: GenerateSpeechOptions): Promise<st
     const base64Audio = await blobToBase64(audioBlob);
 
     // Salvar em arquivo local para playback
+    if (!FileSystem.cacheDirectory) {
+      throw new Error("Cache directory not available");
+    }
+
     const filename = `nathia_voice_${Date.now()}.mp3`;
     const fileUri = `${FileSystem.cacheDirectory}${filename}`;
 
