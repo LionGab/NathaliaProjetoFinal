@@ -15,6 +15,7 @@ import Animated, {
 } from "react-native-reanimated";
 import { useHabitsStore, Habit } from "../state/store";
 import * as Haptics from "expo-haptics";
+import { useTheme } from "../hooks/useTheme";
 
 const CATEGORY_LABELS: Record<string, { label: string; emoji: string }> = {
   "self-care": { label: "Autocuidado", emoji: "✨" },
@@ -33,6 +34,7 @@ const MOTIVATIONAL_QUOTES = [
 
 export default function HabitsScreen() {
   const insets = useSafeAreaInsets();
+  const { colors } = useTheme();
   const habits = useHabitsStore((s) => s.habits);
   const toggleHabit = useHabitsStore((s) => s.toggleHabit);
 
@@ -78,9 +80,9 @@ export default function HabitsScreen() {
           <View
             className="rounded-2xl overflow-hidden"
             style={{
-              backgroundColor: habit.completed ? `${habit.color}12` : "#FFFFFF",
+              backgroundColor: habit.completed ? `${habit.color}12` : colors.background.card,
               borderWidth: 1.5,
-              borderColor: habit.completed ? habit.color : "#F5F5F4",
+              borderColor: habit.completed ? habit.color : colors.neutral[100],
             }}
           >
             <View className="flex-row items-center p-4">
@@ -94,7 +96,7 @@ export default function HabitsScreen() {
                 <Ionicons
                   name={habit.icon as any}
                   size={26}
-                  color={habit.completed ? "#FFFFFF" : habit.color}
+                  color={habit.completed ? colors.neutral[0] : habit.color}
                 />
               </View>
 
@@ -102,7 +104,7 @@ export default function HabitsScreen() {
               <View className="flex-1">
                 <Text
                   className="text-base font-semibold mb-0.5"
-                  style={{ color: habit.completed ? "#1C1917" : "#44403C" }}
+                  style={{ color: habit.completed ? colors.neutral[900] : colors.neutral[700] }}
                 >
                   {habit.title}
                 </Text>
@@ -127,11 +129,11 @@ export default function HabitsScreen() {
                 style={{
                   backgroundColor: habit.completed ? habit.color : "transparent",
                   borderWidth: 2,
-                  borderColor: habit.completed ? habit.color : "#D6D3D1",
+                  borderColor: habit.completed ? habit.color : colors.neutral[300],
                 }}
               >
                 {habit.completed && (
-                  <Ionicons name="checkmark" size={16} color="#FFFFFF" />
+                  <Ionicons name="checkmark" size={16} color={colors.neutral[0]} />
                 )}
               </View>
             </View>
@@ -142,7 +144,7 @@ export default function HabitsScreen() {
   };
 
   return (
-    <View className="flex-1" style={{ backgroundColor: "#FAFAF9" }}>
+    <View className="flex-1" style={{ backgroundColor: colors.background.primary }}>
       <ScrollView
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{ paddingBottom: 120 }}
@@ -150,7 +152,7 @@ export default function HabitsScreen() {
         {/* Header with Gradient */}
         <View style={{ paddingTop: insets.top }}>
           <LinearGradient
-            colors={["#FFF1F2", "#FEFCE8", "#FAFAF9"]}
+            colors={[colors.primary[50], colors.secondary[50], colors.background.primary]}
             locations={[0, 0.6, 1]}
             style={{ paddingHorizontal: 24, paddingTop: 20, paddingBottom: 24 }}
           >
@@ -166,7 +168,7 @@ export default function HabitsScreen() {
                   </Text>
                 </View>
                 <View className="flex-row items-center">
-                  <View className="bg-white rounded-full px-4 py-2 flex-row items-center mr-2" style={{ shadowColor: "#000", shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.05, shadowRadius: 8 }}>
+                  <View className="rounded-full px-4 py-2 flex-row items-center mr-2" style={{ backgroundColor: colors.background.card, shadowColor: colors.neutral[900], shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.05, shadowRadius: 8 }}>
                     <Ionicons name="flame" size={18} color="#F59E0B" />
                     <Text className="text-warmGray-700 text-sm font-semibold ml-1.5">
                       {totalStreak}
@@ -183,9 +185,9 @@ export default function HabitsScreen() {
                 <View
                   className="rounded-2xl p-5"
                   style={{
-                    backgroundColor: "rgba(255, 255, 255, 0.8)",
+                    backgroundColor: colors.background.glass,
                     borderWidth: 1,
-                    borderColor: "#FEE2E2",
+                    borderColor: colors.primary[100],
                   }}
                 >
                   <View className="flex-row items-start">
@@ -207,13 +209,13 @@ export default function HabitsScreen() {
                 entering={FadeInUp.delay(300).duration(600).springify()}
               >
                 <LinearGradient
-                  colors={["#E11D48", "#F43F5E"]}
+                  colors={[colors.primary[500], colors.primary[400]]}
                   start={{ x: 0, y: 0 }}
                   end={{ x: 1, y: 1 }}
                   style={{
                     borderRadius: 24,
                     padding: 24,
-                    shadowColor: "#E11D48",
+                    shadowColor: colors.primary[500],
                     shadowOffset: { width: 0, height: 12 },
                     shadowOpacity: 0.3,
                     shadowRadius: 20,
@@ -256,7 +258,7 @@ export default function HabitsScreen() {
                       className="h-full rounded-full"
                       style={{
                         width: `${completionPercentage}%`,
-                        backgroundColor: "#FFFFFF",
+                        backgroundColor: colors.neutral[0],
                       }}
                     />
                   </View>
@@ -316,8 +318,8 @@ export default function HabitsScreen() {
           <View
             className="rounded-3xl p-5"
             style={{
-              backgroundColor: "#FFFFFF",
-              shadowColor: "#000",
+              backgroundColor: colors.background.card,
+              shadowColor: colors.neutral[900],
               shadowOffset: { width: 0, height: 4 },
               shadowOpacity: 0.06,
               shadowRadius: 16,
@@ -332,7 +334,7 @@ export default function HabitsScreen() {
                   <View key={i} className="items-center">
                     <Text
                       className="text-xs font-medium mb-2"
-                      style={{ color: isToday ? "#E11D48" : "#A8A29E" }}
+                      style={{ color: isToday ? colors.primary[500] : colors.neutral[400] }}
                     >
                       {day}
                     </Text>
@@ -340,16 +342,16 @@ export default function HabitsScreen() {
                       className="w-10 h-10 rounded-full items-center justify-center"
                       style={{
                         backgroundColor: isCompleted
-                          ? "#6BAD78"
+                          ? colors.semantic.success
                           : isToday
-                          ? "#FEE2E2"
-                          : "#F5F5F4",
+                          ? colors.primary[100]
+                          : colors.neutral[100],
                         borderWidth: isToday ? 2 : 0,
-                        borderColor: "#E11D48",
+                        borderColor: colors.primary[500],
                       }}
                     >
                       {isCompleted ? (
-                        <Ionicons name="checkmark" size={18} color="#FFFFFF" />
+                        <Ionicons name="checkmark" size={18} color={colors.neutral[0]} />
                       ) : isToday ? (
                         <Text className="text-warmGray-600 text-xs font-semibold">
                           {completionPercentage}%
@@ -363,7 +365,7 @@ export default function HabitsScreen() {
 
             <View className="pt-4 border-t border-warmGray-100">
               <View className="flex-row items-center justify-center">
-                <Ionicons name="heart" size={16} color="#E11D48" />
+                <Ionicons name="heart" size={16} color={colors.primary[500]} />
                 <Text className="text-warmGray-600 text-sm ml-2">
                   Continue assim, voce esta incrivel!
                 </Text>
@@ -380,9 +382,9 @@ export default function HabitsScreen() {
           <View
             className="rounded-3xl p-6 items-center"
             style={{
-              backgroundColor: "#FFF9F3",
+              backgroundColor: colors.background.tertiary,
               borderWidth: 1,
-              borderColor: "#F5E1DB",
+              borderColor: colors.primary[200],
             }}
           >
             <View className="flex-row items-center mb-3">
