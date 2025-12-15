@@ -1,7 +1,6 @@
 import { SupabaseClient } from "@supabase/supabase-js";
 import { supabase, Database } from "./supabase";
 import { logger } from "../utils/logger";
-import { loginUser, logoutUser } from "../services/purchases";
 
 export type AuthUser = {
   id: string;
@@ -59,9 +58,16 @@ export async function signIn(email: string, password: string) {
 
     if (error) throw error;
 
-    // Identify user in RevenueCat
+    // Identify user in RevenueCat (with Expo Go fallback)
     if (data.user) {
-      await loginUser(data.user.id);
+      try {
+        const purchases = await import("../services/purchases");
+        await purchases.loginUser(data.user.id);
+      } catch (err) {
+        logger.warn("RevenueCat indisponível (provável Expo Go). Ignorando login.", "Auth", {
+          error: err instanceof Error ? err.message : String(err),
+        });
+      }
     }
 
     return { user: data.user, session: data.session, error: null };
@@ -78,8 +84,15 @@ export async function signOut() {
   try {
     const client = checkSupabase();
 
-    // Logout from RevenueCat first
-    await logoutUser();
+    // Logout from RevenueCat first (with Expo Go fallback)
+    try {
+      const purchases = await import("../services/purchases");
+      await purchases.logoutUser();
+    } catch (err) {
+      logger.warn("RevenueCat indisponível (provável Expo Go). Ignorando logout.", "Auth", {
+        error: err instanceof Error ? err.message : String(err),
+      });
+    }
 
     const { error } = await client.auth.signOut();
     if (error) throw error;

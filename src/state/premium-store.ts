@@ -13,7 +13,6 @@ import {
   SubscriptionDetails,
   ENTITLEMENTS,
 } from "../types/premium";
-import { getCustomerInfo } from "../services/purchases";
 import { logger } from "../utils/logger";
 
 // Estado inicial da subscription
@@ -101,7 +100,16 @@ export const usePremiumStore = create<PremiumState>()(
         set({ isLoading: true, error: null });
 
         try {
-          const customerInfo = await getCustomerInfo();
+          // Import dinâmico do purchases service (Expo Go fallback)
+          let customerInfo: CustomerInfo | null = null;
+          try {
+            const purchases = await import("../services/purchases");
+            customerInfo = await purchases.getCustomerInfo();
+          } catch (err) {
+            logger.warn("RevenueCat indisponível (provável Expo Go). Mantendo free.", "PremiumStore", {
+              error: err instanceof Error ? err.message : String(err),
+            });
+          }
 
           if (!customerInfo) {
             logger.info("No customer info found", "PremiumStore");

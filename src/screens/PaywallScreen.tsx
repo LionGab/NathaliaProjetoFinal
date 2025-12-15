@@ -14,8 +14,8 @@ import {
   Pressable,
   ActivityIndicator,
   Linking,
-  Alert,
 } from "react-native";
+import Constants from "expo-constants";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { LinearGradient } from "expo-linear-gradient";
 import { Ionicons } from "@expo/vector-icons";
@@ -31,15 +31,11 @@ import Animated, {
 } from "react-native-reanimated";
 import { usePremiumStore } from "../state/premium-store";
 import {
-  getPackages,
-  purchasePackage,
-  restorePurchases,
-} from "../services/purchases";
-import {
   PREMIUM_FEATURES,
   DEFAULT_PRICING,
   type PricingConfig,
 } from "../types/premium";
+import { useToast } from "../context/ToastContext";
 import { RootStackParamList } from "../types/navigation";
 import { IconName } from "../types/icons";
 import { COLORS } from "../theme/design-system";
@@ -234,6 +230,12 @@ const PlanButton = ({
 // ============================================
 
 export const PaywallScreen: React.FC<PaywallScreenProps> = ({ navigation, route }) => {
+  // Detectar Expo Go
+  const isExpoGo = Constants.appOwnership === "expo";
+
+  // Toast
+  const { showInfo, showError } = useToast();
+
   // Estado
   const [selectedPlan, setSelectedPlan] = useState<PlanType>("yearly");
   const [pricing, setPricing] = useState<PricingConfig>(DEFAULT_PRICING);
@@ -259,9 +261,15 @@ export const PaywallScreen: React.FC<PaywallScreenProps> = ({ navigation, route 
   }, []);
 
   const loadPrices = async () => {
+    if (isExpoGo) {
+      setIsLoadingPrices(false);
+      return;
+    }
+
     try {
       setIsLoadingPrices(true);
-      const packages = await getPackages();
+      const purchases = await import("../services/purchases");
+      const packages = await purchases.getPackages();
 
       if (packages && packages.length > 0) {
         const monthlyPkg = packages.find((p) =>
@@ -317,6 +325,11 @@ export const PaywallScreen: React.FC<PaywallScreenProps> = ({ navigation, route 
    * Realiza compra
    */
   const handlePurchase = useCallback(async () => {
+    if (isExpoGo) {
+      showInfo("Compras disponíveis apenas em build nativo (Dev Client/EAS)");
+      return;
+    }
+
     const productId =
       selectedPlan === "yearly"
         ? pricing.yearly.productId
@@ -332,14 +345,15 @@ export const PaywallScreen: React.FC<PaywallScreenProps> = ({ navigation, route 
         source,
       });
 
-      const packages = await getPackages();
+      const purchases = await import("../services/purchases");
+      const packages = await purchases.getPackages();
       const selectedPackage = packages?.find((p) => p.identifier === productId);
 
       if (!selectedPackage) {
         throw new Error("Pacote nao encontrado");
       }
 
-      const result = await purchasePackage(selectedPackage);
+      const result = await purchases.purchasePackage(selectedPackage);
 
       if (result) {
         // Sincroniza estado
@@ -364,25 +378,26 @@ export const PaywallScreen: React.FC<PaywallScreenProps> = ({ navigation, route 
       );
 
       setError("Erro ao processar compra. Tente novamente.");
-
-      Alert.alert(
-        "Erro na Compra",
-        "Nao foi possivel completar a compra. Tente novamente ou entre em contato com o suporte.",
-        [{ text: "OK" }]
-      );
+      showError("Não foi possível completar a compra. Tente novamente ou entre em contato com o suporte.");
     } finally {
       setIsPurchasing(false);
     }
-  }, [selectedPlan, pricing, syncWithRevenueCat, setError, navigation, source]);
+  }, [selectedPlan, pricing, syncWithRevenueCat, setError, navigation, source, isExpoGo, showInfo, showError]);
 
   /**
    * Restaura compras
    */
   const handleRestore = useCallback(async () => {
+    if (isExpoGo) {
+      showInfo("Restaurar compras disponível apenas em build nativo (Dev Client/EAS)");
+      return;
+    }
+
     try {
       setIsRestoring(true);
 
-      const result = await restorePurchases();
+      const purchases = await import("../services/purchases");
+      const result = await purchases.restorePurchases();
 
       if (result.success && result.customerInfo) {
         await syncWithRevenueCat();
@@ -391,24 +406,13 @@ export const PaywallScreen: React.FC<PaywallScreenProps> = ({ navigation, route 
           Object.keys(result.customerInfo.entitlements.active).length > 0;
 
         if (hasActive) {
-          Alert.alert(
-            "Compras Restauradas",
-            "Sua assinatura foi restaurada com sucesso!",
-            [{ text: "OK", onPress: () => navigation.goBack() }]
-          );
+          showInfo("Sua assinatura foi restaurada com sucesso!");
+          navigation.goBack();
         } else {
-          Alert.alert(
-            "Nenhuma Compra Encontrada",
-            "Nao encontramos nenhuma assinatura ativa para restaurar.",
-            [{ text: "OK" }]
-          );
+          showInfo("Não encontramos nenhuma assinatura ativa para restaurar.");
         }
       } else {
-        Alert.alert(
-          "Nenhuma Compra Encontrada",
-          result.error || "Nao encontramos nenhuma assinatura ativa para restaurar.",
-          [{ text: "OK" }]
-        );
+        showInfo(result.error || "Não encontramos nenhuma assinatura ativa para restaurar.");
       }
     } catch (error) {
       logger.error(
@@ -417,15 +421,11 @@ export const PaywallScreen: React.FC<PaywallScreenProps> = ({ navigation, route 
         error instanceof Error ? error : new Error(String(error))
       );
 
-      Alert.alert(
-        "Erro ao Restaurar",
-        "Nao foi possivel restaurar suas compras. Tente novamente.",
-        [{ text: "OK" }]
-      );
+      showError("Não foi possível restaurar suas compras. Tente novamente.");
     } finally {
       setIsRestoring(false);
     }
-  }, [syncWithRevenueCat, navigation]);
+  }, [syncWithRevenueCat, navigation, isExpoGo, showInfo, showError]);
 
   /**
    * Abre termos de uso
@@ -461,6 +461,46 @@ export const PaywallScreen: React.FC<PaywallScreenProps> = ({ navigation, route 
       isPopular: true,
     },
   ];
+
+  // Placeholder para Expo Go
+  if (isExpoGo) {
+    return (
+      <LinearGradient
+        colors={["#FDF2F8", "#FCE7F3", "#FBCFE8"]}
+        style={{ flex: 1 }}
+      >
+        <SafeAreaView style={{ flex: 1 }} edges={["top"]}>
+          {/* Header com botao fechar */}
+          <View className="flex-row justify-end px-4 py-2">
+            <Pressable
+              onPress={() => navigation.goBack()}
+              className="w-10 h-10 rounded-full bg-white/80 items-center justify-center"
+            >
+              <Ionicons name="close" size={24} color="#374151" />
+            </Pressable>
+          </View>
+
+          <View className="flex-1 items-center justify-center px-6">
+            <Ionicons name="information-circle" size={80} color={PRIMARY_COLOR} />
+            <Text className="text-2xl font-bold text-gray-900 mt-6 text-center">
+              Premium Disponível em{"\n"}Build Nativo
+            </Text>
+            <Text className="text-base text-gray-600 mt-4 text-center leading-6">
+              O sistema de assinatura Premium está disponível apenas em builds nativos (Dev Client ou EAS Build).
+            </Text>
+            <Text className="text-sm text-gray-500 mt-4 text-center leading-5">
+              Para testar compras, faça um build de desenvolvimento:
+            </Text>
+            <View className="bg-white/80 rounded-xl p-4 mt-4 w-full">
+              <Text className="text-sm text-gray-700 font-mono">
+                eas build --profile preview --platform ios
+              </Text>
+            </View>
+          </View>
+        </SafeAreaView>
+      </LinearGradient>
+    );
+  }
 
   return (
     <LinearGradient

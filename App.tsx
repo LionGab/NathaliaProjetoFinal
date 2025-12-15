@@ -14,8 +14,8 @@ import { useNetworkStatus } from "./src/hooks/useNetworkStatus";
 import { useTheme } from "./src/hooks/useTheme";
 import { useDeepLinking } from "./src/hooks/useDeepLinking";
 import { navigationRef } from "./src/navigation/navigationRef";
-import { initializePurchases } from "./src/services/purchases";
 import { usePremiumStore } from "./src/state/premium-store";
+import { logger } from "./src/utils/logger";
 
 /*
 Environment variables are accessed via process.env.EXPO_PUBLIC_*
@@ -45,10 +45,17 @@ export default function App() {
   const syncWithRevenueCat = usePremiumStore((s) => s.syncWithRevenueCat);
 
   useEffect(() => {
-    // Initialize RevenueCat on app startup
+    // Initialize RevenueCat on app startup (with Expo Go fallback)
     const initPremium = async () => {
-      await initializePurchases();
-      await syncWithRevenueCat();
+      try {
+        const purchases = await import("./src/services/purchases");
+        await purchases.initializePurchases();
+        await syncWithRevenueCat();
+      } catch (err) {
+        logger.warn("RevenueCat indisponível (provável Expo Go). App rodando como free.", "App", {
+          error: err instanceof Error ? err.message : String(err),
+        });
+      }
     };
     initPremium();
   }, [syncWithRevenueCat]);
