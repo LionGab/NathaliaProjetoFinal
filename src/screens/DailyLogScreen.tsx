@@ -16,6 +16,7 @@ import { useCycleStore } from "../state/store";
 import { RootStackScreenProps, DailyLog } from "../types/navigation";
 import * as Haptics from "expo-haptics";
 import { wp } from "../utils/dimensions";
+import { useTheme } from "../hooks/useTheme";
 
 const { width: SCREEN_WIDTH } = Dimensions.get("window");
 
@@ -32,6 +33,7 @@ const MOODS = [
 
 export default function DailyLogScreen({ navigation, route }: RootStackScreenProps<"DailyLog">) {
   const insets = useSafeAreaInsets();
+  const { colors } = useTheme();
   const addDailyLog = useCycleStore((s) => s.addDailyLog);
 
   const today = useMemo(() => {
@@ -148,11 +150,11 @@ export default function DailyLogScreen({ navigation, route }: RootStackScreenPro
   const selectedMoodData = MOODS.find((m) => m.id === selectedMood);
 
   return (
-    <View className="flex-1" style={{ backgroundColor: "#FFFCF9" }}>
+    <View className="flex-1" style={{ backgroundColor: colors.background.secondary }}>
       {/* Header */}
       <View style={{ paddingTop: insets.top }}>
         <LinearGradient
-          colors={["#FDF2F8", "#FFF1F5", "#FFFCF9"]}
+          colors={[colors.primary[50], colors.secondary[50], colors.background.secondary]}
           locations={[0, 0.5, 1]}
           style={{ paddingHorizontal: 24, paddingTop: 16, paddingBottom: 20 }}
         >
@@ -160,9 +162,9 @@ export default function DailyLogScreen({ navigation, route }: RootStackScreenPro
             <Pressable
               onPress={() => navigation.goBack()}
               className="w-10 h-10 rounded-full items-center justify-center"
-              style={{ backgroundColor: "#FFF" }}
+              style={{ backgroundColor: colors.background.card }}
             >
-              <Ionicons name="arrow-back" size={22} color="#78716C" />
+              <Ionicons name="arrow-back" size={22} color={colors.neutral[500]} />
             </Pressable>
             <Animated.View entering={FadeInDown.duration(400)}>
               <Text className="text-warmGray-900 text-xl font-semibold">
@@ -172,7 +174,7 @@ export default function DailyLogScreen({ navigation, route }: RootStackScreenPro
             <Pressable
               onPress={handleSave}
               className="px-4 py-2 rounded-full"
-              style={{ backgroundColor: "#E11D48" }}
+              style={{ backgroundColor: colors.primary[500] }}
             >
               <Text className="text-white font-semibold">Salvar</Text>
             </Pressable>
@@ -202,8 +204,8 @@ export default function DailyLogScreen({ navigation, route }: RootStackScreenPro
                     <View
                       className="w-16 h-16 rounded-2xl items-center justify-center mb-2"
                       style={{
-                        backgroundColor: "#FFF",
-                        shadowColor: "#000",
+                        backgroundColor: colors.background.card,
+                        shadowColor: colors.neutral[900],
                         shadowOffset: { width: 0, height: 2 },
                         shadowOpacity: 0.06,
                         shadowRadius: 8,
@@ -223,7 +225,7 @@ export default function DailyLogScreen({ navigation, route }: RootStackScreenPro
             <View
               className="w-32 h-32 rounded-3xl items-center justify-center mb-6"
               style={{
-                backgroundColor: "#FFF",
+                backgroundColor: colors.background.card,
                 shadowColor: selectedMoodData?.color,
                 shadowOffset: { width: 0, height: 8 },
                 shadowOpacity: 0.2,
@@ -253,8 +255,8 @@ export default function DailyLogScreen({ navigation, route }: RootStackScreenPro
                 style={{
                   width: SLIDER_WIDTH,
                   height: 60,
-                  backgroundColor: "#F5F5F4",
-                  shadowColor: "#000",
+                  backgroundColor: colors.neutral[100],
+                  shadowColor: colors.neutral[900],
                   shadowOffset: { width: 0, height: 2 },
                   shadowOpacity: 0.06,
                   shadowRadius: 8,
