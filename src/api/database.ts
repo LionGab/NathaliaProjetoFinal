@@ -1,4 +1,4 @@
-// @ts-nocheck - Type checking disabled due to optional Supabase configuration
+import { SupabaseClient } from "@supabase/supabase-js";
 import { supabase, Database } from "./supabase";
 import { logger } from "../utils/logger";
 
@@ -23,13 +23,17 @@ type HabitUpdate = Database["public"]["Tables"]["habits"]["Update"];
 type HabitCompletion = Database["public"]["Tables"]["habit_completions"]["Row"];
 type HabitCompletionInsert = Database["public"]["Tables"]["habit_completions"]["Insert"];
 
-// Helper to check if Supabase is available
-const checkSupabase = () => {
+/**
+ * Type guard to ensure Supabase client is configured
+ * @throws Error if Supabase is not initialized
+ * @returns Typed Supabase client
+ */
+function checkSupabase(): SupabaseClient<Database> {
   if (!supabase) {
     throw new Error("Supabase is not configured. Please add EXPO_PUBLIC_SUPABASE_URL and EXPO_PUBLIC_SUPABASE_ANON_KEY to your environment variables.");
   }
   return supabase;
-};
+}
 
 // ============================================
 // USER OPERATIONS
