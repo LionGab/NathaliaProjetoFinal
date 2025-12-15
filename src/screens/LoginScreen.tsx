@@ -44,6 +44,7 @@ import {
   SHADOWS,
   TYPOGRAPHY,
 } from "../theme/design-system";
+import { useTheme } from "../hooks/useTheme";
 
 const { width: SCREEN_WIDTH } = Dimensions.get("window");
 
@@ -270,6 +271,7 @@ const CustomAlert = ({
 
 export default function LoginScreen({ navigation }: Props) {
   const insets = useSafeAreaInsets();
+  const { colors, isDark } = useTheme();
   const [isLogin, setIsLogin] = useState(true);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -359,7 +361,7 @@ export default function LoginScreen({ navigation }: Props) {
         style={{ flex: 1 }}
       >
         <LinearGradient
-          colors={["#FFF0F6", "#FAF5FF", "#FFFFFF"]}
+          colors={[colors.primary[50], colors.secondary[50], colors.background.secondary]}
           locations={[0, 0.4, 1]}
           style={{ flex: 1 }}
         >
@@ -408,10 +410,10 @@ export default function LoginScreen({ navigation }: Props) {
                     shadowRadius: 28,
                     elevation: 18,
                     borderRadius: getResponsiveValue(36),
-                    backgroundColor: "#FFFFFF",
+                    backgroundColor: colors.background.secondary,
                     padding: getResponsiveValue(20),
                     borderWidth: 2,
-                    borderColor: "rgba(255, 182, 217, 0.3)",
+                    borderColor: isDark ? colors.primary[900] : colors.primary[100],
                     overflow: "hidden",
                   }}
                 >
@@ -422,7 +424,7 @@ export default function LoginScreen({ navigation }: Props) {
                       left: 0,
                       right: 0,
                       bottom: 0,
-                      backgroundColor: "rgba(255, 182, 217, 0.05)",
+                      backgroundColor: isDark ? colors.primary[950] + "1A" : colors.primary[50],
                     }}
                   />
                   <Image

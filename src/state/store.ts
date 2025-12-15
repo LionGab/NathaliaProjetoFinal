@@ -126,16 +126,22 @@ export const useAppStore = create<AppState>()(
         try {
           const { data, error } = await getUserProfile(userId);
           if (error) {
+            // Log error but don't throw - maintain silent failure behavior
+            // This prevents unhandled promise rejections since loadUserProfile
+            // is often called without await (e.g., in auth state listener)
             const errorObj = error instanceof Error ? error : new Error(String(error));
             logger.error("Failed to load user profile", "Store", errorObj);
-            throw errorObj;
+            return;
           }
           if (data) {
             set({ user: data as unknown as UserProfile });
           }
         } catch (error) {
-          logger.error("Error loading user profile", "Store", error instanceof Error ? error : new Error(String(error)));
-          throw error;
+          // Only log unexpected errors (network issues, etc.)
+          // getUserProfile already handles its own errors, so this should rarely happen
+          const errorObj = error instanceof Error ? error : new Error(String(error));
+          logger.error("Unexpected error loading user profile", "Store", errorObj);
+          // Don't throw - maintain graceful degradation
         }
       },
 

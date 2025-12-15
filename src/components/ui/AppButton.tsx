@@ -3,6 +3,7 @@ import { Pressable, Text, ActivityIndicator, View } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import * as Haptics from "expo-haptics";
 import { buttonAccessibility } from "../../utils/accessibility";
+import { useTheme } from "../../hooks/useTheme";
 
 interface AppButtonProps {
   title: string;
@@ -17,16 +18,6 @@ interface AppButtonProps {
   color?: string;
 }
 
-const COLORS = {
-  primary: "#E11D48",
-  secondary: "#6B7280",
-  text: "#FFFFFF",
-  textDark: "#4A4A4A",
-  textMuted: "#7A7A7A",
-  border: "#E5E5E5",
-  soft: "#FBF9F7",
-};
-
 export default function AppButton({
   title,
   onPress,
@@ -39,6 +30,8 @@ export default function AppButton({
   fullWidth = false,
   color,
 }: AppButtonProps) {
+  const { colors } = useTheme();
+
   const handlePress = async () => {
     if (!disabled && !loading) {
       await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
@@ -54,28 +47,28 @@ export default function AppButton({
 
   const variantStyles = {
     primary: {
-      bg: color || COLORS.primary,
-      text: COLORS.text,
+      bg: color || colors.primary[500],
+      text: colors.neutral[0],
       border: "transparent",
     },
     secondary: {
-      bg: COLORS.secondary,
-      text: COLORS.text,
+      bg: colors.neutral[600],
+      text: colors.neutral[0],
       border: "transparent",
     },
     outline: {
       bg: "transparent",
-      text: color || COLORS.primary,
-      border: color || COLORS.primary,
+      text: color || colors.primary[500],
+      border: color || colors.primary[500],
     },
     ghost: {
       bg: "transparent",
-      text: color || COLORS.primary,
+      text: color || colors.primary[500],
       border: "transparent",
     },
     soft: {
-      bg: COLORS.soft,
-      text: color || COLORS.textDark,
+      bg: colors.background.tertiary,
+      text: color || colors.neutral[900],
       border: "transparent",
     },
   };

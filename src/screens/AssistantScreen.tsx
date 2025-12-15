@@ -41,6 +41,7 @@ import { logger } from "../utils/logger";
 import { VoiceMessagePlayer } from "../components/VoiceMessagePlayer";
 import { useVoicePremiumGate } from "../hooks/useVoice";
 import { COLORS } from "../theme/design-system";
+import { useTheme } from "../hooks/useTheme";
 
 const PRIMARY_COLOR = COLORS.primary[500];
 const { width: SCREEN_WIDTH } = Dimensions.get("window");
@@ -67,6 +68,7 @@ const QUICK_SUGGESTIONS = [
 
 export default function AssistantScreen({ navigation }: MainTabScreenProps<"Assistant">) {
   const insets = useSafeAreaInsets();
+  const { colors } = useTheme();
   const flatListRef = useRef<FlatList>(null);
   const [inputText, setInputText] = useState("");
   const [showHistory, setShowHistory] = useState(false);
@@ -326,16 +328,16 @@ const MessageBubble = React.memo(({ message, index, hasVoiceAccess, onPremiumReq
         <View
           className={`rounded-2xl px-4 py-3 ${isUser ? "rounded-br-sm" : "rounded-bl-sm"}`}
           style={{
-            backgroundColor: isUser ? "#f4258c" : "#FFFFFF",
+            backgroundColor: isUser ? colors.primary[500] : colors.background.card,
             flex: 1,
             ...(isUser ? {
-              shadowColor: "#f4258c",
+              shadowColor: colors.primary[500],
               shadowOffset: { width: 0, height: 2 },
               shadowOpacity: 0.2,
               shadowRadius: 4,
               elevation: 2,
             } : {
-              shadowColor: "#000",
+              shadowColor: colors.neutral[900],
               shadowOffset: { width: 0, height: 1 },
               shadowOpacity: 0.05,
               shadowRadius: 2,

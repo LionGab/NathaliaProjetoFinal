@@ -8,6 +8,7 @@ import { MainTabScreenProps, Post, Group } from "../types/navigation";
 import { useCommunityStore, useAppStore } from "../state/store";
 import CommunityComposer from "../components/CommunityComposer";
 import * as Haptics from "expo-haptics";
+import { useTheme } from "../hooks/useTheme";
 
 const MOCK_POSTS: Post[] = [
   {
@@ -81,6 +82,7 @@ const CATEGORY_COLORS: Record<string, string> = {
 
 export default function CommunityScreen({ navigation }: MainTabScreenProps<"Community">) {
   const insets = useSafeAreaInsets();
+  const { colors } = useTheme();
   const [activeTab, setActiveTab] = useState<"feed" | "groups">("feed");
   const [searchQuery, setSearchQuery] = useState("");
 
@@ -192,8 +194,8 @@ export default function CommunityScreen({ navigation }: MainTabScreenProps<"Comm
           onPress={() => navigation.navigate("PostDetail", { postId: post.id })}
           className="rounded-3xl p-5"
           style={{
-            backgroundColor: "#FFF",
-            shadowColor: "#000",
+            backgroundColor: colors.background.card,
+            shadowColor: colors.neutral[900],
             shadowOffset: { width: 0, height: 2 },
             shadowOpacity: 0.06,
             shadowRadius: 12,
@@ -215,7 +217,7 @@ export default function CommunityScreen({ navigation }: MainTabScreenProps<"Comm
           {/* Header */}
           <View className="flex-row items-center mb-4">
             <View className="w-12 h-12 rounded-full bg-blush-200 items-center justify-center mr-3">
-              <Ionicons name="person" size={22} color="#9E7269" />
+              <Ionicons name="person" size={22} color={colors.neutral[400]} />
             </View>
             <View className="flex-1">
               <Text className="text-warmGray-900 text-base font-semibold">
@@ -226,7 +228,7 @@ export default function CommunityScreen({ navigation }: MainTabScreenProps<"Comm
               </Text>
             </View>
             <Pressable onPress={handleOptionsPress} className="w-8 h-8 items-center justify-center">
-              <Ionicons name="ellipsis-horizontal" size={20} color="#D6D3D1" />
+              <Ionicons name="ellipsis-horizontal" size={20} color={colors.neutral[300]} />
             </Pressable>
           </View>
 
@@ -244,7 +246,7 @@ export default function CommunityScreen({ navigation }: MainTabScreenProps<"Comm
               <Ionicons
                 name={post.isLiked ? "heart" : "heart-outline"}
                 size={22}
-                color={post.isLiked ? "#E11D48" : "#A8A29E"}
+                color={post.isLiked ? colors.primary[500] : colors.neutral[400]}
               />
               <Text
                 className={`text-sm ml-2 font-medium ${
@@ -255,13 +257,13 @@ export default function CommunityScreen({ navigation }: MainTabScreenProps<"Comm
               </Text>
             </Pressable>
             <Pressable onPress={() => handleCommentPress(post.id)} className="flex-row items-center mr-6">
-              <Ionicons name="chatbubble-outline" size={20} color="#A8A29E" />
+              <Ionicons name="chatbubble-outline" size={20} color={colors.neutral[400]} />
               <Text className="text-warmGray-600 text-sm ml-2 font-medium">
                 {post.commentsCount}
               </Text>
             </Pressable>
             <Pressable onPress={() => handleSharePress(post)} className="flex-row items-center ml-auto">
-              <Ionicons name="share-outline" size={20} color="#A8A29E" />
+              <Ionicons name="share-outline" size={20} color={colors.neutral[400]} />
             </Pressable>
           </View>
         </Pressable>

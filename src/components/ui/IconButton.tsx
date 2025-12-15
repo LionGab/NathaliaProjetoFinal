@@ -2,6 +2,7 @@ import React from "react";
 import { Pressable, View } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import * as Haptics from "expo-haptics";
+import { useTheme } from "../../hooks/useTheme";
 
 interface IconButtonProps {
   icon: keyof typeof Ionicons.glyphMap;
@@ -19,15 +20,6 @@ const SIZE_MAP = {
   lg: { button: 52, icon: 26 },
 };
 
-const COLORS = {
-  default: "#4A4A4A",
-  muted: "#9A9A9A",
-  primary: "#E11D48",
-  white: "#FFFFFF",
-  soft: "#FBF9F7",
-  border: "#E5E5E5",
-};
-
 export default function IconButton({
   icon,
   onPress,
@@ -37,6 +29,8 @@ export default function IconButton({
   bgColor,
   disabled = false,
 }: IconButtonProps) {
+  const { colors } = useTheme();
+
   const handlePress = async () => {
     if (!disabled) {
       await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
@@ -49,20 +43,20 @@ export default function IconButton({
   const variantStyles: Record<string, { bg: string; iconColor: string; border?: string }> = {
     default: {
       bg: "transparent",
-      iconColor: color || COLORS.default,
+      iconColor: color || colors.neutral[900],
     },
     filled: {
-      bg: bgColor || COLORS.primary,
-      iconColor: color || COLORS.white,
+      bg: bgColor || colors.primary[500],
+      iconColor: color || colors.neutral[0],
     },
     soft: {
-      bg: bgColor || COLORS.soft,
-      iconColor: color || COLORS.default,
+      bg: bgColor || colors.background.tertiary,
+      iconColor: color || colors.neutral[900],
     },
     outline: {
       bg: "transparent",
-      iconColor: color || COLORS.default,
-      border: COLORS.border,
+      iconColor: color || colors.neutral[900],
+      border: colors.neutral[200],
     },
   };
 

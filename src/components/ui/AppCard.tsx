@@ -2,6 +2,7 @@ import React from "react";
 import { View, ViewProps, Pressable } from "react-native";
 import Animated, { FadeInUp } from "react-native-reanimated";
 import * as Haptics from "expo-haptics";
+import { useTheme } from "../../hooks/useTheme";
 
 interface AppCardProps extends ViewProps {
   variant?: "default" | "elevated" | "outlined" | "soft";
@@ -40,8 +41,10 @@ export default function AppCard({
   style,
   ...props
 }: AppCardProps) {
+  const { colors } = useTheme();
+
   const baseStyle = {
-    backgroundColor: color || "#FFFFFF",
+    backgroundColor: color || colors.background.card,
     borderRadius: RADIUS_MAP[radius],
     padding: PADDING_MAP[padding],
   };
@@ -49,7 +52,7 @@ export default function AppCard({
   const variantStyle = {
     default: {},
     elevated: {
-      shadowColor: "#000",
+      shadowColor: colors.neutral[900],
       shadowOffset: { width: 0, height: 4 },
       shadowOpacity: 0.06,
       shadowRadius: 16,
@@ -57,10 +60,10 @@ export default function AppCard({
     },
     outlined: {
       borderWidth: 1,
-      borderColor: "#F0EBE8",
+      borderColor: colors.ui.border,
     },
     soft: {
-      backgroundColor: color || "#FBF9F7",
+      backgroundColor: color || colors.background.soft,
     },
   };
 

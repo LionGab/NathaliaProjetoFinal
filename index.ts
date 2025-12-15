@@ -1,4 +1,6 @@
 //DO NOT REMOVE THIS CODE
+// Logger import kept for side effects (initialization)
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { logger } from "./src/utils/logger";
 import "./global.css";
 import "react-native-get-random-values";

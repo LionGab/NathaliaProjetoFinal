@@ -5,9 +5,11 @@ import { Ionicons } from "@expo/vector-icons";
 import { RootStackScreenProps } from "../types/navigation";
 import { useCommunityStore } from "../state/store";
 import * as Haptics from "expo-haptics";
+import { useTheme } from "../hooks/useTheme";
 
 export default function PostDetailScreen({ route, navigation }: RootStackScreenProps<"PostDetail">) {
   const insets = useSafeAreaInsets();
+  const { colors } = useTheme();
   const { postId } = route.params;
   const [comment, setComment] = useState("");
   const [isLiked, setIsLiked] = useState(false);
@@ -53,7 +55,7 @@ export default function PostDetailScreen({ route, navigation }: RootStackScreenP
         <View className="bg-white rounded-2xl p-4 border border-blush-100">
           <View className="flex-row items-center mb-4">
             <View className="w-12 h-12 rounded-full bg-blush-200 items-center justify-center mr-3">
-              <Ionicons name="person" size={24} color="#9E7269" />
+              <Ionicons name="person" size={24} color={colors.neutral[400]} />
             </View>
             <View className="flex-1">
               <Text className="text-warmGray-800 text-base font-semibold">Mariana Santos</Text>
@@ -68,15 +70,15 @@ export default function PostDetailScreen({ route, navigation }: RootStackScreenP
 
           <View className="flex-row items-center pt-4 border-t border-blush-100">
             <Pressable onPress={handleLike} className="flex-row items-center mr-6">
-              <Ionicons name={isLiked ? "heart" : "heart-outline"} size={22} color={isLiked ? "#E11D48" : "#A8A29E"} />
+              <Ionicons name={isLiked ? "heart" : "heart-outline"} size={22} color={isLiked ? colors.primary[500] : colors.neutral[400]} />
               <Text className="ml-2 text-sm text-warmGray-400">{likesCount}</Text>
             </Pressable>
             <Pressable onPress={handleComment} className="flex-row items-center mr-6">
-              <Ionicons name="chatbubble-outline" size={20} color="#A8A29E" />
+              <Ionicons name="chatbubble-outline" size={20} color={colors.neutral[400]} />
               <Text className="ml-2 text-sm text-warmGray-400">23</Text>
             </Pressable>
             <Pressable onPress={handleShare} className="flex-row items-center">
-              <Ionicons name="share-outline" size={20} color="#A8A29E" />
+              <Ionicons name="share-outline" size={20} color={colors.neutral[400]} />
             </Pressable>
           </View>
         </View>
@@ -90,7 +92,7 @@ export default function PostDetailScreen({ route, navigation }: RootStackScreenP
             <View key={i} className="bg-white rounded-xl p-4 mb-3 border border-blush-100">
               <View className="flex-row items-start">
                 <View className="w-9 h-9 rounded-full bg-blush-200 items-center justify-center mr-3">
-                  <Ionicons name="person" size={18} color="#9E7269" />
+                  <Ionicons name="person" size={18} color={colors.neutral[400]} />
                 </View>
                 <View className="flex-1">
                   <Text className="text-warmGray-800 text-sm font-semibold">Usuario {i}</Text>
@@ -117,7 +119,7 @@ export default function PostDetailScreen({ route, navigation }: RootStackScreenP
               value={comment}
               onChangeText={setComment}
               placeholder="Escreva um comentário..."
-              placeholderTextColor="#A8A29E"
+              placeholderTextColor={colors.neutral[400]}
               className="text-base text-warmGray-800"
             />
           </View>
@@ -126,7 +128,7 @@ export default function PostDetailScreen({ route, navigation }: RootStackScreenP
             className="w-11 h-11 rounded-full bg-rose-500 items-center justify-center"
             style={{ opacity: comment.trim() ? 1 : 0.5 }}
           >
-            <Ionicons name="send" size={20} color="#FFFFFF" />
+            <Ionicons name="send" size={20} color={colors.neutral[0]} />
           </Pressable>
         </View>
       </View>

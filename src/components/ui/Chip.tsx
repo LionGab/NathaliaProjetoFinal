@@ -2,6 +2,7 @@ import React from "react";
 import { Pressable, Text, View } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import * as Haptics from "expo-haptics";
+import { useTheme } from "../../hooks/useTheme";
 
 interface ChipProps {
   label: string;
@@ -14,16 +15,6 @@ interface ChipProps {
   size?: "sm" | "md";
 }
 
-const COLORS = {
-  primary: "#E11D48",
-  primarySoft: "#FEE2E2",
-  text: "#4A4A4A",
-  textMuted: "#7A7A7A",
-  border: "#E5E5E5",
-  soft: "#FBF9F7",
-  white: "#FFFFFF",
-};
-
 export default function Chip({
   label,
   onPress,
@@ -34,6 +25,8 @@ export default function Chip({
   color,
   size = "md",
 }: ChipProps) {
+  const { colors } = useTheme();
+
   const handlePress = async () => {
     if (onPress) {
       await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
@@ -51,9 +44,9 @@ export default function Chip({
   const getStyles = () => {
     if (selected) {
       return {
-        bg: color || COLORS.primary,
-        text: COLORS.white,
-        border: color || COLORS.primary,
+        bg: color || colors.primary[500],
+        text: colors.neutral[0],
+        border: color || colors.primary[500],
       };
     }
 
@@ -61,20 +54,20 @@ export default function Chip({
       case "outline":
         return {
           bg: "transparent",
-          text: color || COLORS.text,
-          border: COLORS.border,
+          text: color || colors.neutral[900],
+          border: colors.neutral[200],
         };
       case "soft":
         return {
-          bg: COLORS.soft,
-          text: color || COLORS.text,
+          bg: colors.background.tertiary,
+          text: color || colors.neutral[900],
           border: "transparent",
         };
       default:
         return {
-          bg: COLORS.white,
-          text: COLORS.text,
-          border: COLORS.border,
+          bg: colors.background.secondary,
+          text: colors.neutral[900],
+          border: colors.neutral[200],
         };
     }
   };

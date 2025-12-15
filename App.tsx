@@ -55,7 +55,7 @@ export default function App() {
 
   if (!fontsLoaded) {
     return (
-      <View style={{ flex: 1, justifyContent: "center", alignItems: "center", backgroundColor: colors.background.DEFAULT }}>
+      <View style={{ flex: 1, justifyContent: "center", alignItems: "center", backgroundColor: colors.background.primary }}>
         <ActivityIndicator size="large" color={colors.primary[500]} />
       </View>
     );
@@ -63,7 +63,7 @@ export default function App() {
 
   return (
     <ErrorBoundary>
-      <GestureHandlerRootView style={{ flex: 1, backgroundColor: colors.background.DEFAULT }}>
+      <GestureHandlerRootView style={{ flex: 1, backgroundColor: colors.background.primary }}>
         <SafeAreaProvider>
           <ToastProvider>
             {/* Offline Banner - appears on top when no connection */}
