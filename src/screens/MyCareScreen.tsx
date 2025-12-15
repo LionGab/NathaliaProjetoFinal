@@ -7,6 +7,7 @@ import Animated, { FadeIn, FadeInDown, FadeInUp } from "react-native-reanimated"
 import { MainTabScreenProps } from "../types/navigation";
 import { useAppStore } from "../state/store";
 import * as Haptics from "expo-haptics";
+import { useTheme } from "../hooks/useTheme";
 
 const { width: SCREEN_WIDTH } = Dimensions.get("window");
 
@@ -107,6 +108,7 @@ const QUICK_SUPPORT = [
 
 export default function MyCareScreen({ navigation }: MainTabScreenProps<"MyCare">) {
   const insets = useSafeAreaInsets();
+  const { colors } = useTheme();
   const userName = useAppStore((s) => s.user?.name);
 
   const greeting = useMemo(() => {
@@ -194,7 +196,7 @@ export default function MyCareScreen({ navigation }: MainTabScreenProps<"MyCare"
   };
 
   return (
-    <View className="flex-1" style={{ backgroundColor: COLORS.background }}>
+    <View className="flex-1" style={{ backgroundColor: colors.background.secondary }}>
       <ScrollView
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{ paddingBottom: 120 }}
@@ -202,7 +204,7 @@ export default function MyCareScreen({ navigation }: MainTabScreenProps<"MyCare"
         {/* Header - Suave e acolhedor */}
         <View style={{ paddingTop: insets.top }}>
           <LinearGradient
-            colors={["#F5EEF8", "#FDF5F5", COLORS.background]}
+            colors={[colors.primary[50], colors.secondary[50], colors.background.secondary]}
             locations={[0, 0.5, 1]}
             style={{ paddingHorizontal: 24, paddingTop: 24, paddingBottom: 20 }}
           >
@@ -210,13 +212,13 @@ export default function MyCareScreen({ navigation }: MainTabScreenProps<"MyCare"
               {/* Greeting */}
               <View className="mb-6">
                 <Text
-                  style={{ color: COLORS.textLight, fontSize: 15, fontWeight: "500" }}
+                  style={{ color: colors.neutral[400], fontSize: 15, fontWeight: "500" }}
                 >
                   {greeting}{userName ? `, ${userName}` : ""}
                 </Text>
                 <Text
                   style={{
-                    color: COLORS.text,
+                    color: colors.neutral[700],
                     fontSize: 28,
                     fontWeight: "600",
                     marginTop: 4,
@@ -237,10 +239,10 @@ export default function MyCareScreen({ navigation }: MainTabScreenProps<"MyCare"
         >
           <View
             style={{
-              backgroundColor: COLORS.cardBg,
+              backgroundColor: colors.background.card,
               borderRadius: 24,
               padding: 24,
-              shadowColor: "#000",
+              shadowColor: colors.neutral[900],
               shadowOffset: { width: 0, height: 4 },
               shadowOpacity: 0.04,
               shadowRadius: 20,
@@ -264,7 +266,7 @@ export default function MyCareScreen({ navigation }: MainTabScreenProps<"MyCare"
               <View className="flex-1">
                 <Text
                   style={{
-                    color: COLORS.textMuted,
+                    color: colors.neutral[500],
                     fontSize: 13,
                     fontWeight: "500",
                     textTransform: "uppercase",
@@ -278,7 +280,7 @@ export default function MyCareScreen({ navigation }: MainTabScreenProps<"MyCare"
 
             <Text
               style={{
-                color: COLORS.text,
+                color: colors.neutral[700],
                 fontSize: 20,
                 fontWeight: "500",
                 lineHeight: 30,
@@ -293,7 +295,7 @@ export default function MyCareScreen({ navigation }: MainTabScreenProps<"MyCare"
                 marginTop: 20,
                 paddingTop: 16,
                 borderTopWidth: 1,
-                borderTopColor: "#F5F5F5",
+                borderTopColor: colors.neutral[100],
                 flexDirection: "row",
                 alignItems: "center",
               }}
@@ -311,7 +313,7 @@ export default function MyCareScreen({ navigation }: MainTabScreenProps<"MyCare"
               >
                 <Text style={{ fontSize: 14 }}>💜</Text>
               </View>
-              <Text style={{ color: COLORS.textMuted, fontSize: 14 }}>
+              <Text style={{ color: colors.neutral[500], fontSize: 14 }}>
                 Nathalia Valente
               </Text>
             </View>
@@ -337,7 +339,7 @@ export default function MyCareScreen({ navigation }: MainTabScreenProps<"MyCare"
               <View className="flex-1">
                 <Text
                   style={{
-                    color: COLORS.text,
+                    color: colors.neutral[700],
                     fontSize: 17,
                     fontWeight: "600",
                     marginBottom: 4,
@@ -347,7 +349,7 @@ export default function MyCareScreen({ navigation }: MainTabScreenProps<"MyCare"
                 </Text>
                 <Text
                   style={{
-                    color: COLORS.textMuted,
+                    color: colors.neutral[500],
                     fontSize: 14,
                     lineHeight: 20,
                   }}
@@ -366,7 +368,7 @@ export default function MyCareScreen({ navigation }: MainTabScreenProps<"MyCare"
         >
           <Text
             style={{
-              color: COLORS.text,
+              color: colors.neutral[700],
               fontSize: 18,
               fontWeight: "600",
               marginBottom: 16,
@@ -396,11 +398,11 @@ export default function MyCareScreen({ navigation }: MainTabScreenProps<"MyCare"
                       width: 46,
                       height: 46,
                       borderRadius: 14,
-                      backgroundColor: COLORS.cardBg,
+                      backgroundColor: colors.background.card,
                       alignItems: "center",
                       justifyContent: "center",
                       marginBottom: 14,
-                      shadowColor: "#000",
+                      shadowColor: colors.neutral[900],
                       shadowOffset: { width: 0, height: 2 },
                       shadowOpacity: 0.04,
                       shadowRadius: 8,
@@ -414,7 +416,7 @@ export default function MyCareScreen({ navigation }: MainTabScreenProps<"MyCare"
                   </View>
                   <Text
                     style={{
-                      color: COLORS.text,
+                      color: colors.neutral[700],
                       fontSize: 16,
                       fontWeight: "600",
                       marginBottom: 2,
@@ -424,7 +426,7 @@ export default function MyCareScreen({ navigation }: MainTabScreenProps<"MyCare"
                   </Text>
                   <Text
                     style={{
-                      color: COLORS.textMuted,
+                      color: colors.neutral[500],
                       fontSize: 13,
                     }}
                   >
@@ -443,7 +445,7 @@ export default function MyCareScreen({ navigation }: MainTabScreenProps<"MyCare"
         >
           <Text
             style={{
-              color: COLORS.text,
+              color: colors.neutral[700],
               fontSize: 18,
               fontWeight: "600",
               marginBottom: 16,
@@ -454,10 +456,10 @@ export default function MyCareScreen({ navigation }: MainTabScreenProps<"MyCare"
 
           <View
             style={{
-              backgroundColor: COLORS.cardBg,
+              backgroundColor: colors.background.card,
               borderRadius: 20,
               padding: 6,
-              shadowColor: "#000",
+              shadowColor: colors.neutral[900],
               shadowOffset: { width: 0, height: 2 },
               shadowOpacity: 0.03,
               shadowRadius: 12,
@@ -472,7 +474,7 @@ export default function MyCareScreen({ navigation }: MainTabScreenProps<"MyCare"
                   alignItems: "center",
                   padding: 16,
                   borderBottomWidth: index < QUICK_SUPPORT.length - 1 ? 1 : 0,
-                  borderBottomColor: "#F5F5F5",
+                  borderBottomColor: colors.neutral[100],
                 }}
               >
                 <View
@@ -480,7 +482,7 @@ export default function MyCareScreen({ navigation }: MainTabScreenProps<"MyCare"
                     width: 48,
                     height: 48,
                     borderRadius: 14,
-                    backgroundColor: COLORS.background,
+                    backgroundColor: colors.background.secondary,
                     alignItems: "center",
                     justifyContent: "center",
                     marginRight: 14,
@@ -491,7 +493,7 @@ export default function MyCareScreen({ navigation }: MainTabScreenProps<"MyCare"
                 <View className="flex-1">
                   <Text
                     style={{
-                      color: COLORS.text,
+                      color: colors.neutral[700],
                       fontSize: 16,
                       fontWeight: "500",
                     }}
@@ -500,7 +502,7 @@ export default function MyCareScreen({ navigation }: MainTabScreenProps<"MyCare"
                   </Text>
                   <Text
                     style={{
-                      color: COLORS.textMuted,
+                      color: colors.neutral[500],
                       fontSize: 14,
                       marginTop: 2,
                     }}
@@ -508,7 +510,7 @@ export default function MyCareScreen({ navigation }: MainTabScreenProps<"MyCare"
                     {item.subtitle}
                   </Text>
                 </View>
-                <Ionicons name="chevron-forward" size={20} color={COLORS.textLight} />
+                <Ionicons name="chevron-forward" size={20} color={colors.neutral[400]} />
               </Pressable>
             ))}
           </View>
@@ -535,7 +537,7 @@ export default function MyCareScreen({ navigation }: MainTabScreenProps<"MyCare"
                   width: 50,
                   height: 50,
                   borderRadius: 16,
-                  backgroundColor: COLORS.cardBg,
+                  backgroundColor: colors.background.card,
                   alignItems: "center",
                   justifyContent: "center",
                   marginRight: 16,
@@ -546,7 +548,7 @@ export default function MyCareScreen({ navigation }: MainTabScreenProps<"MyCare"
               <View className="flex-1">
                 <Text
                   style={{
-                    color: COLORS.text,
+                    color: colors.neutral[700],
                     fontSize: 16,
                     fontWeight: "600",
                   }}
@@ -555,7 +557,7 @@ export default function MyCareScreen({ navigation }: MainTabScreenProps<"MyCare"
                 </Text>
                 <Text
                   style={{
-                    color: COLORS.textMuted,
+                    color: colors.neutral[500],
                     fontSize: 14,
                     marginTop: 2,
                   }}
@@ -563,7 +565,7 @@ export default function MyCareScreen({ navigation }: MainTabScreenProps<"MyCare"
                   Estamos aqui para ouvir voce
                 </Text>
               </View>
-              <Ionicons name="chevron-forward" size={20} color={COLORS.textLight} />
+              <Ionicons name="chevron-forward" size={20} color={colors.neutral[400]} />
             </View>
           </Pressable>
         </Animated.View>
@@ -587,7 +589,7 @@ export default function MyCareScreen({ navigation }: MainTabScreenProps<"MyCare"
               <Text style={{ fontSize: 24, marginRight: 10 }}>💜</Text>
               <Text
                 style={{
-                  color: COLORS.text,
+                  color: colors.neutral[700],
                   fontSize: 17,
                   fontWeight: "600",
                 }}
@@ -597,7 +599,7 @@ export default function MyCareScreen({ navigation }: MainTabScreenProps<"MyCare"
             </View>
             <Text
               style={{
-                color: COLORS.textMuted,
+                color: colors.neutral[500],
                 fontSize: 15,
                 lineHeight: 22,
                 marginBottom: 16,
@@ -614,7 +616,7 @@ export default function MyCareScreen({ navigation }: MainTabScreenProps<"MyCare"
                       width: 32,
                       height: 32,
                       borderRadius: 16,
-                      backgroundColor: COLORS.cardBg,
+                      backgroundColor: colors.background.card,
                       alignItems: "center",
                       justifyContent: "center",
                       marginLeft: i > 0 ? -8 : 0,
@@ -626,7 +628,7 @@ export default function MyCareScreen({ navigation }: MainTabScreenProps<"MyCare"
                   </View>
                 ))}
               </View>
-              <Text style={{ color: COLORS.textMuted, fontSize: 13 }}>
+              <Text style={{ color: colors.neutral[500], fontSize: 13 }}>
                 +50 mil maes conectadas
               </Text>
             </View>
@@ -652,10 +654,10 @@ export default function MyCareScreen({ navigation }: MainTabScreenProps<"MyCare"
                 justifyContent: "center",
               }}
             >
-              <Ionicons name="sparkles-outline" size={20} color={COLORS.text} />
+              <Ionicons name="sparkles-outline" size={20} color={colors.neutral[700]} />
               <Text
                 style={{
-                  color: COLORS.text,
+                  color: colors.neutral[700],
                   fontSize: 15,
                   fontWeight: "600",
                   marginLeft: 8,
@@ -677,10 +679,10 @@ export default function MyCareScreen({ navigation }: MainTabScreenProps<"MyCare"
                 justifyContent: "center",
               }}
             >
-              <Ionicons name="checkbox-outline" size={20} color={COLORS.text} />
+              <Ionicons name="checkbox-outline" size={20} color={colors.neutral[700]} />
               <Text
                 style={{
-                  color: COLORS.text,
+                  color: colors.neutral[700],
                   fontSize: 15,
                   fontWeight: "600",
                   marginLeft: 8,
@@ -701,7 +703,7 @@ export default function MyCareScreen({ navigation }: MainTabScreenProps<"MyCare"
             <Text style={{ fontSize: 24, marginBottom: 8 }}>🌷</Text>
             <Text
               style={{
-                color: COLORS.textLight,
+                color: colors.neutral[400],
                 fontSize: 14,
                 textAlign: "center",
                 lineHeight: 20,
