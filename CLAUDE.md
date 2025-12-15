@@ -110,26 +110,33 @@ generateImage(prompt)      // Uses gpt-image-1
 
 ### Design Tokens
 
-**Current system** (based on "Boa Noite Mãe" design):
+**Current system** (Design System 2025 - Apple HIG + Material Design 3):
 
 ```
 Primary: #f4258c (vibrant pink)
-Secondary: #89CFF0 (baby blue)
+Secondary: #A855F7 (lilac/purple)
 Background: #f8f5f7 (soft pink-white)
-Text Dark: #1a2b4b (deep blue)
+Text Dark: #1C1917 (warm gray 900)
 Fonts: DMSans (body), DMSerifDisplay (headers)
 ```
 
-**Centralized color system**: `src/utils/colors.ts`
-- Import and use `Colors` object for consistency
+**Official color system**: `src/theme/design-system.ts` ⭐
+- **USE THIS**: Import `COLORS`, `GRADIENTS`, `TYPOGRAPHY`, `SPACING`, etc.
+- Complete design system with colors, typography, spacing, shadows, glassmorphism
+- Follows Apple HIG and Material Design 3 best practices
+- Includes accessibility guidelines (44pt min tap target, WCAG AA contrast)
+
+**Legacy compatibility**: `src/utils/colors.ts`
+- Re-exports from design-system.ts for backward compatibility
+- **DEPRECATED**: Migrate imports to design-system.ts when editing files
 - Helper functions: `getFeelingColor()`, `getGradient()`
 - Constants: `PRIMARY_COLOR`, `SECONDARY_COLOR`, `TEXT_DARK`
 
 **Feeling colors** (for daily check-ins):
-- Bem (sunny): #eab308 (yellow)
-- Cansada (cloud): #60a5fa (blue)
-- Enjoada (rainy): #818cf8 (indigo)
-- Amada (heart): #f4258c (pink)
+- Bem (sunny): #FFD89B (yellow pastel)
+- Cansada (cloud): #BAE6FD (blue pastel)
+- Enjoada (rainy): #DDD6FE (lavender)
+- Amada (heart): #FB7185 (pink)
 
 See [docs/COLOR_SYSTEM.md](docs/COLOR_SYSTEM.md) for complete documentation.
 

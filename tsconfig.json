@@ -16,6 +16,7 @@
     "backend/node_modules",
     "backend/generated",
     ".expo",
-    "NossaMaternidade-upstream"
+    "NossaMaternidade-upstream",
+    "supabase/functions/**/*"
   ]
 }

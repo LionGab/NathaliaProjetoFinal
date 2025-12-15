@@ -14,6 +14,7 @@ import {
 } from "../types/navigation";
 import { onAuthStateChange } from "../api/auth";
 import { getUserProfile } from "../api/database";
+import { logger } from "../utils/logger";
 
 interface AppState {
   // User & Auth
@@ -22,6 +23,10 @@ interface AppState {
   isAuthenticated: boolean;
   isOnboardingComplete: boolean;
   currentOnboardingStep: OnboardingStep;
+
+  // Theme
+  theme: "light" | "dark" | "system";
+  isDarkMode: boolean;
 
   // User Actions
   setUser: (user: UserProfile | null) => void;
@@ -32,6 +37,10 @@ interface AppState {
   setOnboardingStep: (step: OnboardingStep) => void;
   loadUserProfile: (userId: string) => Promise<void>;
   clearUser: () => void;
+
+  // Theme Actions
+  setTheme: (theme: "light" | "dark" | "system") => void;
+  setIsDarkMode: (isDark: boolean) => void;
 
   // Onboarding Draft
   onboardingDraft: {
@@ -93,6 +102,8 @@ export const useAppStore = create<AppState>()(
       isAuthenticated: false,
       isOnboardingComplete: false,
       currentOnboardingStep: "welcome",
+      theme: "light",
+      isDarkMode: false,
 
       onboardingDraft: {
         name: "",
@@ -124,6 +135,9 @@ export const useAppStore = create<AppState>()(
         isAuthenticated: false,
         isOnboardingComplete: false,
       }),
+
+      setTheme: (theme) => set({ theme }),
+      setIsDarkMode: (isDark) => set({ isDarkMode: isDark }),
 
       updateOnboardingDraft: (updates) =>
         set((state) => ({
@@ -167,7 +181,7 @@ try {
   });
 } catch (error) {
   // Supabase not configured, skip auth state listener
-  console.log("Supabase not configured - skipping auth state listener");
+  logger.info("Supabase not configured - skipping auth state listener", "Store");
 }
 
 // Community Store (not persisted to keep data fresh)

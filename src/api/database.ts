@@ -1,5 +1,6 @@
 // @ts-nocheck - Type checking disabled due to optional Supabase configuration
 import { supabase, Database } from "./supabase";
+import { logger } from "../utils/logger";
 
 type User = Database["public"]["Tables"]["users"]["Row"];
 type UserInsert = Database["public"]["Tables"]["users"]["Insert"];
@@ -46,7 +47,7 @@ export async function createUserProfile(userData: UserInsert) {
     if (error) throw error;
     return { data, error: null };
   } catch (error) {
-    console.error("Create user profile error:", error);
+    logger.error("Create user profile error", "Database", error as Error);
     return { data: null, error };
   }
 }
@@ -63,7 +64,7 @@ export async function getUserProfile(userId: string) {
     if (error) throw error;
     return { data, error: null };
   } catch (error) {
-    console.error("Get user profile error:", error);
+    logger.error("Get user profile error", "Database", error as Error);
     return { data: null, error };
   }
 }
@@ -81,7 +82,7 @@ export async function updateUserProfile(userId: string, updates: UserUpdate) {
     if (error) throw error;
     return { data, error: null };
   } catch (error) {
-    console.error("Update user profile error:", error);
+    logger.error("Update user profile error", "Database", error as Error);
     return { data: null, error };
   }
 }
@@ -102,7 +103,7 @@ export async function createPost(postData: PostInsert) {
     if (error) throw error;
     return { data, error: null };
   } catch (error) {
-    console.error("Create post error:", error);
+    logger.error("Create post error", "Database", error as Error);
     return { data: null, error };
   }
 }
@@ -121,7 +122,7 @@ export async function getPosts(category?: string) {
     if (error) throw error;
     return { data, error: null };
   } catch (error) {
-    console.error("Get posts error:", error);
+    logger.error("Get posts error", "Database", error as Error);
     return { data: null, error };
   }
 }
@@ -138,7 +139,7 @@ export async function getPost(postId: string) {
     if (error) throw error;
     return { data, error: null };
   } catch (error) {
-    console.error("Get post error:", error);
+    logger.error("Get post error", "Database", error as Error);
     return { data: null, error };
   }
 }
@@ -151,7 +152,7 @@ export async function deletePost(postId: string) {
     if (error) throw error;
     return { error: null };
   } catch (error) {
-    console.error("Delete post error:", error);
+    logger.error("Delete post error", "Database", error as Error);
     return { error };
   }
 }
@@ -176,7 +177,7 @@ export async function createComment(commentData: CommentInsert) {
 
     return { data, error: null };
   } catch (error) {
-    console.error("Create comment error:", error);
+    logger.error("Create comment error", "Database", error as Error);
     return { data: null, error };
   }
 }
@@ -193,7 +194,7 @@ export async function getPostComments(postId: string) {
     if (error) throw error;
     return { data, error: null };
   } catch (error) {
-    console.error("Get comments error:", error);
+    logger.error("Get comments error", "Database", error as Error);
     return { data: null, error };
   }
 }
@@ -218,7 +219,7 @@ export async function likePost(userId: string, postId: string) {
 
     return { data, error: null };
   } catch (error) {
-    console.error("Like post error:", error);
+    logger.error("Like post error", "Database", error as Error);
     return { data: null, error };
   }
 }
@@ -239,7 +240,7 @@ export async function unlikePost(userId: string, postId: string) {
 
     return { error: null };
   } catch (error) {
-    console.error("Unlike post error:", error);
+    logger.error("Unlike post error", "Database", error as Error);
     return { error };
   }
 }
@@ -257,7 +258,7 @@ export async function checkIfUserLikedPost(userId: string, postId: string) {
     if (error && error.code !== "PGRST116") throw error;
     return { liked: !!data, error: null };
   } catch (error) {
-    console.error("Check like error:", error);
+    logger.error("Check like error", "Database", error as Error);
     return { liked: false, error };
   }
 }
@@ -278,7 +279,7 @@ export async function createHabit(habitData: HabitInsert) {
     if (error) throw error;
     return { data, error: null };
   } catch (error) {
-    console.error("Create habit error:", error);
+    logger.error("Create habit error", "Database", error as Error);
     return { data: null, error };
   }
 }
@@ -295,7 +296,7 @@ export async function getUserHabits(userId: string) {
     if (error) throw error;
     return { data, error: null };
   } catch (error) {
-    console.error("Get habits error:", error);
+    logger.error("Get habits error", "Database", error as Error);
     return { data: null, error };
   }
 }
@@ -313,7 +314,7 @@ export async function updateHabit(habitId: string, updates: HabitUpdate) {
     if (error) throw error;
     return { data, error: null };
   } catch (error) {
-    console.error("Update habit error:", error);
+    logger.error("Update habit error", "Database", error as Error);
     return { data: null, error };
   }
 }
@@ -326,7 +327,7 @@ export async function deleteHabit(habitId: string) {
     if (error) throw error;
     return { error: null };
   } catch (error) {
-    console.error("Delete habit error:", error);
+    logger.error("Delete habit error", "Database", error as Error);
     return { error };
   }
 }
@@ -351,7 +352,7 @@ export async function completeHabit(
     if (error) throw error;
     return { data, error: null };
   } catch (error) {
-    console.error("Complete habit error:", error);
+    logger.error("Complete habit error", "Database", error as Error);
     return { data: null, error };
   }
 }
@@ -368,7 +369,7 @@ export async function uncompleteHabit(habitId: string, completedDate: string) {
     if (error) throw error;
     return { error: null };
   } catch (error) {
-    console.error("Uncomplete habit error:", error);
+    logger.error("Uncomplete habit error", "Database", error as Error);
     return { error };
   }
 }
@@ -385,7 +386,7 @@ export async function getHabitCompletions(habitId: string) {
     if (error) throw error;
     return { data, error: null };
   } catch (error) {
-    console.error("Get habit completions error:", error);
+    logger.error("Get habit completions error", "Database", error as Error);
     return { data: null, error };
   }
 }

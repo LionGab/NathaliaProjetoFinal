@@ -1,113 +1,258 @@
 /**
  * Sistema de Cores - Nossa Maternidade
- * Baseado no design "Boa Noite Mãe"
- * 
- * Este arquivo centraliza todas as cores do app para fácil manutenção
- * e consistência visual.
+ *
+ * DEPRECADO: Este arquivo re-exporta de design-system.ts para compatibilidade.
+ * TODO: Migrar todos os imports para usar design-system.ts diretamente
+ *
+ * Paleta oficial: Rosa vibrante #f4258c (design-system.ts)
+ * Baseado em Apple HIG e Material Design 3
  */
 
+import { COLORS, COLORS_DARK, GRADIENTS } from "../theme/design-system";
+
+// Re-exporta colors do design system com compatibilidade
 export const Colors = {
-  // Cores Principais
+  // Cores Principais - Rosa Vibrante
   primary: {
-    DEFAULT: "#f4258c", // Primary pink - Rosa vibrante principal
-    50: "#fdf2f8",
-    100: "#fce7f3",
-    200: "#fbcfe8",
-    300: "#f9a8d4",
-    400: "#f472b6",
-    500: "#f4258c", // Main primary
-    600: "#ec4899",
-    700: "#db2777",
-    800: "#be185d",
-    900: "#9f1239",
-  },
-  
-  // Cores Secundárias
-  secondary: {
-    DEFAULT: "#89CFF0", // Baby blue - Azul claro suave
-    50: "#f0f9ff",
-    100: "#e0f2fe",
-    200: "#bae6fd",
-    300: "#7dd3fc",
-    400: "#38bdf8",
-    500: "#89CFF0", // Main secondary
-    600: "#60a5fa",
-    700: "#3b82f6",
-    800: "#2563eb",
-    900: "#1e40af",
+    DEFAULT: COLORS.primary[500], // #f4258c
+    50: COLORS.primary[50],
+    100: COLORS.primary[100],
+    200: COLORS.primary[200],
+    300: COLORS.primary[300],
+    400: COLORS.primary[400],
+    500: COLORS.primary[500], // Main primary
+    600: COLORS.primary[600],
+    700: COLORS.primary[700],
+    800: COLORS.primary[800],
+    900: COLORS.primary[900],
   },
 
-  // Cores de Sentimentos (Daily Feelings)
+  // Cores Secundárias - Lilac/Purple
+  secondary: {
+    DEFAULT: COLORS.secondary[500],
+    50: COLORS.secondary[50],
+    100: COLORS.secondary[100],
+    200: COLORS.secondary[200],
+    300: COLORS.secondary[300],
+    400: COLORS.secondary[400],
+    500: COLORS.secondary[500], // Main secondary
+    600: COLORS.secondary[600],
+    700: COLORS.secondary[700],
+    800: COLORS.secondary[800],
+    900: COLORS.secondary[900],
+  },
+
+  // Azul Pastel Suave (mapeado para accent.sky)
+  bluePastel: {
+    DEFAULT: COLORS.accent.sky, // #BAE6FD
+    50: "#F0F9FF",
+    100: "#E0F2FE",
+    200: "#BAE6FD",
+    300: "#7DD3FC",
+    400: "#38BDF8",
+    500: COLORS.accent.sky,
+    600: "#0EA5E9",
+    700: "#0284C7",
+    800: "#0369A1",
+    900: "#075985",
+  },
+
+  // Cores de Sentimentos (Daily Feelings) - Mapeado para semantic
   feeling: {
     sunny: {
-      color: "#eab308", // Amarelo - Bem
-      activeColor: "#fef08a",
+      color: "#FFD89B", // Amarelo pastel - Bem
+      activeColor: "#FFE5B8",
       label: "Bem",
     },
     cloud: {
-      color: "#60a5fa", // Azul - Cansada
-      activeColor: "#dbeafe",
+      color: COLORS.accent.sky, // Azul pastel - Cansada
+      activeColor: "#D4E9FD",
       label: "Cansada",
     },
     rainy: {
-      color: "#818cf8", // Índigo - Enjoada
-      activeColor: "#e0e7ff",
+      color: COLORS.accent.lavender, // Roxo pastel - Enjoada
+      activeColor: "#EDE9FE",
       label: "Enjoada",
     },
     heart: {
-      color: "#f4258c", // Rosa - Amada
-      activeColor: "#fce7f3",
+      color: COLORS.primary[400], // Rosa vibrante - Amada
+      activeColor: COLORS.primary[300],
       label: "Amada",
     },
   },
 
   // Cores de Texto
   text: {
-    dark: "#1a2b4b", // Azul escuro para textos principais
-    DEFAULT: "#1a2b4b",
-    light: "#64748b",
-    muted: "#94a3b8",
+    dark: COLORS.neutral[900], // Cinza escuro para textos principais
+    DEFAULT: COLORS.neutral[900],
+    light: COLORS.neutral[600],
+    muted: COLORS.neutral[500],
     white: "#ffffff",
   },
 
   // Cores de Fundo
   background: {
-    DEFAULT: "#f8f5f7", // Rosa muito claro
-    light: "#ffffff",
-    soft: "#f8f5f7",
-    cream: "#FFFCF9", // Mantido para compatibilidade
+    DEFAULT: COLORS.background.primary, // #f8f5f7
+    light: COLORS.background.secondary,
+    soft: COLORS.background.tertiary,
+    cream: COLORS.background.tertiary,
+    blueTint: "#F0F9FF",
+    pinkTint: COLORS.primary[50],
   },
 
   // Cores de Categorias
   category: {
-    nutricao: "#f4258c", // Primary pink
-    exercicio: "#89CFF0", // Secondary blue
-    saude: "#818cf8", // Índigo
-    bemestar: "#f4258c", // Primary pink
+    nutricao: COLORS.primary[400],
+    exercicio: COLORS.accent.sky,
+    saude: COLORS.accent.lavender,
+    bemestar: COLORS.accent.peach,
   },
 
   // Gradientes
   gradients: {
-    primary: ["#f4258c", "#89CFF0"], // Rosa para azul
-    primarySoft: ["#f4258c", "#ec4899"], // Rosa para rosa mais claro
-    secondary: ["#89CFF0", "#60a5fa"], // Azul claro para azul
-    warm: ["#fce7f3", "#f8f5f7"], // Rosa muito claro
+    primary: GRADIENTS.primary,
+    primarySoft: [COLORS.primary[400], COLORS.primary[200]],
+    secondary: GRADIENTS.secondary,
+    warm: GRADIENTS.warm,
+    cool: GRADIENTS.cool,
+    sunset: GRADIENTS.sunset,
   },
 
   // Cores de Status
   status: {
-    success: "#10b981",
-    warning: "#f59e0b",
-    error: "#ef4444",
-    info: "#3b82f6",
+    success: COLORS.semantic.success,
+    warning: COLORS.semantic.warning,
+    error: COLORS.semantic.error,
+    info: COLORS.semantic.info,
   },
 
   // Cores de UI
   ui: {
-    border: "#e5e7eb",
-    borderLight: "#f3f4f6",
-    shadow: "rgba(244, 37, 140, 0.1)", // Primary com opacidade
-    shadowStrong: "rgba(244, 37, 140, 0.2)",
+    border: COLORS.neutral[200],
+    borderLight: COLORS.neutral[100],
+    borderPink: COLORS.primary[200],
+    borderBlue: COLORS.accent.sky,
+    shadow: "rgba(244, 37, 140, 0.15)", // Sombra rosa vibrante
+    shadowStrong: "rgba(244, 37, 140, 0.25)",
+    shadowBlue: "rgba(186, 230, 253, 0.15)",
+  },
+} as const;
+
+// Dark Mode Colors
+export const ColorsDark = {
+  primary: {
+    DEFAULT: COLORS.primary[400],
+    50: COLORS.neutral[900],
+    100: COLORS.neutral[800],
+    200: COLORS.neutral[700],
+    300: COLORS.neutral[600],
+    400: COLORS.primary[400],
+    500: COLORS.primary[500],
+    600: COLORS.primary[600],
+    700: COLORS.primary[700],
+    800: COLORS.primary[800],
+    900: COLORS.primary[900],
+  },
+
+  secondary: {
+    DEFAULT: COLORS.secondary[400],
+    50: COLORS.neutral[900],
+    100: COLORS.neutral[800],
+    200: COLORS.neutral[700],
+    300: COLORS.neutral[600],
+    400: COLORS.secondary[400],
+    500: COLORS.secondary[500],
+    600: COLORS.secondary[600],
+    700: COLORS.secondary[700],
+    800: COLORS.secondary[800],
+    900: COLORS.secondary[900],
+  },
+
+  bluePastel: {
+    DEFAULT: COLORS.accent.sky,
+    50: COLORS.neutral[900],
+    100: COLORS.neutral[800],
+    200: COLORS.neutral[700],
+    300: COLORS.neutral[600],
+    400: "#38BDF8",
+    500: COLORS.accent.sky,
+    600: "#7DD3FC",
+    700: "#BAE6FD",
+    800: "#E0F2FE",
+    900: "#F0F9FF",
+  },
+
+  feeling: {
+    sunny: {
+      color: "#FFD89B",
+      activeColor: "#FFE5B8",
+      label: "Bem",
+    },
+    cloud: {
+      color: COLORS.accent.sky,
+      activeColor: "#D4E9FD",
+      label: "Cansada",
+    },
+    rainy: {
+      color: COLORS.accent.lavender,
+      activeColor: "#EDE9FE",
+      label: "Enjoada",
+    },
+    heart: {
+      color: COLORS.primary[400],
+      activeColor: COLORS.primary[300],
+      label: "Amada",
+    },
+  },
+
+  text: {
+    dark: COLORS.neutral[100],
+    DEFAULT: COLORS.neutral[100],
+    light: COLORS.neutral[400],
+    muted: COLORS.neutral[500],
+    white: "#ffffff",
+  },
+
+  background: {
+    DEFAULT: COLORS_DARK.background.primary,
+    light: COLORS_DARK.background.secondary,
+    soft: COLORS_DARK.background.tertiary,
+    cream: COLORS_DARK.background.tertiary,
+    blueTint: "#0F1419",
+    pinkTint: "#1A0F14",
+  },
+
+  category: {
+    nutricao: COLORS.primary[400],
+    exercicio: COLORS.accent.sky,
+    saude: COLORS.accent.lavender,
+    bemestar: COLORS.accent.peach,
+  },
+
+  gradients: {
+    primary: GRADIENTS.primary,
+    primarySoft: [COLORS.primary[400], COLORS.primary[300]],
+    secondary: GRADIENTS.secondary,
+    warm: ["#2D1A1F", "#1A0F14"],
+    cool: ["#0F1419", "#0A0F14"],
+    sunset: GRADIENTS.sunset,
+  },
+
+  status: {
+    success: COLORS.semantic.success,
+    warning: COLORS.semantic.warning,
+    error: COLORS.semantic.error,
+    info: COLORS.semantic.info,
+  },
+
+  ui: {
+    border: COLORS.neutral[700],
+    borderLight: COLORS.neutral[800],
+    borderPink: COLORS.primary[800],
+    borderBlue: "#1F3F7A",
+    shadow: "rgba(0, 0, 0, 0.3)",
+    shadowStrong: "rgba(0, 0, 0, 0.5)",
+    shadowBlue: "rgba(186, 230, 253, 0.1)",
   },
 } as const;
 
@@ -122,8 +267,8 @@ export const getGradient = (gradient: keyof typeof Colors.gradients) => {
 };
 
 // Exportar cor primária como constante para uso rápido
-export const PRIMARY_COLOR = Colors.primary.DEFAULT;
-export const SECONDARY_COLOR = Colors.secondary.DEFAULT;
-export const BACKGROUND_COLOR = Colors.background.DEFAULT;
+export const PRIMARY_COLOR = Colors.primary.DEFAULT; // #f4258c
+export const SECONDARY_COLOR = Colors.secondary.DEFAULT; // #A855F7
+export const BLUE_PASTEL = Colors.bluePastel.DEFAULT; // #BAE6FD
+export const BACKGROUND_COLOR = Colors.background.DEFAULT; // #f8f5f7
 export const TEXT_DARK = Colors.text.dark;
-

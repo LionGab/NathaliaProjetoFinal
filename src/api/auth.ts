@@ -1,5 +1,6 @@
 // @ts-nocheck - Type checking disabled due to optional Supabase configuration
 import { supabase } from "./supabase";
+import { logger } from "../utils/logger";
 
 export type AuthUser = {
   id: string;
@@ -35,7 +36,7 @@ export async function signUp(email: string, password: string, name: string) {
 
     return { user: data.user, error: null };
   } catch (error) {
-    console.error("Sign up error:", error);
+    logger.error("Sign up error", "Auth", error as Error);
     return { user: null, error };
   }
 }
@@ -55,7 +56,7 @@ export async function signIn(email: string, password: string) {
 
     return { user: data.user, session: data.session, error: null };
   } catch (error) {
-    console.error("Sign in error:", error);
+    logger.error("Sign in error", "Auth", error as Error);
     return { user: null, session: null, error };
   }
 }
@@ -70,7 +71,7 @@ export async function signOut() {
     if (error) throw error;
     return { error: null };
   } catch (error) {
-    console.error("Sign out error:", error);
+    logger.error("Sign out error", "Auth", error as Error);
     return { error };
   }
 }
@@ -90,7 +91,7 @@ export async function getCurrentUser() {
 
     return { user, error: null };
   } catch (error) {
-    console.error("Get current user error:", error);
+    logger.error("Get current user error", "Auth", error as Error);
     return { user: null, error };
   }
 }
@@ -110,7 +111,7 @@ export async function getSession() {
 
     return { session, error: null };
   } catch (error) {
-    console.error("Get session error:", error);
+    logger.error("Get session error", "Auth", error as Error);
     return { session: null, error };
   }
 }
@@ -129,7 +130,7 @@ export async function resetPassword(email: string) {
 
     return { error: null };
   } catch (error) {
-    console.error("Reset password error:", error);
+    logger.error("Reset password error", "Auth", error as Error);
     return { error };
   }
 }
@@ -148,7 +149,7 @@ export async function updatePassword(newPassword: string) {
 
     return { error: null };
   } catch (error) {
-    console.error("Update password error:", error);
+    logger.error("Update password error", "Auth", error as Error);
     return { error };
   }
 }
