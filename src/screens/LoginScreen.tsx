@@ -148,6 +148,8 @@ const CustomInput = ({
           autoCorrect={autoCorrect}
           onFocus={handleFocus}
           onBlur={handleBlur}
+          accessibilityLabel={placeholder}
+          accessibilityHint={secureTextEntry ? "Campo de senha" : undefined}
         />
         {showPasswordToggle && (
           <Pressable
@@ -158,6 +160,8 @@ const CustomInput = ({
             style={{
               padding: SPACING.sm,
             }}
+            accessibilityLabel={showPassword ? "Ocultar senha" : "Mostrar senha"}
+            accessibilityRole="button"
           >
             <Ionicons
               name={showPassword ? "eye-off-outline" : "eye-outline"}
@@ -308,17 +312,17 @@ export default function LoginScreen({ navigation }: Props) {
 
     // Validation
     if (!email || !password) {
-      showAlert("Campos obrigatorios", "Por favor, preencha todos os campos.");
+      showAlert("Campos obrigatórios", "Por favor, preencha todos os campos.");
       return;
     }
 
     if (!isLogin && password !== confirmPassword) {
-      showAlert("Senhas diferentes", "As senhas nao coincidem.");
+      showAlert("Senhas diferentes", "As senhas não coincidem.");
       return;
     }
 
     if (!isLogin && !name) {
-      showAlert("Nome obrigatorio", "Por favor, informe seu nome.");
+      showAlert("Nome obrigatório", "Por favor, informe seu nome.");
       return;
     }
 
@@ -328,7 +332,7 @@ export default function LoginScreen({ navigation }: Props) {
     setTimeout(() => {
       const mockUser: UserProfile = {
         id: Date.now().toString(),
-        name: name || "Usuario",
+        name: name || "Usuária",
         email,
         avatarUrl: "",
         stage: "pregnant" as PregnancyStage,
@@ -485,7 +489,7 @@ export default function LoginScreen({ navigation }: Props) {
                   </Text>
                   <CustomInput
                     icon="person-outline"
-                    placeholder="Como voce se chama?"
+                    placeholder="Como você se chama?"
                     value={name}
                     onChangeText={setName}
                     autoCapitalize="words"
@@ -571,7 +575,7 @@ export default function LoginScreen({ navigation }: Props) {
                     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
                     showAlert(
                       "Recuperar senha",
-                      "Um link sera enviado para seu e-mail."
+                      "Um link será enviado para seu e-mail."
                     );
                   }}
                   style={{
@@ -598,6 +602,9 @@ export default function LoginScreen({ navigation }: Props) {
                   onPress={handleSubmit}
                   disabled={isLoading}
                   style={{ opacity: isLoading ? 0.8 : 1 }}
+                  accessibilityLabel={isLogin ? "Entrar na conta" : "Criar nova conta"}
+                  accessibilityRole="button"
+                  accessibilityState={{ disabled: isLoading }}
                 >
                   <LinearGradient
                     colors={[COLORS.primary[400], COLORS.primary[600]]}
@@ -700,9 +707,13 @@ export default function LoginScreen({ navigation }: Props) {
                     fontSize: TYPOGRAPHY.bodyMedium.fontSize,
                   }}
                 >
-                  {isLogin ? "Nao tem uma conta? " : "Ja tem uma conta? "}
+                  {isLogin ? "Não tem uma conta? " : "Já tem uma conta? "}
                 </Text>
-                <Pressable onPress={toggleMode}>
+                <Pressable
+                  onPress={toggleMode}
+                  accessibilityLabel={isLogin ? "Ir para cadastro" : "Ir para login"}
+                  accessibilityRole="button"
+                >
                   <Text
                     style={{
                       color: COLORS.primary[500],
@@ -731,13 +742,13 @@ export default function LoginScreen({ navigation }: Props) {
                   textAlign: "center",
                 }}
               >
-                Ao continuar, voce concorda com nossos{"\n"}
+                Ao continuar, você concorda com nossos{"\n"}
                 <Text style={{ color: COLORS.primary[500], fontWeight: "600" }}>
                   Termos de Uso
                 </Text>{" "}
                 e{" "}
                 <Text style={{ color: COLORS.primary[500], fontWeight: "600" }}>
-                  Politica de Privacidade
+                  Política de Privacidade
                 </Text>
               </Text>
             </View>

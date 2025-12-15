@@ -32,7 +32,7 @@ export default function PostDetailScreen({ route, navigation }: RootStackScreenP
       await Share.share({
         message: `Acabei de descobrir que estou grávida! Estou tão feliz e nervosa ao mesmo tempo. (post ${postId}) - via Nossa Maternidade`,
       });
-    } catch (error) {
+    } catch {
       // Handle error silently
     }
   };

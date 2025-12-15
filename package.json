@@ -25,7 +25,9 @@
     "clean": "bash scripts/clean-cache.sh",
     "clean:all": "bun run clean && rm -rf node_modules bun.lock && bun install",
     "setup-dev": "bash scripts/setup-dev.sh",
-    "postinstall": "node scripts/fix-lightningcss.js"
+    "postinstall": "node scripts/fix-lightningcss.js",
+    "simulator": "concurrently -n expo,sim -c cyan,magenta \"npm run web\" \"node web-simulator/server.js\"",
+    "simulator:expo": "expo start --web --port 8081"
   },
   "dependencies": {
     "@expo-google-fonts/dm-sans": "^0.4.2",
@@ -114,8 +116,8 @@
     "nativewind": "^4.1.23",
     "openai": "^4.89.0",
     "patch-package": "^8.0.0",
-    "react": "^19.1.0",
-    "react-dom": "^19.1.0",
+    "react": "19.1.0",
+    "react-dom": "19.1.0",
     "react-native": "^0.81.5",
     "react-native-gesture-handler": "~2.28.0",
     "react-native-get-random-values": "~1.11.0",
@@ -145,6 +147,8 @@
   },
   "devDependencies": {
     "@babel/core": "^7.25.2",
+    "concurrently": "^9.1.0",
+    "open-cli": "^8.0.0",
     "@types/react": "~19.1.10",
     "@types/react-native": "^0.72.8",
     "@typescript-eslint/eslint-plugin": "^8.29.1",

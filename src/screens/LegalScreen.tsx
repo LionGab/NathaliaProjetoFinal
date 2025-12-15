@@ -1,5 +1,5 @@
 import React from "react";
-import { View, Text, ScrollView, Pressable, Linking, Alert } from "react-native";
+import { View, Text, ScrollView, Pressable, Linking } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { LinearGradient } from "expo-linear-gradient";
 import { Ionicons } from "@expo/vector-icons";
@@ -8,6 +8,7 @@ import Constants from "expo-constants";
 import { RootStackScreenProps } from "../types/navigation";
 import { shadowPresets } from "../utils/shadow";
 import * as Haptics from "expo-haptics";
+import { useToast } from "../context/ToastContext";
 
 // URLs dos documentos legais via expo-constants (definidos em app.json extra.legal)
 const legalConfig = Constants.expoConfig?.extra?.legal as {
@@ -81,6 +82,7 @@ const INFO_ITEMS = [
 
 export default function LegalScreen({ navigation }: RootStackScreenProps<"Legal">) {
   const insets = useSafeAreaInsets();
+  const { showError, showInfo } = useToast();
 
   const handleOpenLink = async (url: string, title: string) => {
     await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
@@ -90,14 +92,10 @@ export default function LegalScreen({ navigation }: RootStackScreenProps<"Legal"
       if (canOpen) {
         await Linking.openURL(url);
       } else {
-        Alert.alert(
-          "Link indisponível",
-          `Não foi possível abrir ${title}. Tente novamente mais tarde.`,
-          [{ text: "OK" }]
-        );
+        showError(`Não foi possível abrir ${title}. Tente novamente mais tarde.`);
       }
-    } catch (error) {
-      Alert.alert("Erro", "Ocorreu um erro ao abrir o link.", [{ text: "OK" }]);
+    } catch {
+      showError("Ocorreu um erro ao abrir o link.");
     }
   };
 
@@ -114,12 +112,8 @@ export default function LegalScreen({ navigation }: RootStackScreenProps<"Legal"
 
     try {
       await Linking.openURL(url);
-    } catch (error) {
-      Alert.alert(
-        "Email",
-        `Entre em contato pelo email: ${email}`,
-        [{ text: "OK" }]
-      );
+    } catch {
+      showInfo(`Entre em contato pelo email: ${email}`);
     }
   };
 

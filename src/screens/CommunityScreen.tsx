@@ -118,7 +118,7 @@ export default function CommunityScreen({ navigation }: MainTabScreenProps<"Comm
       await Share.share({
         message: `${post.content.substring(0, 100)}... - via Nossa Maternidade`,
       });
-    } catch (error) {
+    } catch {
       // Handle error silently
     }
   };
@@ -160,7 +160,7 @@ export default function CommunityScreen({ navigation }: MainTabScreenProps<"Comm
     if (posts.length === 0) {
       setPosts(MOCK_POSTS);
     }
-  }, []);
+  }, [posts.length, setPosts]);
 
   const displayPosts = posts.length > 0 ? posts : MOCK_POSTS;
 

@@ -3,7 +3,7 @@
  * Substitui alerts e console.log para feedback ao usuário
  */
 
-import React, { useEffect } from "react";
+import React, { useCallback, useEffect } from "react";
 import { View, Text, Pressable, Animated } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { COLORS, SPACING, RADIUS, SHADOWS, TYPOGRAPHY } from "../../theme/design-system";
@@ -42,6 +42,23 @@ export function Toast({ message, type = "info", duration = 3000, action, onDismi
   const fadeAnim = React.useRef(new Animated.Value(0)).current;
   const slideAnim = React.useRef(new Animated.Value(-100)).current;
 
+  const dismiss = useCallback(() => {
+    Animated.parallel([
+      Animated.timing(fadeAnim, {
+        toValue: 0,
+        duration: 200,
+        useNativeDriver: true,
+      }),
+      Animated.timing(slideAnim, {
+        toValue: -100,
+        duration: 200,
+        useNativeDriver: true,
+      }),
+    ]).start(() => {
+      onDismiss();
+    });
+  }, [fadeAnim, onDismiss, slideAnim]);
+
   useEffect(() => {
     // Animar entrada
     Animated.parallel([
@@ -68,24 +85,7 @@ export function Toast({ message, type = "info", duration = 3000, action, onDismi
     }
 
     return undefined;
-  }, [duration]);
-
-  const dismiss = () => {
-    Animated.parallel([
-      Animated.timing(fadeAnim, {
-        toValue: 0,
-        duration: 200,
-        useNativeDriver: true,
-      }),
-      Animated.timing(slideAnim, {
-        toValue: -100,
-        duration: 200,
-        useNativeDriver: true,
-      }),
-    ]).start(() => {
-      onDismiss();
-    });
-  };
+  }, [dismiss, duration, fadeAnim, slideAnim]);
 
   const color = TOAST_COLORS[type];
   const icon = TOAST_ICONS[type];

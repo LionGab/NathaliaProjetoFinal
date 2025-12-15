@@ -83,7 +83,7 @@ export default function AffirmationsScreen({ navigation }: RootStackScreenProps<
         setCurrentIndex(index);
       }
     }
-  }, []);
+  }, [lastShownDate, setLastShownDate, setTodayAffirmation, todayAffirmation]);
 
   const handleNext = () => {
     opacity.value = withTiming(0, { duration: 200 }, () => {
@@ -122,7 +122,7 @@ export default function AffirmationsScreen({ navigation }: RootStackScreenProps<
       await Share.share({
         message: `"${affirmation.text}"\n\n- Nossa Maternidade`,
       });
-    } catch (error) {
+    } catch {
       // Handle error silently
     }
   };

@@ -195,7 +195,7 @@ try {
       store.clearUser();
     }
   });
-} catch (error) {
+} catch {
   // Supabase not configured, skip auth state listener
   logger.info("Supabase not configured - skipping auth state listener", "Store");
 }

@@ -6,26 +6,15 @@ import { SupabaseClient } from "@supabase/supabase-js";
 import { supabase, Database } from "./supabase";
 import { logger } from "../utils/logger";
 
-type User = Database["public"]["Tables"]["users"]["Row"];
 type UserInsert = Database["public"]["Tables"]["users"]["Insert"];
 type UserUpdate = Database["public"]["Tables"]["users"]["Update"];
 
-type Post = Database["public"]["Tables"]["posts"]["Row"];
 type PostInsert = Database["public"]["Tables"]["posts"]["Insert"];
-type PostUpdate = Database["public"]["Tables"]["posts"]["Update"];
 
-type Comment = Database["public"]["Tables"]["comments"]["Row"];
 type CommentInsert = Database["public"]["Tables"]["comments"]["Insert"];
 
-type Like = Database["public"]["Tables"]["likes"]["Row"];
-type LikeInsert = Database["public"]["Tables"]["likes"]["Insert"];
-
-type Habit = Database["public"]["Tables"]["habits"]["Row"];
 type HabitInsert = Database["public"]["Tables"]["habits"]["Insert"];
 type HabitUpdate = Database["public"]["Tables"]["habits"]["Update"];
-
-type HabitCompletion = Database["public"]["Tables"]["habit_completions"]["Row"];
-type HabitCompletionInsert = Database["public"]["Tables"]["habit_completions"]["Insert"];
 
 /**
  * Type guard to ensure Supabase client is configured

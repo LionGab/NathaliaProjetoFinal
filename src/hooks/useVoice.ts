@@ -86,13 +86,6 @@ export function useVoice(): UseVoiceReturn {
   const canUseVoice = hasVoiceAccess || isPremium;
   const isConfigured = isElevenLabsConfigured();
 
-  // Cleanup ao desmontar
-  useEffect(() => {
-    return () => {
-      cleanup();
-    };
-  }, []);
-
   /**
    * Limpa recursos de audio
    */
@@ -114,6 +107,13 @@ export function useVoice(): UseVoiceReturn {
       progress: 0,
     }));
   }, []);
+
+  // Cleanup ao desmontar
+  useEffect(() => {
+    return () => {
+      void cleanup();
+    };
+  }, [cleanup]);
 
   /**
    * Verifica se tem audio em cache para uma mensagem
@@ -310,7 +310,7 @@ export function useVoice(): UseVoiceReturn {
           try {
             await soundRef.current.pauseAsync();
             setState((prev) => ({ ...prev, isPlaying: false }));
-          } catch (error) {
+          } catch {
             // Se erro ao pausar, parar completamente
             await stopPlayback();
           }
@@ -320,7 +320,7 @@ export function useVoice(): UseVoiceReturn {
         try {
           await soundRef.current.playAsync();
           setState((prev) => ({ ...prev, isPlaying: true }));
-        } catch (error) {
+        } catch {
           // Se erro ao retomar, regenerar
           await playMessage(messageId, text);
         }

@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from "react";
+import React, { useCallback, useMemo, useState } from "react";
 import { View, Text, ScrollView, Pressable, Dimensions } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { LinearGradient } from "expo-linear-gradient";
@@ -101,6 +101,51 @@ export default function CycleTrackerScreen() {
     };
   }, [lastPeriodStart, cycleLength, periodLength]);
 
+  const createDayInfo = useCallback(
+    (date: Date, isCurrentMonth: boolean): DayInfo => {
+      const isToday =
+        date.getDate() === today.getDate() &&
+        date.getMonth() === today.getMonth() &&
+        date.getFullYear() === today.getFullYear();
+
+      let isPeriod = false;
+      let isOvulation = false;
+      let isFertile = false;
+      let isPredictedPeriod = false;
+
+      if (lastPeriodStart) {
+        const start = new Date(lastPeriodStart);
+        const daysSinceStart = Math.floor(
+          (date.getTime() - start.getTime()) / (1000 * 60 * 60 * 24)
+        );
+
+        if (daysSinceStart >= 0) {
+          const cycleDay = (daysSinceStart % cycleLength) + 1;
+          const ovulationDay = cycleLength - 14;
+          const fertileStart = ovulationDay - 5;
+          const fertileEnd = ovulationDay + 1;
+
+          isPeriod = cycleDay <= periodLength && daysSinceStart < cycleLength;
+          isPredictedPeriod = cycleDay <= periodLength && daysSinceStart >= cycleLength;
+          isOvulation = cycleDay === ovulationDay;
+          isFertile = cycleDay >= fertileStart && cycleDay <= fertileEnd && !isOvulation;
+        }
+      }
+
+      return {
+        date,
+        day: date.getDate(),
+        isCurrentMonth,
+        isPeriod,
+        isOvulation,
+        isFertile,
+        isPredictedPeriod,
+        isToday,
+      };
+    },
+    [cycleLength, lastPeriodStart, periodLength, today]
+  );
+
   const calendarDays = useMemo(() => {
     const year = currentMonth.getFullYear();
     const month = currentMonth.getMonth();
@@ -134,47 +179,7 @@ export default function CycleTrackerScreen() {
     }
 
     return days;
-  }, [currentMonth, lastPeriodStart, cycleLength, periodLength]);
-
-  function createDayInfo(date: Date, isCurrentMonth: boolean): DayInfo {
-    const isToday =
-      date.getDate() === today.getDate() &&
-      date.getMonth() === today.getMonth() &&
-      date.getFullYear() === today.getFullYear();
-
-    let isPeriod = false;
-    let isOvulation = false;
-    let isFertile = false;
-    let isPredictedPeriod = false;
-
-    if (lastPeriodStart) {
-      const start = new Date(lastPeriodStart);
-      const daysSinceStart = Math.floor((date.getTime() - start.getTime()) / (1000 * 60 * 60 * 24));
-
-      if (daysSinceStart >= 0) {
-        const cycleDay = (daysSinceStart % cycleLength) + 1;
-        const ovulationDay = cycleLength - 14;
-        const fertileStart = ovulationDay - 5;
-        const fertileEnd = ovulationDay + 1;
-
-        isPeriod = cycleDay <= periodLength && daysSinceStart < cycleLength;
-        isPredictedPeriod = cycleDay <= periodLength && daysSinceStart >= cycleLength;
-        isOvulation = cycleDay === ovulationDay;
-        isFertile = cycleDay >= fertileStart && cycleDay <= fertileEnd && !isOvulation;
-      }
-    }
-
-    return {
-      date,
-      day: date.getDate(),
-      isCurrentMonth,
-      isPeriod,
-      isOvulation,
-      isFertile,
-      isPredictedPeriod,
-      isToday,
-    };
-  }
+  }, [createDayInfo, currentMonth]);
 
   const goToPrevMonth = () => {
     setCurrentMonth(new Date(currentMonth.getFullYear(), currentMonth.getMonth() - 1, 1));

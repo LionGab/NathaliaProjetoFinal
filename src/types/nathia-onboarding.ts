@@ -94,15 +94,15 @@ export const LIFE_STAGE_OPTIONS: {
   },
   {
     id: "pregnant",
-    label: "Estou gravida",
+    label: "Estou grávida",
     emoji: "🤰",
-    description: "Esperando meu bebe chegar",
+    description: "Esperando meu bebê chegar",
   },
   {
     id: "postpartum",
-    label: "Sou mae / pos-parto",
+    label: "Sou mãe / pós-parto",
     emoji: "👶",
-    description: "Meu bebe ja chegou",
+    description: "Meu bebê já chegou",
   },
   {
     id: "lifestyle",
@@ -119,7 +119,7 @@ export const TRYING_FOCUS_OPTIONS: {
 }[] = [
   {
     id: "trying_emotions",
-    label: "Emocoes/rotina de tentante",
+    label: "Emoções e rotina de tentante",
     description: "Apoio emocional nessa jornada",
   },
   {
@@ -129,7 +129,7 @@ export const TRYING_FOCUS_OPTIONS: {
   },
   {
     id: "lifestyle_only",
-    label: "So lifestyle por enquanto",
+    label: "Só lifestyle por enquanto",
     description: "Foco em bem-estar geral",
   },
 ];
@@ -138,17 +138,17 @@ export const TRIMESTER_OPTIONS: {
   id: Trimester;
   label: string;
 }[] = [
-  { id: "t1", label: "1o trimestre (ate 12 semanas)" },
-  { id: "t2", label: "2o trimestre (13-26 semanas)" },
-  { id: "t3", label: "3o trimestre (27+ semanas)" },
-  { id: "unknown", label: "Prefiro nao dizer" },
+  { id: "t1", label: "1º trimestre (até 12 semanas)" },
+  { id: "t2", label: "2º trimestre (13-26 semanas)" },
+  { id: "t3", label: "3º trimestre (27+ semanas)" },
+  { id: "unknown", label: "Prefiro não dizer" },
 ];
 
 export const BABY_AGE_OPTIONS: {
   id: BabyAgeBucket;
   label: string;
 }[] = [
-  { id: "0-6w", label: "0-6 semanas (recem-nascido)" },
+  { id: "0-6w", label: "0-6 semanas (recém-nascido)" },
   { id: "2-6m", label: "2-6 meses" },
   { id: "6-12m", label: "6-12 meses" },
   { id: "1y+", label: "1 ano ou mais" },
@@ -161,7 +161,7 @@ export const ROUTINE_OPTIONS: {
 }[] = [
   { id: "calm", label: "Tranquila", emoji: "😌" },
   { id: "busy", label: "Corrida", emoji: "🏃‍♀️" },
-  { id: "chaotic", label: "Caotica", emoji: "😅" },
+  { id: "chaotic", label: "Caótica", emoji: "😅" },
 ];
 
 export const AGE_RANGE_OPTIONS: {
@@ -171,7 +171,7 @@ export const AGE_RANGE_OPTIONS: {
   { id: "18-24", label: "18-24 anos" },
   { id: "25-34", label: "25-34 anos" },
   { id: "35+", label: "35+ anos" },
-  { id: "unknown", label: "Prefiro nao dizer" },
+  { id: "unknown", label: "Prefiro não dizer" },
 ];
 
 export const INTEREST_OPTIONS: {
@@ -180,12 +180,12 @@ export const INTEREST_OPTIONS: {
   emoji: string;
 }[] = [
   { id: "beachwear", label: "Moda praia / looks", emoji: "🩱" },
-  { id: "dance", label: "Fitness leve, danca e movimento", emoji: "💃" },
-  { id: "self_esteem", label: "Autoestima e confianca no corpo", emoji: "✨" },
-  { id: "sleep_energy", label: "Sono/energia e rotina pratica", emoji: "🔋" },
-  { id: "motherhood", label: "Gravidez/maternidade real", emoji: "👶" },
-  { id: "travel", label: "Viagens/lifestyle", emoji: "✈️" },
-  { id: "basic", label: "So o basico", emoji: "✅" },
+  { id: "dance", label: "Fitness leve, dança e movimento", emoji: "💃" },
+  { id: "self_esteem", label: "Autoestima e confiança no corpo", emoji: "✨" },
+  { id: "sleep_energy", label: "Sono, energia e rotina prática", emoji: "🔋" },
+  { id: "motherhood", label: "Gravidez e maternidade real", emoji: "👶" },
+  { id: "travel", label: "Viagens e lifestyle", emoji: "✈️" },
+  { id: "basic", label: "Só o básico", emoji: "✅" },
 ];
 
 export const MOOD_OPTIONS: {
@@ -204,8 +204,8 @@ export const SENSITIVE_TOPIC_OPTIONS: {
   id: SensitiveTopic;
   label: string;
 }[] = [
-  { id: "body_comparison", label: "Corpo/comparacao" },
-  { id: "weight_diet", label: "Peso/dieta" },
+  { id: "body_comparison", label: "Corpo e comparação" },
+  { id: "weight_diet", label: "Peso e dieta" },
   { id: "anxiety", label: "Ansiedade" },
   { id: "none", label: "Nenhum" },
 ];
@@ -228,7 +228,7 @@ export const TONE_OPTIONS: {
   {
     id: "balanced",
     label: "Meio termo",
-    description: "Equilibrio entre os dois",
+    description: "Equilíbrio entre os dois",
   },
 ];
 
@@ -237,7 +237,7 @@ export const NOTIFICATION_OPTIONS: {
   label: string;
   description: string;
 }[] = [
-  { id: "none", label: "Nao", description: "Sem notificacoes" },
-  { id: "daily", label: "Diaria", description: "Uma mensagem por dia" },
+  { id: "none", label: "Não", description: "Sem notificações" },
+  { id: "daily", label: "Diária", description: "Uma mensagem por dia" },
   { id: "weekly", label: "Semanal", description: "Resumo semanal" },
 ];

@@ -82,7 +82,7 @@ const AudioWaveIndicator = memo(({ color }: { color: string }) => {
       -1,
       true
     );
-  }, []);
+  }, [bar1, bar2, bar3]);
 
   const bar1Style = useAnimatedStyle(() => ({
     height: `${bar1.value * 100}%`,

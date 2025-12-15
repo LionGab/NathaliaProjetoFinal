@@ -80,7 +80,7 @@ const SparkleIcon = () => {
       -1,
       true
     );
-  }, []);
+  }, [scale]);
 
   const animatedStyle = useAnimatedStyle(() => ({
     transform: [{ scale: scale.value }],
@@ -256,11 +256,7 @@ export const PaywallScreen: React.FC<PaywallScreenProps> = ({ navigation, route 
   /**
    * Carrega precos do RevenueCat
    */
-  useEffect(() => {
-    loadPrices();
-  }, []);
-
-  const loadPrices = async () => {
+  const loadPrices = useCallback(async () => {
     if (isExpoGo) {
       setIsLoadingPrices(false);
       return;
@@ -315,7 +311,11 @@ export const PaywallScreen: React.FC<PaywallScreenProps> = ({ navigation, route 
     } finally {
       setIsLoadingPrices(false);
     }
-  };
+  }, [isExpoGo]);
+
+  useEffect(() => {
+    void loadPrices();
+  }, [loadPrices]);
 
   // ============================================
   // HANDLERS

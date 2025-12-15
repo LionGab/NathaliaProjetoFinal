@@ -229,7 +229,7 @@ export async function stopAudio(sound: Audio.Sound | null): Promise<void> {
     await sound.stopAsync();
     await sound.unloadAsync();
     logger.info("Audio stopped and unloaded", "ElevenLabs");
-  } catch (error) {
+  } catch {
     // Silenciar erro - pode ja estar descarregado
   }
 }

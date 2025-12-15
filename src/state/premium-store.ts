@@ -7,13 +7,14 @@
 import { create } from "zustand";
 import { persist, createJSONStorage } from "zustand/middleware";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import type { CustomerInfo } from "react-native-purchases";
 import {
   PremiumState,
   SubscriptionDetails,
   ENTITLEMENTS,
 } from "../types/premium";
 import { logger } from "../utils/logger";
+
+type RevenueCatCustomerInfo = NonNullable<PremiumState["customerInfo"]>;
 
 // Estado inicial da subscription
 const initialSubscription: SubscriptionDetails = {
@@ -72,7 +73,7 @@ export const usePremiumStore = create<PremiumState>()(
         });
       },
 
-      setCustomerInfo: (info: CustomerInfo | null) => {
+      setCustomerInfo: (info: RevenueCatCustomerInfo | null) => {
         set({ customerInfo: info });
       },
 
@@ -101,7 +102,7 @@ export const usePremiumStore = create<PremiumState>()(
 
         try {
           // Import dinâmico do purchases service (Expo Go fallback)
-          let customerInfo: CustomerInfo | null = null;
+          let customerInfo: RevenueCatCustomerInfo | null = null;
           try {
             const purchases = await import("../services/purchases");
             customerInfo = await purchases.getCustomerInfo();

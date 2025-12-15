@@ -106,6 +106,9 @@ const OptionButton = ({
           shadowRadius: selected ? 8 : 4,
           elevation: selected ? 4 : 2,
         }}
+        accessibilityLabel={`${label}${description ? `, ${description}` : ""}`}
+        accessibilityRole="button"
+        accessibilityState={{ selected }}
       >
         {emoji && (
           <Text
@@ -178,8 +181,9 @@ const ChipButton = ({
       style={{
         backgroundColor: selected ? COLORS.primary[500] : COLORS.neutral[0],
         borderRadius: RADIUS.full,
-        paddingVertical: SPACING.md + 2,
+        paddingVertical: SPACING.md + 4, // 16px para garantir 44pt+ touch target
         paddingHorizontal: SPACING.xl,
+        minHeight: 44, // Apple HIG minimum touch target
         borderWidth: selected ? 0 : 1.5,
         borderColor: COLORS.neutral[200],
         marginRight: SPACING.sm,
@@ -192,6 +196,9 @@ const ChipButton = ({
         shadowRadius: selected ? 6 : 2,
         elevation: selected ? 3 : 1,
       }}
+      accessibilityLabel={label}
+      accessibilityRole="button"
+      accessibilityState={{ selected }}
     >
       {emoji && (
         <Text style={{ fontSize: 18, marginRight: SPACING.xs }}>{emoji}</Text>
@@ -241,6 +248,8 @@ const ProgressBar = ({
           shadowRadius: 6,
           elevation: 3,
         }}
+        accessibilityLabel="Voltar"
+        accessibilityRole="button"
       >
         <Ionicons name="arrow-back" size={24} color={COLORS.neutral[700]} />
       </Pressable>
@@ -304,6 +313,9 @@ const ContinueButton = ({
       style={{
         opacity: disabled ? 0.5 : 1,
       }}
+      accessibilityLabel={label}
+      accessibilityRole="button"
+      accessibilityState={{ disabled }}
     >
       <LinearGradient
         colors={
@@ -370,7 +382,7 @@ const PhaseScreen = ({ onNext }: { onNext: () => void }) => {
               letterSpacing: -0.5,
             }}
           >
-            Qual e a sua fase atual, amor? ✨
+            Qual é a sua fase atual, amor? ✨
           </Text>
           <Text
             style={{
@@ -396,7 +408,7 @@ const PhaseScreen = ({ onNext }: { onNext: () => void }) => {
               marginBottom: SPACING.sm,
             }}
           >
-            Como voce quer que eu te chame? 💖
+            Como você quer que eu te chame? 💖
           </Text>
           <TextInput
             value={localNickname}
@@ -477,7 +489,7 @@ const ContextScreen = ({ onNext }: { onNext: () => void }) => {
           marginBottom: SPACING.lg,
         }}
       >
-        Seu foco agora e mais...
+        Seu foco agora é mais...
       </Text>
       {TRYING_FOCUS_OPTIONS.map((option) => (
         <OptionButton
@@ -501,7 +513,7 @@ const ContextScreen = ({ onNext }: { onNext: () => void }) => {
           marginBottom: SPACING.lg,
         }}
       >
-        Voce ta em qual fase? 🤰
+        Você está em qual fase? 🤰
       </Text>
       {TRIMESTER_OPTIONS.map((option) => (
         <OptionButton
@@ -570,7 +582,7 @@ const ContextScreen = ({ onNext }: { onNext: () => void }) => {
           marginBottom: SPACING.lg,
         }}
       >
-        Seu bebe tem mais ou menos... 👶
+        Seu bebê tem mais ou menos... 👶
       </Text>
       {BABY_AGE_OPTIONS.map((option) => (
         <OptionButton
@@ -594,7 +606,7 @@ const ContextScreen = ({ onNext }: { onNext: () => void }) => {
               marginBottom: SPACING.lg,
             }}
           >
-            Como ta sua rotina hoje?
+            Como está sua rotina hoje?
           </Text>
           <View style={{ flexDirection: "row", flexWrap: "wrap" }}>
             {ROUTINE_OPTIONS.map((option) => (
@@ -743,7 +755,7 @@ const InterestsScreen = ({ onNext }: { onNext: () => void }) => {
               marginBottom: SPACING["2xl"],
             }}
           >
-            Pode marcar varias opcoes
+            Pode marcar várias opções
           </Text>
         </Animated.View>
 
@@ -828,7 +840,7 @@ const MoodScreen = ({ onNext }: { onNext: () => void }) => {
               letterSpacing: -0.5,
             }}
           >
-            Como voce se sente hoje? 😊
+            Como você se sente hoje? 😊
           </Text>
           <Text
             style={{
@@ -868,7 +880,7 @@ const MoodScreen = ({ onNext }: { onNext: () => void }) => {
               <TextInput
                 value={profile.mood_note || ""}
                 onChangeText={setMoodNote}
-                placeholder="Conta mais como voce ta..."
+                placeholder="Conta mais como você está..."
                 placeholderTextColor={COLORS.neutral[400]}
                 multiline
                 style={{
@@ -901,7 +913,7 @@ const MoodScreen = ({ onNext }: { onNext: () => void }) => {
               marginBottom: SPACING.sm,
             }}
           >
-            Tem algum tema sensivel pra voce?
+            Tem algum tema sensível pra você?
           </Text>
           <Text
             style={{
@@ -937,7 +949,7 @@ const MoodScreen = ({ onNext }: { onNext: () => void }) => {
               marginBottom: SPACING.lg,
             }}
           >
-            Voce prefere que eu seja mais...
+            Você prefere que eu seja mais...
           </Text>
           {TONE_OPTIONS.map((option) => (
             <OptionButton
@@ -1004,7 +1016,7 @@ const PreferencesScreen = ({ onComplete }: { onComplete: () => void }) => {
               letterSpacing: -0.5,
             }}
           >
-            Ultimos ajustes ✨
+            Últimos ajustes ✨
           </Text>
           <Text
             style={{
@@ -1013,7 +1025,7 @@ const PreferencesScreen = ({ onComplete }: { onComplete: () => void }) => {
               marginBottom: SPACING["2xl"],
             }}
           >
-            Voce pode mudar isso depois
+            Você pode mudar isso depois
           </Text>
         </Animated.View>
 
@@ -1027,7 +1039,7 @@ const PreferencesScreen = ({ onComplete }: { onComplete: () => void }) => {
               marginBottom: SPACING.lg,
             }}
           >
-            Quer receber notificacoes? 🔔
+            Quer receber notificações? 🔔
           </Text>
           {NOTIFICATION_OPTIONS.map((option) => (
             <OptionButton
@@ -1054,7 +1066,7 @@ const PreferencesScreen = ({ onComplete }: { onComplete: () => void }) => {
               marginBottom: SPACING.sm,
             }}
           >
-            Recomendacoes de produtos 🛍️
+            Recomendações de produtos 🛍️
           </Text>
           <Text
             style={{
@@ -1063,7 +1075,7 @@ const PreferencesScreen = ({ onComplete }: { onComplete: () => void }) => {
               marginBottom: SPACING.lg,
             }}
           >
-            Aceita sugestoes de produtos/parcerias quando fizer sentido?
+            Aceita sugestões de produtos quando fizer sentido?
           </Text>
           <View style={{ flexDirection: "row", gap: SPACING.md }}>
             <Pressable
@@ -1119,7 +1131,7 @@ const PreferencesScreen = ({ onComplete }: { onComplete: () => void }) => {
                     : COLORS.neutral[700],
                 }}
               >
-                Nao
+                Não
               </Text>
             </Pressable>
           </View>
@@ -1169,7 +1181,7 @@ const PreferencesScreen = ({ onComplete }: { onComplete: () => void }) => {
                 marginBottom: SPACING.md,
               }}
             >
-              Isso pode ajudar em passos/sono/energia. Voce controla tudo.
+              Pode ajudar no controle de passos, sono e energia.
             </Text>
             <View style={{ flexDirection: "row", gap: SPACING.md }}>
               <ChipButton
@@ -1180,7 +1192,7 @@ const PreferencesScreen = ({ onComplete }: { onComplete: () => void }) => {
               <ChipButton
                 selected={!profile.health_connect_interest}
                 onPress={() => setHealthConnectInterest(false)}
-                label="Agora nao"
+                label="Agora não"
               />
             </View>
           </View>
@@ -1200,7 +1212,7 @@ const PreferencesScreen = ({ onComplete }: { onComplete: () => void }) => {
           backgroundColor: COLORS.background.primary,
         }}
       >
-        <ContinueButton onPress={handleComplete} label="Vamos comecar! 🎉" />
+        <ContinueButton onPress={handleComplete} label="Vamos começar! 🎉" />
       </View>
     </Animated.View>
   );
@@ -1224,7 +1236,7 @@ export default function NathIAOnboardingScreen({ navigation }: Props) {
     // Create user profile from NathIA onboarding data
     setUser({
       id: Date.now().toString(),
-      name: nathiaProfile.nickname || "Mae",
+      name: nathiaProfile.nickname || "Mãe",
       stage: nathiaProfile.life_stage === "pregnant" ? "pregnant"
            : nathiaProfile.life_stage === "postpartum" ? "postpartum"
            : "trying",

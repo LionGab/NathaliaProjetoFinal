@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { View, Text, Pressable, TextInput, Image, Alert, ActivityIndicator } from "react-native";
+import { View, Text, Pressable, TextInput, Image, ActivityIndicator } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import * as ImagePicker from "expo-image-picker";
 import Animated, { FadeIn, FadeInUp } from "react-native-reanimated";
@@ -8,6 +8,7 @@ import { useAppStore } from "../state/store";
 import { uploadImageToImgur } from "../api/imgur";
 import { logger } from "../utils/logger";
 import * as Haptics from "expo-haptics";
+import { useToast } from "../context/ToastContext";
 
 const POST_TYPES = [
   { id: "duvida", label: "Dúvida", emoji: "❓", color: "#3B82F6", bgColor: "#EFF6FF" },
@@ -28,6 +29,7 @@ export default function CommunityComposer({ onPost, onExpand }: CommunityCompose
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const [isUploading, setIsUploading] = useState(false);
   const user = useAppStore((s) => s.user);
+  const { showError, showInfo } = useToast();
 
   const handleExpand = async () => {
     await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
@@ -62,11 +64,7 @@ export default function CommunityComposer({ onPost, onExpand }: CommunityCompose
       setIsExpanded(false);
     } catch (error) {
       logger.error("Erro ao publicar post", "CommunityComposer", error instanceof Error ? error : new Error(String(error)));
-      Alert.alert(
-        "Erro",
-        "Não foi possível publicar o post. Verifique sua conexão e tente novamente.",
-        [{ text: "OK" }]
-      );
+      showError("Não foi possível publicar o post. Verifique sua conexão e tente novamente.");
     } finally {
       setIsUploading(false);
     }
@@ -85,11 +83,7 @@ export default function CommunityComposer({ onPost, onExpand }: CommunityCompose
     try {
       const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
       if (status !== "granted") {
-        Alert.alert(
-          "Permissão necessária",
-          "Precisamos de acesso à sua galeria para adicionar fotos.",
-          [{ text: "OK" }]
-        );
+        showInfo("Precisamos de acesso à sua galeria para adicionar fotos.");
         return;
       }
 
@@ -105,7 +99,7 @@ export default function CommunityComposer({ onPost, onExpand }: CommunityCompose
       }
     } catch (error) {
       logger.error("Erro ao selecionar imagem", "CommunityComposer", error instanceof Error ? error : new Error(String(error)));
-      Alert.alert("Erro", "Não foi possível selecionar a imagem.");
+      showError("Não foi possível selecionar a imagem.");
     }
   };
 
