@@ -63,31 +63,31 @@ else
 fi
 
 # Verificar TypeScript
-if command -v tsc &> /dev/null; then
-    echo "🔍 Verificando tipos TypeScript..."
-    if npx tsc --noEmit > /dev/null 2>&1; then
-        echo -e "${GREEN}✅ TypeScript sem erros${NC}"
-    else
-        echo -e "${RED}❌ Erros de TypeScript encontrados${NC}"
-        ERRORS=$((ERRORS + 1))
-        npx tsc --noEmit
-    fi
+echo "🔍 Verificando tipos TypeScript..."
+if bun run typecheck > /dev/null 2>&1; then
+    echo -e "${GREEN}✅ TypeScript sem erros${NC}"
 else
-    echo -e "${YELLOW}⚠️  TypeScript não instalado${NC}"
-    WARNINGS=$((WARNINGS + 1))
+    echo -e "${RED}❌ Erros de TypeScript encontrados${NC}"
+    ERRORS=$((ERRORS + 1))
+    bun run typecheck
 fi
 
 # Verificar ESLint
-if command -v eslint &> /dev/null || [ -f "node_modules/.bin/eslint" ]; then
-    echo "🔍 Verificando ESLint..."
-    if npx eslint . --ext .ts,.tsx --max-warnings 0 > /dev/null 2>&1; then
-        echo -e "${GREEN}✅ ESLint sem erros${NC}"
-    else
-        echo -e "${YELLOW}⚠️  Avisos do ESLint encontrados${NC}"
-        WARNINGS=$((WARNINGS + 1))
-    fi
+echo "🔍 Verificando ESLint..."
+if bun run lint > /dev/null 2>&1; then
+    echo -e "${GREEN}✅ ESLint sem erros e warnings${NC}"
 else
-    echo -e "${YELLOW}⚠️  ESLint não configurado${NC}"
+    # ESLint retorna erro se tem warnings ou errors
+    # Vamos verificar se são apenas warnings
+    LINT_OUTPUT=$(bun run lint 2>&1)
+    if echo "$LINT_OUTPUT" | grep -q "0 errors"; then
+        echo -e "${YELLOW}⚠️  Avisos do ESLint encontrados (aceitável)${NC}"
+        WARNINGS=$((WARNINGS + 1))
+    else
+        echo -e "${RED}❌ Erros do ESLint encontrados${NC}"
+        ERRORS=$((ERRORS + 1))
+        bun run lint
+    fi
 fi
 
 # Verificar se EAS CLI está instalado
