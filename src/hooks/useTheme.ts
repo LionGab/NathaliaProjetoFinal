@@ -6,7 +6,7 @@
 import React from "react";
 import { useColorScheme } from "react-native";
 import { useAppStore } from "../state/store";
-import { Colors, ColorsDark } from "../utils/colors";
+import { COLORS, COLORS_DARK } from "../theme/design-system";
 
 export type ThemeMode = "light" | "dark" | "system";
 
@@ -28,8 +28,8 @@ export function useTheme() {
     }
   }, [shouldUseDark, isDarkMode, setIsDarkMode]);
 
-  // Retorna as cores baseadas no tema (usando colors.ts para compatibilidade)
-  const colors = shouldUseDark ? ColorsDark : Colors;
+  // Retorna as cores baseadas no tema (usando design-system.ts)
+  const colors = shouldUseDark ? COLORS_DARK : COLORS;
 
   return {
     theme,

@@ -13,10 +13,9 @@ import type { StoreApi } from "zustand";
  */
 export function useOptimizedSelector<T, U>(
   store: StoreApi<T>,
-  selector: (state: T) => U,
-  equalityFn?: (a: U, b: U) => boolean
+  selector: (state: T) => U
 ): U {
-  return useStore(store, selector, equalityFn);
+  return useStore(store, selector);
 }
 
 /**

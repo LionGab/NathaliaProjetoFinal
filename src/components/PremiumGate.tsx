@@ -13,8 +13,10 @@ import { Ionicons } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
 import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { usePremiumStore, useIsPremium, useHasPremiumScreensAccess } from "../state/premium-store";
-import { Colors, PRIMARY_COLOR } from "../utils/colors";
+import { COLORS } from "../theme/design-system";
 import type { RootStackParamList } from "../types/navigation";
+
+const PRIMARY_COLOR = COLORS.primary[500];
 
 // ============================================
 // TIPOS

@@ -55,7 +55,7 @@ export async function initializePurchases(userId?: string): Promise<void> {
   const apiKey = Platform.OS === "ios" ? REVENUECAT_IOS_KEY : REVENUECAT_ANDROID_KEY;
 
   if (!apiKey) {
-    console.warn("[Purchases] No API key configured for", Platform.OS);
+    logger.warn(`No API key configured for ${Platform.OS}`, "Purchases");
     return;
   }
 
@@ -82,7 +82,7 @@ export async function getOfferings(): Promise<PurchasesOffering | null> {
     const offerings = await Purchases.getOfferings();
     return offerings.current;
   } catch (error) {
-    console.error("[Purchases] Failed to get offerings:", error);
+    logger.error("Failed to get offerings", "Purchases", error instanceof Error ? error : new Error(String(error)));
     return null;
   }
 }
@@ -95,7 +95,7 @@ export async function getPackages(): Promise<PurchasesPackage[]> {
     const offering = await getOfferings();
     return offering?.availablePackages || [];
   } catch (error) {
-    console.error("[Purchases] Failed to get packages:", error);
+    logger.error("Failed to get packages", "Purchases", error instanceof Error ? error : new Error(String(error)));
     return [];
   }
 }
@@ -121,7 +121,7 @@ export async function purchasePackage(
       return { success: false, error: "cancelled" };
     }
 
-    console.error("[Purchases] Purchase failed:", error);
+    logger.error("Purchase failed", "Purchases", error instanceof Error ? error : new Error(String(error)));
     return { success: false, error: getErrorMessage(error) };
   }
 }
@@ -143,7 +143,7 @@ export async function restorePurchases(): Promise<{
       customerInfo,
     };
   } catch (error) {
-    console.error("[Purchases] Restore failed:", error);
+    logger.error("Restore failed", "Purchases", error instanceof Error ? error : new Error(String(error)));
     return { success: false, error: getErrorMessage(error) };
   }
 }
@@ -156,7 +156,7 @@ export async function checkPremiumStatus(): Promise<boolean> {
     const customerInfo = await Purchases.getCustomerInfo();
     return customerInfo.entitlements.active[PREMIUM_ENTITLEMENT] !== undefined;
   } catch (error) {
-    console.error("[Purchases] Failed to check premium status:", error);
+    logger.error("Failed to check premium status", "Purchases", error instanceof Error ? error : new Error(String(error)));
     return false;
   }
 }
@@ -168,7 +168,7 @@ export async function getCustomerInfo(): Promise<CustomerInfo | null> {
   try {
     return await Purchases.getCustomerInfo();
   } catch (error) {
-    console.error("[Purchases] Failed to get customer info:", error);
+    logger.error("Failed to get customer info", "Purchases", error instanceof Error ? error : new Error(String(error)));
     return null;
   }
 }

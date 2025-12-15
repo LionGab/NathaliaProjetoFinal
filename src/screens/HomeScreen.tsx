@@ -9,6 +9,7 @@ import { useAppStore, useHabitsStore, useCheckInStore, useAffirmationsStore, use
 import { MainTabScreenProps } from "../types/navigation";
 import { getPosts } from "../api/database";
 import { useTheme } from "../hooks/useTheme";
+import { logger } from "../utils/logger";
 import * as Haptics from "expo-haptics";
 
 const { width: SCREEN_WIDTH } = Dimensions.get("window");
@@ -114,7 +115,7 @@ export default function HomeScreen({ navigation }: MainTabScreenProps<"Home">) {
         setPosts(data.slice(0, 3));
       }
     } catch (error) {
-      console.error("Error loading posts:", error);
+      logger.error("Error loading posts", "HomeScreen", error instanceof Error ? error : new Error(String(error)));
     }
   }, [setPosts]);
 

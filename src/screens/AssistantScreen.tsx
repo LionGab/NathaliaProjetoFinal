@@ -3,6 +3,7 @@ import {
   View,
   Text,
   ScrollView,
+  FlatList,
   Pressable,
   TextInput,
   KeyboardAvoidingView,
@@ -39,8 +40,9 @@ import {
 import { logger } from "../utils/logger";
 import { VoiceMessagePlayer } from "../components/VoiceMessagePlayer";
 import { useVoicePremiumGate } from "../hooks/useVoice";
-import { PRIMARY_COLOR } from "../utils/colors";
+import { COLORS } from "../theme/design-system";
 
+const PRIMARY_COLOR = COLORS.primary[500];
 const { width: SCREEN_WIDTH } = Dimensions.get("window");
 
 interface SuggestedPrompt {
@@ -65,7 +67,7 @@ const QUICK_SUGGESTIONS = [
 
 export default function AssistantScreen({ navigation }: MainTabScreenProps<"Assistant">) {
   const insets = useSafeAreaInsets();
-  const scrollViewRef = useRef<ScrollView>(null);
+  const flatListRef = useRef<FlatList>(null);
   const [inputText, setInputText] = useState("");
   const [showHistory, setShowHistory] = useState(false);
 
@@ -149,7 +151,7 @@ export default function AssistantScreen({ navigation }: MainTabScreenProps<"Assi
 
     // Scroll para o fim
     setTimeout(() => {
-      scrollViewRef.current?.scrollToEnd({ animated: true });
+      flatListRef.current?.scrollToEnd({ animated: true });
     }, 100);
 
     try {
@@ -241,7 +243,7 @@ export default function AssistantScreen({ navigation }: MainTabScreenProps<"Assi
     } finally {
       setLoading(false);
       setTimeout(() => {
-        scrollViewRef.current?.scrollToEnd({ animated: true });
+        flatListRef.current?.scrollToEnd({ animated: true });
       }, 100);
     }
   }, [inputText, isLoading, conversations, currentConversationId, addMessage, setLoading]);
@@ -813,59 +815,64 @@ MessageBubble.displayName = 'MessageBubble';
             {renderEmptyState()}
           </ScrollView>
         ) : (
-          <ScrollView
-            ref={scrollViewRef}
-            className="flex-1 px-4"
-            contentContainerStyle={{ paddingVertical: 16 }}
-            showsVerticalScrollIndicator={false}
-            onContentSizeChange={() => scrollViewRef.current?.scrollToEnd({ animated: true })}
-          >
-            {currentMessages.map((message, index) => (
+          <FlatList
+            ref={flatListRef}
+            data={currentMessages}
+            keyExtractor={(item) => item.id}
+            renderItem={({ item, index }) => (
               <MessageBubble
-                key={message.id}
-                message={message}
+                message={item}
                 index={index}
                 hasVoiceAccess={hasVoiceAccess}
                 onPremiumRequired={handleVoicePremiumRequired}
               />
-            ))}
-
-            {isLoading && (
-              <Animated.View entering={FadeIn.duration(300)} className="items-start mb-4">
-                <View className="flex-row items-end">
-                  <Avatar
-                    size={32}
-                    isNathIA={true}
-                    style={{ marginRight: 8, marginBottom: 4 }}
-                  />
-                  <View>
-                    <View
-                      className="rounded-2xl rounded-bl-sm px-4 py-3"
-                      style={{ backgroundColor: "#F5F5F4" }}
-                    >
-                      <View className="flex-row items-center">
-                        <Animated.View
-                          entering={FadeIn.delay(0).duration(400)}
-                          className="w-2 h-2 rounded-full bg-rose-400 mr-1"
-                        />
-                        <Animated.View
-                          entering={FadeIn.delay(150).duration(400)}
-                          className="w-2 h-2 rounded-full bg-rose-300 mr-1"
-                        />
-                        <Animated.View
-                          entering={FadeIn.delay(300).duration(400)}
-                          className="w-2 h-2 rounded-full bg-rose-200"
-                        />
-                      </View>
-                    </View>
-                    <Text className="text-warmGray-400 text-xs mt-1 ml-2">
-                      NathIA está pensando...
-                    </Text>
-                  </View>
-                </View>
-              </Animated.View>
             )}
-          </ScrollView>
+            className="flex-1 px-4"
+            contentContainerStyle={{ paddingVertical: 16 }}
+            showsVerticalScrollIndicator={false}
+            onContentSizeChange={() => flatListRef.current?.scrollToEnd({ animated: true })}
+            ListFooterComponent={
+              isLoading ? (
+                <Animated.View entering={FadeIn.duration(300)} className="items-start mb-4">
+                  <View className="flex-row items-end">
+                    <Avatar
+                      size={32}
+                      isNathIA={true}
+                      style={{ marginRight: 8, marginBottom: 4 }}
+                    />
+                    <View>
+                      <View
+                        className="rounded-2xl rounded-bl-sm px-4 py-3"
+                        style={{ backgroundColor: "#F5F5F4" }}
+                      >
+                        <View className="flex-row items-center">
+                          <Animated.View
+                            entering={FadeIn.delay(0).duration(400)}
+                            className="w-2 h-2 rounded-full bg-rose-400 mr-1"
+                          />
+                          <Animated.View
+                            entering={FadeIn.delay(150).duration(400)}
+                            className="w-2 h-2 rounded-full bg-rose-300 mr-1"
+                          />
+                          <Animated.View
+                            entering={FadeIn.delay(300).duration(400)}
+                            className="w-2 h-2 rounded-full bg-rose-200"
+                          />
+                        </View>
+                      </View>
+                      <Text className="text-warmGray-400 text-xs mt-1 ml-2">
+                        NathIA está pensando...
+                      </Text>
+                    </View>
+                  </View>
+                </Animated.View>
+              ) : null
+            }
+            initialNumToRender={10}
+            maxToRenderPerBatch={5}
+            windowSize={7}
+            removeClippedSubviews={true}
+          />
         )}
 
         {/* Input Area - ChatGPT/Claude Style */}

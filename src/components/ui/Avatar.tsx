@@ -16,7 +16,7 @@ export interface AvatarProps {
   style?: ViewStyle;
 }
 
-export default function Avatar({
+const Avatar = React.memo(function Avatar({
   size = 40,
   source,
   fallbackIcon = "person",
@@ -80,5 +80,19 @@ export default function Avatar({
       )}
     </View>
   );
-}
+}, (prevProps, nextProps) => {
+  // Custom comparator: só re-renderiza se props relevantes mudarem
+  return (
+    prevProps.size === nextProps.size &&
+    prevProps.source === nextProps.source &&
+    prevProps.isNathalia === nextProps.isNathalia &&
+    prevProps.isNathIA === nextProps.isNathIA &&
+    prevProps.isCommunity === nextProps.isCommunity &&
+    prevProps.fallbackIcon === nextProps.fallbackIcon &&
+    prevProps.className === nextProps.className
+  );
+});
 
+Avatar.displayName = "Avatar";
+
+export default Avatar;

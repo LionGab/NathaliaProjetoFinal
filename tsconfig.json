@@ -2,7 +2,34 @@
   "extends": "expo/tsconfig.base",
   "compilerOptions": {
     "strict": true,
-    "skipLibCheck": true
+    "skipLibCheck": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noImplicitReturns": true,
+    "noFallthroughCasesInSwitch": true,
+    "forceConsistentCasingInFileNames": true,
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "jsx": "react-native",
+    "lib": ["ES2022", "DOM"],
+    "module": "ESNext",
+    "moduleResolution": "node",
+    "target": "ES2022",
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["./src/*"],
+      "@/components/*": ["./src/components/*"],
+      "@/screens/*": ["./src/screens/*"],
+      "@/hooks/*": ["./src/hooks/*"],
+      "@/utils/*": ["./src/utils/*"],
+      "@/api/*": ["./src/api/*"],
+      "@/state/*": ["./src/state/*"],
+      "@/types/*": ["./src/types/*"],
+      "@/theme/*": ["./src/theme/*"],
+      "@/navigation/*": ["./src/navigation/*"]
+    }
   },
   "include": [
     "**/*.ts",
@@ -17,6 +44,8 @@
     "backend/generated",
     ".expo",
     "NossaMaternidade-upstream",
-    "supabase/functions/**/*"
+    "supabase/functions/**/*",
+    "dist",
+    "build"
   ]
 }

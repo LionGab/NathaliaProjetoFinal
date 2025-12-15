@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { View, Text, ScrollView, Pressable, TextInput, Share } from "react-native";
+import React, { useState, useCallback } from "react";
+import { View, Text, ScrollView, FlatList, Pressable, TextInput, Share, ListRenderItem } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
@@ -420,18 +420,15 @@ export default function CommunityScreen({ navigation }: MainTabScreenProps<"Comm
       </View>
 
       {/* Content */}
-      <ScrollView
-        showsVerticalScrollIndicator={false}
-        contentContainerStyle={{ paddingHorizontal: 24, paddingTop: 24, paddingBottom: 100 }}
-      >
-        {activeTab === "feed" ? (
-          <>
-            {/* Composer */}
-            <CommunityComposer onPost={handleNewPost} />
-
-            {displayPosts.map((post, index) => renderPost(post, index))}
-
-            {/* Load More */}
+      {activeTab === "feed" ? (
+        <FlatList
+          data={displayPosts}
+          keyExtractor={(item) => item.id}
+          renderItem={({ item, index }) => renderPost(item, index)}
+          showsVerticalScrollIndicator={false}
+          contentContainerStyle={{ paddingHorizontal: 24, paddingTop: 24, paddingBottom: 100 }}
+          ListHeaderComponent={<CommunityComposer onPost={handleNewPost} />}
+          ListFooterComponent={
             <Pressable
               onPress={handleLoadMore}
               className="py-4 items-center rounded-2xl mt-2"
@@ -439,25 +436,32 @@ export default function CommunityScreen({ navigation }: MainTabScreenProps<"Comm
             >
               <Text className="text-warmGray-600 font-medium">Carregar mais posts</Text>
             </Pressable>
-          </>
-        ) : (
-          <>
-            {MOCK_GROUPS.map((group, index) => renderGroup(group, index))}
+          }
+          initialNumToRender={5}
+          maxToRenderPerBatch={5}
+          windowSize={5}
+          removeClippedSubviews={true}
+        />
+      ) : (
+        <ScrollView
+          showsVerticalScrollIndicator={false}
+          contentContainerStyle={{ paddingHorizontal: 24, paddingTop: 24, paddingBottom: 100 }}
+        >
+          {MOCK_GROUPS.map((group, index) => renderGroup(group, index))}
 
-            {/* Create Group */}
-            <Pressable
-              onPress={handleCreateGroup}
-              className="py-4 items-center rounded-2xl mt-2 border-2 border-dashed border-warmGray-200"
-              style={{ backgroundColor: "#FFF" }}
-            >
-              <Ionicons name="add-circle-outline" size={24} color="#A8A29E" />
-              <Text className="text-warmGray-600 font-medium mt-2">
-                Criar novo grupo
-              </Text>
-            </Pressable>
-          </>
-        )}
-      </ScrollView>
+          {/* Create Group */}
+          <Pressable
+            onPress={handleCreateGroup}
+            className="py-4 items-center rounded-2xl mt-2 border-2 border-dashed border-warmGray-200"
+            style={{ backgroundColor: "#FFF" }}
+          >
+            <Ionicons name="add-circle-outline" size={24} color="#A8A29E" />
+            <Text className="text-warmGray-600 font-medium mt-2">
+              Criar novo grupo
+            </Text>
+          </Pressable>
+        </ScrollView>
+      )}
     </View>
   );
 }

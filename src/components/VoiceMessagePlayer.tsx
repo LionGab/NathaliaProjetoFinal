@@ -17,8 +17,10 @@ import Animated, {
   withSequence,
 } from "react-native-reanimated";
 import { useVoice, useVoicePremiumGate } from "../hooks/useVoice";
-import { PRIMARY_COLOR } from "../utils/colors";
+import { COLORS } from "../theme/design-system";
 import { cn } from "../utils/cn";
+
+const PRIMARY_COLOR = COLORS.primary[500];
 
 // ============================================
 // TIPOS

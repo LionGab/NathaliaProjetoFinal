@@ -40,9 +40,11 @@ import {
   DEFAULT_PRICING,
   type PricingConfig,
 } from "../types/premium";
-import { Colors, PRIMARY_COLOR } from "../utils/colors";
+import { COLORS } from "../theme/design-system";
 import { cn } from "../utils/cn";
 import { logger } from "../utils/logger";
+
+const PRIMARY_COLOR = COLORS.primary[500];
 
 // ============================================
 // TIPOS
