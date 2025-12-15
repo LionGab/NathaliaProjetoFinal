@@ -16,6 +16,7 @@ import Animated, {
 import { Ionicons } from "@expo/vector-icons";
 import * as Haptics from "expo-haptics";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { IconName } from "../types/icons";
 import {
   registerForPushNotifications,
   initializeNotifications,
@@ -307,7 +308,7 @@ export default function NotificationPermissionScreen({ navigation }: Props) {
                   marginRight: SPACING.md,
                 }}
               >
-                <Ionicons name={item.icon as any} size={16} color={item.color} />
+                <Ionicons name={item.icon as IconName} size={16} color={item.color} />
               </View>
               <Text
                 style={{

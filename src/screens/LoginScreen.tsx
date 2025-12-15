@@ -424,7 +424,7 @@ export default function LoginScreen({ navigation }: Props) {
                       left: 0,
                       right: 0,
                       bottom: 0,
-                      backgroundColor: isDark ? colors.primary[950] + "1A" : colors.primary[50],
+                      backgroundColor: isDark ? colors.primary[900] + "1A" : colors.primary[50],
                     }}
                   />
                   <Image

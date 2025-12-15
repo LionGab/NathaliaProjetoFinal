@@ -7,15 +7,11 @@ import Animated, {
   FadeIn,
   FadeInDown,
   FadeInUp,
-  useAnimatedStyle,
-  useSharedValue,
-  withSpring,
-  withTiming,
-  interpolate,
 } from "react-native-reanimated";
 import { useHabitsStore, Habit } from "../state/store";
 import * as Haptics from "expo-haptics";
 import { useTheme } from "../hooks/useTheme";
+import { IconName } from "../types/icons";
 
 const CATEGORY_LABELS: Record<string, { label: string; emoji: string }> = {
   "self-care": { label: "Autocuidado", emoji: "✨" },
@@ -94,7 +90,7 @@ export default function HabitsScreen() {
                 }}
               >
                 <Ionicons
-                  name={habit.icon as any}
+                  name={habit.icon as IconName}
                   size={26}
                   color={habit.completed ? colors.neutral[0] : habit.color}
                 />

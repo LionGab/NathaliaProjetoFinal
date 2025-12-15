@@ -66,6 +66,8 @@ export function Toast({ message, type = "info", duration = 3000, action, onDismi
 
       return () => clearTimeout(timer);
     }
+
+    return undefined;
   }, [duration]);
 
   const dismiss = () => {

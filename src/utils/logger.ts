@@ -49,6 +49,7 @@ class Logger {
       
       switch (level) {
         case 'info':
+          // eslint-disable-next-line no-console -- Logger central, console.log intencional
           console.log(formattedMessage, metadata || '');
           break;
         case 'warn':
@@ -58,6 +59,7 @@ class Logger {
           console.error(formattedMessage, error || '', metadata || '');
           break;
         case 'debug':
+          // eslint-disable-next-line no-console -- Logger central, console.debug intencional
           console.debug(formattedMessage, metadata || '');
           break;
       }

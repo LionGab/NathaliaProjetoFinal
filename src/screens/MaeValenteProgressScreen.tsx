@@ -23,6 +23,11 @@ const { width } = Dimensions.get("window");
 
 type ViewMode = "week" | "month" | "year";
 
+interface CheckInData {
+  date: string;
+  mood?: number | null;
+}
+
 export default function MaeValenteProgressScreen() {
   const insets = useSafeAreaInsets();
   const [viewMode, setViewMode] = useState<ViewMode>("week");
@@ -772,7 +777,7 @@ function AchievementCard({
 }
 
 // Helper functions
-function calculateStreak(checkIns: any[]): number {
+function calculateStreak(checkIns: CheckInData[]): number {
   if (checkIns.length === 0) return 0;
 
   const sortedDates = checkIns
@@ -800,7 +805,7 @@ function calculateStreak(checkIns: any[]): number {
   return streak;
 }
 
-function calculateAverageMood(checkIns: any[]): string {
+function calculateAverageMood(checkIns: CheckInData[]): string {
   if (checkIns.length === 0) return "0.0";
 
   const moods = checkIns

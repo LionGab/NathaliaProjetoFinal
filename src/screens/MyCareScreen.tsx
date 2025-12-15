@@ -8,6 +8,7 @@ import { MainTabScreenProps } from "../types/navigation";
 import { useAppStore } from "../state/store";
 import * as Haptics from "expo-haptics";
 import { useTheme } from "../hooks/useTheme";
+import { IconName } from "../types/icons";
 
 const { width: SCREEN_WIDTH } = Dimensions.get("window");
 
@@ -409,7 +410,7 @@ export default function MyCareScreen({ navigation }: MainTabScreenProps<"MyCare"
                     }}
                   >
                     <Ionicons
-                      name={section.icon as any}
+                      name={section.icon as IconName}
                       size={24}
                       color={section.color}
                     />

@@ -20,7 +20,10 @@ export interface AIResponse {
   latency?: number;
   fallback?: boolean;
   grounding?: {
-    searchEntryPoint?: any;
+    searchEntryPoint?: {
+      query?: string;
+      url?: string;
+    };
     citations?: {
       title?: string;
       url?: string;

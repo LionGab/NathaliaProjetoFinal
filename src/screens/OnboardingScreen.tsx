@@ -6,6 +6,7 @@ import { Ionicons } from "@expo/vector-icons";
 import Animated, { FadeIn, SlideInRight, SlideOutLeft } from "react-native-reanimated";
 import { useAppStore } from "../state/store";
 import { OnboardingStep, PregnancyStage, Interest, UserProfile } from "../types/navigation";
+import { IconName } from "../types/icons";
 
 const STAGES: { id: PregnancyStage; label: string; icon: string; description: string }[] = [
   { id: "trying", label: "Tentando engravidar", icon: "heart", description: "Estou planejando minha gestacao" },
@@ -245,7 +246,7 @@ export default function OnboardingScreen() {
                 }`}
               >
                 <Ionicons
-                  name={stage.icon as any}
+                  name={stage.icon as IconName}
                   size={26}
                   color={data.stage === stage.id ? "#FFFFFF" : "#BC8B7B"}
                 />
@@ -425,7 +426,7 @@ export default function OnboardingScreen() {
                   }`}
                 >
                   <Ionicons
-                    name={option.icon as any}
+                    name={option.icon as IconName}
                     size={26}
                     color={isSelected ? "#FFFFFF" : "#BC8B7B"}
                   />
@@ -498,7 +499,7 @@ export default function OnboardingScreen() {
                 }`}
               >
                 <Ionicons
-                  name={pref.icon as any}
+                  name={pref.icon as IconName}
                   size={26}
                   color={data.communication === pref.id ? "#FFFFFF" : "#BC8B7B"}
                 />
@@ -579,7 +580,7 @@ export default function OnboardingScreen() {
                   }`}
                 >
                   <Ionicons
-                    name={interest.icon as any}
+                    name={interest.icon as IconName}
                     size={26}
                     color={isSelected ? "#FFFFFF" : "#BC8B7B"}
                   />

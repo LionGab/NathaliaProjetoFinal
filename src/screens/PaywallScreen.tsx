@@ -40,6 +40,8 @@ import {
   DEFAULT_PRICING,
   type PricingConfig,
 } from "../types/premium";
+import { RootStackParamList } from "../types/navigation";
+import { IconName } from "../types/icons";
 import { COLORS } from "../theme/design-system";
 import { cn } from "../utils/cn";
 import { logger } from "../utils/logger";
@@ -50,7 +52,7 @@ const PRIMARY_COLOR = COLORS.primary[500];
 // TIPOS
 // ============================================
 
-type PaywallScreenProps = NativeStackScreenProps<any, "Paywall">;
+type PaywallScreenProps = NativeStackScreenProps<RootStackParamList, "Paywall">;
 
 type PlanType = "monthly" | "yearly";
 
@@ -141,7 +143,7 @@ const FeatureCard = ({
         style={{ backgroundColor: `${color || PRIMARY_COLOR}20` }}
       >
         <Ionicons
-          name={icon as any}
+          name={icon as IconName}
           size={24}
           color={color || PRIMARY_COLOR}
         />
@@ -243,7 +245,7 @@ export const PaywallScreen: React.FC<PaywallScreenProps> = ({ navigation, route 
   const { syncWithRevenueCat, setError } = usePremiumStore();
 
   // Source para analytics
-  const source = (route.params as any)?.source || "unknown";
+  const source = route.params?.source || "unknown";
 
   // ============================================
   // EFEITOS
@@ -348,9 +350,9 @@ export const PaywallScreen: React.FC<PaywallScreenProps> = ({ navigation, route 
         // Sucesso - fecha paywall
         navigation.goBack();
       }
-    } catch (error: any) {
+    } catch (error: unknown) {
       // Verifica se foi cancelamento
-      if (error?.userCancelled) {
+      if ((error as { userCancelled?: boolean })?.userCancelled) {
         logger.info("Purchase cancelled by user", "PaywallScreen");
         return;
       }

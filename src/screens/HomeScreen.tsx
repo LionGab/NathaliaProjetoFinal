@@ -10,6 +10,8 @@ import { MainTabScreenProps } from "../types/navigation";
 import { getPosts } from "../api/database";
 import { useTheme } from "../hooks/useTheme";
 import { logger } from "../utils/logger";
+import { Colors } from "../utils/colors";
+import { GRADIENTS } from "../theme/design-system";
 import * as Haptics from "expo-haptics";
 
 const { width: SCREEN_WIDTH } = Dimensions.get("window");
@@ -194,11 +196,11 @@ export default function HomeScreen({ navigation }: MainTabScreenProps<"Home">) {
   const latestPost = posts.length > 0 ? posts[0] : null;
 
   // Cores baseadas no tema (light/dark)
-  const bg = colors.background.DEFAULT;
-  const textMain = colors.text.dark;
+  const bg = colors.background.primary;
+  const textMain = isDark ? colors.neutral[100] : colors.neutral[900];
   const textMuted = isDark ? "rgba(226,232,240,0.65)" : "rgba(45,55,72,0.65)";
-  const cardBg = isDark ? colors.background.light : "#ffffff";
-  const border = isDark ? colors.ui.border : "#F1F5F9";
+  const cardBg = isDark ? colors.background.secondary : "#ffffff";
+  const border = isDark ? colors.neutral[700] : "#F1F5F9";
 
   const cardShadow = {
     shadowColor: "#000",
@@ -266,7 +268,7 @@ export default function HomeScreen({ navigation }: MainTabScreenProps<"Home">) {
                 height: 12,
                 width: 12,
                 borderRadius: 999,
-                backgroundColor: colors.status.success,
+                backgroundColor: colors.semantic.success,
                 borderWidth: 2,
                 borderColor: "#fff",
               }}
@@ -282,7 +284,7 @@ export default function HomeScreen({ navigation }: MainTabScreenProps<"Home">) {
             gap: gap,
           }}
           showsVerticalScrollIndicator={false}
-          refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor={colors.primary.DEFAULT} />}
+          refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor={colors.primary[500]} />}
         >
           {/* Sentimento Atual - Slider */}
           <Animated.View
@@ -309,12 +311,12 @@ export default function HomeScreen({ navigation }: MainTabScreenProps<"Home">) {
                   height: getResponsiveValue(36, 0.9),
                   width: getResponsiveValue(36, 0.9),
                   borderRadius: 999,
-                  backgroundColor: colors.bluePastel[100],
+                  backgroundColor: colors.accent.sky + "33",
                   alignItems: "center",
                   justifyContent: "center",
                 }}
               >
-                <Ionicons name="happy-outline" size={getResponsiveValue(20, 0.9)} color={colors.bluePastel.DEFAULT} />
+                <Ionicons name="happy-outline" size={getResponsiveValue(20, 0.9)} color={colors.accent.sky} />
               </View>
             </View>
 
@@ -324,8 +326,8 @@ export default function HomeScreen({ navigation }: MainTabScreenProps<"Home">) {
                 onValueChange={setMoodSlider}
                 minimumValue={0}
                 maximumValue={1}
-                minimumTrackTintColor={colors.bluePastel.DEFAULT}
-                maximumTrackTintColor={colors.ui.borderLight}
+                minimumTrackTintColor={colors.accent.sky}
+                maximumTrackTintColor={isDark ? colors.neutral[800] : colors.neutral[100]}
                 thumbTintColor={cardBg}
               />
 
@@ -349,7 +351,7 @@ export default function HomeScreen({ navigation }: MainTabScreenProps<"Home">) {
               }}
             >
               <LinearGradient
-                colors={colors.gradients.primary}
+                colors={GRADIENTS.primary}
                 start={{ x: 0, y: 0 }}
                 end={{ x: 1, y: 0 }}
                 style={{ padding: cardPadding }}
@@ -428,12 +430,12 @@ export default function HomeScreen({ navigation }: MainTabScreenProps<"Home">) {
                   height: getResponsiveValue(44, 0.9),
                   width: getResponsiveValue(44, 0.9),
                   borderRadius: 999,
-                  backgroundColor: colors.bluePastel[50],
+                  backgroundColor: colors.accent.sky + "22",
                   alignItems: "center",
                   justifyContent: "center",
                 }}
               >
-                <Ionicons name="sparkles" size={getResponsiveValue(20, 0.9)} color={colors.bluePastel.DEFAULT} />
+                <Ionicons name="sparkles" size={getResponsiveValue(20, 0.9)} color={colors.accent.sky} />
               </View>
 
               <View style={{ flex: 1 }}>
@@ -457,7 +459,7 @@ export default function HomeScreen({ navigation }: MainTabScreenProps<"Home">) {
               borderRadius: getResponsiveValue(16),
               padding: cardPadding,
               borderWidth: 1,
-              borderColor: colors.ui.borderPink,
+              borderColor: isDark ? colors.primary[800] : colors.primary[200],
               ...cardShadow,
             }}
           >
@@ -471,7 +473,7 @@ export default function HomeScreen({ navigation }: MainTabScreenProps<"Home">) {
                   backgroundColor: colors.primary[100],
                 }}
               >
-                <Text style={{ color: colors.primary.DEFAULT, fontSize: getResponsiveValue(11, 0.95), fontWeight: "900" }}>Hoje</Text>
+                <Text style={{ color: colors.primary[500], fontSize: getResponsiveValue(11, 0.95), fontWeight: "900" }}>Hoje</Text>
               </View>
             </View>
 
@@ -483,28 +485,28 @@ export default function HomeScreen({ navigation }: MainTabScreenProps<"Home">) {
               <MoodButton
                 label="Bem"
                 icon="sunny"
-                iconColor={colors.feeling.sunny.color}
+                iconColor={Colors.feeling.sunny.color}
                 isSelected={selectedFeeling === "bem"}
                 onPress={() => handleFeelingPress("bem")}
               />
               <MoodButton
                 label="Cansada"
                 icon="cloud"
-                iconColor={colors.feeling.cloud.color}
+                iconColor={Colors.feeling.cloud.color}
                 isSelected={selectedFeeling === "cansada"}
                 onPress={() => handleFeelingPress("cansada")}
               />
               <MoodButton
                 label="Enjoada"
                 icon="rainy"
-                iconColor={colors.feeling.rainy.color}
+                iconColor={Colors.feeling.rainy.color}
                 isSelected={selectedFeeling === "enjoada"}
                 onPress={() => handleFeelingPress("enjoada")}
               />
               <MoodButton
                 label="Amada"
                 icon="heart"
-                iconColor={colors.feeling.heart.color}
+                iconColor={Colors.feeling.heart.color}
                 isSelected={selectedFeeling === "amada"}
                 onPress={() => handleFeelingPress("amada")}
               />
@@ -537,7 +539,7 @@ export default function HomeScreen({ navigation }: MainTabScreenProps<"Home">) {
                         justifyContent: "center",
                       }}
                     >
-                      <Ionicons name="checkmark-circle" size={getResponsiveValue(18, 0.9)} color={colors.primary.DEFAULT} />
+                      <Ionicons name="checkmark-circle" size={getResponsiveValue(18, 0.9)} color={colors.primary[500]} />
                     </View>
                     <View>
                       <Text style={{ color: textMain, fontSize: getResponsiveValue(17, 1.05), fontWeight: "900" }}>Hábitos</Text>
@@ -555,7 +557,7 @@ export default function HomeScreen({ navigation }: MainTabScreenProps<"Home">) {
                         backgroundColor: colors.primary[100],
                       }}
                     >
-                      <Text style={{ color: colors.primary.DEFAULT, fontSize: getResponsiveValue(11, 0.95), fontWeight: "900" }}>
+                      <Text style={{ color: colors.primary[500], fontSize: getResponsiveValue(11, 0.95), fontWeight: "900" }}>
                         🔥 {habitsStreak} dias
                       </Text>
                     </View>
@@ -580,7 +582,7 @@ export default function HomeScreen({ navigation }: MainTabScreenProps<"Home">) {
             <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", marginBottom: getResponsiveValue(8), paddingHorizontal: 2 }}>
               <Text style={{ color: textMain, fontSize: getResponsiveValue(17, 1.05), fontWeight: "900" }}>Para Você</Text>
               <Pressable onPress={() => navigation.navigate("Community")}>
-                <Text style={{ color: colors.primary.DEFAULT, fontSize: getResponsiveValue(13, 0.95), fontWeight: "900" }}>Ver tudo</Text>
+                <Text style={{ color: colors.primary[500], fontSize: getResponsiveValue(13, 0.95), fontWeight: "900" }}>Ver tudo</Text>
               </Pressable>
             </View>
 
@@ -611,7 +613,7 @@ export default function HomeScreen({ navigation }: MainTabScreenProps<"Home">) {
                     {latestPost.authorAvatar ? (
                       <Image source={{ uri: latestPost.authorAvatar }} style={{ height: "100%", width: "100%", borderRadius: 999 }} />
                     ) : (
-                      <Ionicons name="person" size={20} color={colors.primary.DEFAULT} />
+                      <Ionicons name="person" size={20} color={colors.primary[500]} />
                     )}
                   </View>
                   <View style={{ flex: 1 }}>
@@ -627,7 +629,7 @@ export default function HomeScreen({ navigation }: MainTabScreenProps<"Home">) {
                     <Ionicons
                       name={latestPost.isLiked ? "heart" : "heart-outline"}
                       size={getResponsiveValue(14, 0.9)}
-                      color={latestPost.isLiked ? colors.primary.DEFAULT : textMuted}
+                      color={latestPost.isLiked ? colors.primary[500] : textMuted}
                     />
                     <Text style={{ color: textMuted, fontSize: getResponsiveValue(11, 0.95), fontWeight: "700" }}>{latestPost.likesCount}</Text>
                   </View>
@@ -660,7 +662,7 @@ export default function HomeScreen({ navigation }: MainTabScreenProps<"Home">) {
                     paddingHorizontal: getResponsiveValue(18),
                     paddingVertical: getResponsiveValue(8),
                     borderRadius: getResponsiveValue(10),
-                    backgroundColor: colors.primary.DEFAULT,
+                    backgroundColor: colors.primary[500],
                   }}
                 >
                   <Text style={{ color: "#fff", fontSize: getResponsiveValue(13, 0.95), fontWeight: "800" }}>Ver comunidade</Text>
@@ -687,7 +689,7 @@ function MoodButton({
   isSelected: boolean;
   onPress: () => void;
 }) {
-  const { colors } = useTheme();
+  const { colors, isDark } = useTheme();
   const iconMap: Record<string, keyof typeof Ionicons.glyphMap> = {
     sunny: "sunny",
     cloud: "cloud",
@@ -700,14 +702,14 @@ function MoodButton({
     if (isSelected) {
       // Usar cor ativa pastel do sentimento
       const feelingMap: Record<string, string> = {
-        sunny: colors.feeling.sunny.activeColor,
-        cloud: colors.feeling.cloud.activeColor,
-        rainy: colors.feeling.rainy.activeColor,
-        heart: colors.feeling.heart.activeColor,
+        sunny: Colors.feeling.sunny.activeColor,
+        cloud: Colors.feeling.cloud.activeColor,
+        rainy: Colors.feeling.rainy.activeColor,
+        heart: Colors.feeling.heart.activeColor,
       };
       return feelingMap[icon] || colors.primary[100];
     }
-    return colors.ui.borderLight;
+    return isDark ? colors.neutral[800] : colors.neutral[100];
   };
 
   return (
@@ -726,7 +728,7 @@ function MoodButton({
       })}
     >
       <Ionicons name={iconMap[icon] || "ellipse"} size={getResponsiveValue(26, 0.9)} color={iconColor} />
-      <Text style={{ marginTop: getResponsiveValue(4), fontSize: getResponsiveValue(11, 0.95), fontWeight: "700", color: colors.text.dark }}>
+      <Text style={{ marginTop: getResponsiveValue(4), fontSize: getResponsiveValue(11, 0.95), fontWeight: "700", color: isDark ? colors.neutral[100] : colors.neutral[900] }}>
         {label}
       </Text>
     </Pressable>
