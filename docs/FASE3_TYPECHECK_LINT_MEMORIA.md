@@ -2,8 +2,8 @@
 
 **Status:** ✅ COMPLETA (100%)
 **Data:** 15 de dezembro de 2025
-**Commits:** 1 (3130bde)
-**Sessão:** Única (planejamento + execução completa)
+**Commits:** 2 (3130bde + 3fb1e55)
+**Sessões:** 2 (planejamento/execução inicial + limpeza adicional)
 
 ---
 
@@ -60,7 +60,39 @@ Garantir que `bun run typecheck` e `bun run lint` passem sem errors bloqueadores
 
 ---
 
-## Implementação Detalhada
+## Sessão 2: Limpeza Adicional de Warnings (3fb1e55)
+
+**Data:** 15 de dezembro de 2025 (continuação)
+**Objetivo:** Eliminar warnings TypeScript restantes (14 → 0)
+
+### Ações Executadas
+
+**Arquivos Limpos (11 total):**
+1. **NotificationPermissionScreen.tsx** - Removido `SCREEN_WIDTH` não usado
+2. **MyCareScreen.tsx** - Removido `SCREEN_WIDTH` não usado
+3. **BreathingExerciseScreen.tsx** - Removido `Dimensions` import
+4. **MaeValenteProgressScreen.tsx** - Removido `Dimensions` import + `width` var
+5. **NathIAOnboardingScreen.tsx** - Removido `SHADOWS` import + renomeado `_navigation`
+6. **AssistantScreen.tsx** - Removido `NATHIA_API_CONFIG` + renomeado `_groupIndex`
+7. **ProfileScreen.tsx** - Corrigido selector zustand `s` → `setUser`
+8. **premium-store.ts** - Removido `checkRevenueCatPremium` não usado
+9. **store.ts** - Renomeado param `get` → `_get`
+10. **premium.ts** - Removido `PurchasesPackage` import
+11. **dimensions.ts** - Removido `BASE_HEIGHT` constante
+
+**Arquivo Novo:**
+- **navigationRef.ts** - Referência de navegação centralizada
+
+### Resultados Sessão 2
+
+| Métrica | Antes Sessão 2 | Depois Sessão 2 | Redução |
+|---------|----------------|-----------------|---------|
+| **TypeScript Errors** | 14 | **0** | 100% ✅ |
+| **ESLint Warnings** | 38 | 28 | 26% ⬇️ |
+
+---
+
+## Implementação Detalhada (Sessão 1)
 
 ### 1. HomeScreen → Design System (CRÍTICO)
 
@@ -330,42 +362,46 @@ grounding?: {
 
 ## Resultados Finais
 
-### Estatísticas
+### Estatísticas Completas (Sessão 1 + Sessão 2)
 
-| Métrica | Antes | Depois | Redução |
-|---------|-------|--------|---------|
-| **TypeScript Errors** | ~70 | 35 | 50% |
-| **ESLint Errors** | 1 | 0 | 100% |
-| **ESLint Warnings** | ~53 | 52 | - |
-| **`as any` Occurrences** | 7+ | 0 | 100% |
-| **`any` Types** | 5+ | 0 | 100% |
+| Métrica | Inicial | Após Sessão 1 | Após Sessão 2 | Redução Total |
+|---------|---------|---------------|---------------|---------------|
+| **TypeScript Errors** | ~70 | 35 | **0** | **100%** ✅ |
+| **ESLint Errors** | 1 | 0 | **0** | **100%** ✅ |
+| **ESLint Warnings** | ~53 | 52 | **28** | **47%** ⬇️ |
+| **`as any` Occurrences** | 7+ | 0 | **0** | **100%** ✅ |
+| **`any` Types` | 5+ | 0 | **0** | **100%** ✅ |
 
-### Validação
+### Validação Final
 
 ```bash
-✅ bun run lint
-# ✖ 52 problems (0 errors, 52 warnings)
-
 ✅ bun run typecheck
-# 35 errors (todos TS6133: unused vars - não-críticos)
+# NO ERRORS - 100% LIMPO! 🎉
+
+✅ bun run lint
+# ✖ 28 problems (0 errors, 28 warnings)
+# Warnings aceitáveis: deps hooks, error handlers, type preferences
 ```
 
 ### Commits
 
-**1 commit criado**:
+**2 commits criados**:
 ```
 3130bde - fix: passa typecheck + lint (0 errors ESLint, 35 warnings TS)
+3fb1e55 - chore: limpa warnings TypeScript (0 errors restantes)
 ```
 
 ---
 
-## Arquivos Modificados (15 total)
+## Arquivos Modificados
 
-### Críticos (2)
+### Sessão 1: Correções Críticas (15 arquivos)
+
+#### Críticos (2)
 1. [src/screens/HomeScreen.tsx](../src/screens/HomeScreen.tsx) - 12 correções de cores
 2. [src/screens/LoginScreen.tsx](../src/screens/LoginScreen.tsx) - 1 correção
 
-### Altos (6)
+#### Altos (6)
 3. [src/components/ui/Toast.tsx](../src/components/ui/Toast.tsx) - return path
 4. [src/screens/HabitsScreen.tsx](../src/screens/HabitsScreen.tsx) - IconName + imports
 5. [src/screens/MyCareScreen.tsx](../src/screens/MyCareScreen.tsx) - IconName
@@ -373,14 +409,37 @@ grounding?: {
 7. [src/screens/NotificationPermissionScreen.tsx](../src/screens/NotificationPermissionScreen.tsx) - IconName
 8. [src/screens/PaywallScreen.tsx](../src/screens/PaywallScreen.tsx) - Props + IconName
 
-### Médios (4)
+#### Médios (4)
 9. [src/screens/MaeValenteProgressScreen.tsx](../src/screens/MaeValenteProgressScreen.tsx) - CheckInData
 10. [index.ts](../index.ts) - side-effect import
 11. [src/utils/logger.ts](../src/utils/logger.ts) - eslint-disable
 12. [src/types/ai.ts](../src/types/ai.ts) - grounding types
 
-### Novos (1)
+#### Novos (1)
 13. [src/types/icons.ts](../src/types/icons.ts) - **NOVO** - tipo IconName
+
+---
+
+### Sessão 2: Limpeza de Warnings (30 arquivos)
+
+#### Limpeza TypeScript (11)
+1. [src/screens/NotificationPermissionScreen.tsx](../src/screens/NotificationPermissionScreen.tsx) - SCREEN_WIDTH
+2. [src/screens/MyCareScreen.tsx](../src/screens/MyCareScreen.tsx) - SCREEN_WIDTH
+3. [src/screens/BreathingExerciseScreen.tsx](../src/screens/BreathingExerciseScreen.tsx) - Dimensions
+4. [src/screens/MaeValenteProgressScreen.tsx](../src/screens/MaeValenteProgressScreen.tsx) - Dimensions + width
+5. [src/screens/NathIAOnboardingScreen.tsx](../src/screens/NathIAOnboardingScreen.tsx) - SHADOWS + _navigation
+6. [src/screens/AssistantScreen.tsx](../src/screens/AssistantScreen.tsx) - NATHIA_API_CONFIG + _groupIndex
+7. [src/screens/ProfileScreen.tsx](../src/screens/ProfileScreen.tsx) - zustand selector
+8. [src/state/premium-store.ts](../src/state/premium-store.ts) - checkRevenueCatPremium
+9. [src/state/store.ts](../src/state/store.ts) - _get param
+10. [src/types/premium.ts](../src/types/premium.ts) - PurchasesPackage
+11. [src/utils/dimensions.ts](../src/utils/dimensions.ts) - BASE_HEIGHT
+
+#### Outros Ajustes (19)
+12-30. Ajustes em vários arquivos (logger, elevenlabs, hooks, components, navigation)
+
+#### Novos (1)
+31. [src/navigation/navigationRef.ts](../src/navigation/navigationRef.ts) - **NOVO** - ref de navegação
 
 ---
 
