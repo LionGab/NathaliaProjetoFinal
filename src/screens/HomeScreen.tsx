@@ -262,16 +262,15 @@ export default function HomeScreen({ navigation }: MainTabScreenProps<"Home">): 
                     overflow: "hidden",
                   }}
                 >
-                  {/* Imagem com zoom para mostrar ela e o bebê */}
+                  {/* Imagem ajustada - mostra Nath + bebê sem cortar cabelo */}
                   <Image
                     source={{ uri: NATHALIA_HERO_URL }}
                     style={{
-                      width: "120%",
-                      height: "120%",
-                      alignSelf: "center",
+                      width: "100%",
+                      height: "100%",
                     }}
                     contentFit="cover"
-                    contentPosition={{ top: 0.3 }}
+                    contentPosition={{ top: 0.55 }}
                     transition={300}
                     placeholder={{ blurhash: "LKO2?U%2Tw=w]~RBVZRi};RPxuwH" }}
                   />

@@ -10,13 +10,15 @@ import { Ionicons } from "@expo/vector-icons";
 import { BottomTabBarButtonProps, createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { BlurView } from "expo-blur";
 import * as Haptics from "expo-haptics";
-import { LinearGradient } from "expo-linear-gradient";
 import React from "react";
-import { Platform, Pressable, Text, View } from "react-native";
+import { Image, Platform, Pressable, Text, View } from "react-native";
 import Animated, { useAnimatedStyle, useSharedValue, withSpring } from "react-native-reanimated";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { COLORS, SHADOWS, SPACING } from "../theme/design-system";
 import { brand } from "../theme/presets/calmFemtech";
+
+// Foto da Nathalia para o botão NathIA
+const NATHIA_AVATAR_URL = "https://i.imgur.com/a4O1jAT.jpg";
 import { MainTabParamList, MainTabScreenProps } from "../types/navigation";
 
 // Screens
@@ -83,7 +85,7 @@ const AnimatedTabIcon = ({
   );
 };
 
-// NathIA Center Button Component (Calm FemTech - azul dominante + label)
+// NathIA Center Button Component (Calm FemTech - foto da Nathalia + design clean)
 const NathIACenterButton = ({ onPress, focused }: { onPress: () => void; focused: boolean }) => {
   const scale = useSharedValue(1);
 
@@ -100,6 +102,10 @@ const NathIACenterButton = ({ onPress, focused }: { onPress: () => void; focused
     transform: [{ scale: scale.value }],
   }));
 
+  // Cores baseadas no estado
+  const ringColor = focused ? brand.accent[400] : COLORS.primary[300];
+  const labelColor = focused ? COLORS.primary[500] : COLORS.neutral[400];
+
   return (
     <Pressable onPress={handlePress} style={{ alignItems: "center" }}>
       <Animated.View
@@ -107,38 +113,70 @@ const NathIACenterButton = ({ onPress, focused }: { onPress: () => void; focused
           {
             marginTop: -20,
             alignItems: "center",
-            ...SHADOWS.lg,
           },
           animatedStyle,
         ]}
       >
-        <LinearGradient
-          colors={[brand.primary[400], brand.primary[600], brand.accent[400]]}
-          start={{ x: 0, y: 0 }}
-          end={{ x: 1, y: 1 }}
+        {/* Container com borda externa colorida */}
+        <View
           style={{
-            width: 56,
-            height: 56,
-            borderRadius: 28,
-            alignItems: "center",
-            justifyContent: "center",
-            borderWidth: 3,
-            borderColor: COLORS.background.primary,
+            width: 60,
+            height: 60,
+            borderRadius: 30,
+            padding: 3,
+            backgroundColor: ringColor,
+            ...SHADOWS.md,
           }}
         >
-          <Ionicons
-            name={focused ? "sparkles" : "sparkles-outline"}
-            size={26}
-            color={COLORS.text.inverse}
-          />
-        </LinearGradient>
-        {/* Label NathIA sempre visível */}
+          {/* Borda branca interna */}
+          <View
+            style={{
+              flex: 1,
+              borderRadius: 27,
+              padding: 2,
+              backgroundColor: COLORS.background.primary,
+            }}
+          >
+            {/* Foto da Nathalia */}
+            <Image
+              source={{ uri: NATHIA_AVATAR_URL }}
+              style={{
+                flex: 1,
+                borderRadius: 25,
+              }}
+              resizeMode="cover"
+            />
+          </View>
+        </View>
+
+        {/* Indicador de IA ativo */}
+        {focused && (
+          <View
+            style={{
+              position: "absolute",
+              bottom: 18,
+              right: -2,
+              width: 18,
+              height: 18,
+              borderRadius: 9,
+              backgroundColor: brand.accent[400],
+              alignItems: "center",
+              justifyContent: "center",
+              borderWidth: 2,
+              borderColor: COLORS.background.primary,
+            }}
+          >
+            <Ionicons name="sparkles" size={10} color={COLORS.neutral[900]} />
+          </View>
+        )}
+
+        {/* Label NathIA */}
         <Text
           style={{
             fontSize: 11,
             fontWeight: "600",
             fontFamily: "Manrope_600SemiBold",
-            color: focused ? COLORS.primary[500] : COLORS.neutral[400],
+            color: labelColor,
             marginTop: 4,
           }}
         >

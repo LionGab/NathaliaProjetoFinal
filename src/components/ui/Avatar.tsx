@@ -32,7 +32,7 @@ const Avatar = React.memo(function Avatar({
   let imageSource: ImageSourcePropType | { uri: string } | null = null;
   
   if (isNathIA) {
-    imageSource = require("../../../assets/nathia-avatar.jpg");
+    imageSource = { uri: "https://i.imgur.com/a4O1jAT.jpg" };
   } else if (isCommunity) {
     imageSource = require("../../../assets/community-avatar.jpg");
   } else if (isNathalia) {

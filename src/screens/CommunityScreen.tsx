@@ -10,12 +10,12 @@
 
 import { Ionicons } from "@expo/vector-icons";
 import * as Haptics from "expo-haptics";
+import { Image } from "expo-image";
 import * as ImagePicker from "expo-image-picker";
 import React, { useCallback, useMemo, useState } from "react";
 import {
   ActivityIndicator,
   FlatList,
-  Image,
   KeyboardAvoidingView,
   Modal,
   Platform,
@@ -39,7 +39,7 @@ import { Avatar } from "../components/ui";
 import { useToast } from "../context/ToastContext";
 import { useTheme } from "../hooks/useTheme";
 import { useAppStore, useCommunityStore } from "../state/store";
-import { COLORS, RADIUS, SPACING } from "../theme/design-system";
+import { COLORS, RADIUS, SHADOWS, SPACING } from "../theme/design-system";
 import { MainTabScreenProps, Post } from "../types/navigation";
 
 // Posts de exemplo
@@ -466,20 +466,23 @@ const PostCard: React.FC<{
 
   return (
     <Animated.View
-      entering={FadeInUp.delay(index * 60)
+      entering={FadeInUp.delay(index * 50)
         .duration(400)
         .springify()}
-      style={[{ marginBottom: SPACING.md }, animatedStyle]}
+      style={[{ marginBottom: SPACING.lg }, animatedStyle]}
     >
       <Pressable
         onPress={() => onPress(post.id)}
-        style={{
+        style={({ pressed }) => ({
           backgroundColor: bgCard,
           borderRadius: RADIUS.xl,
           padding: SPACING.lg,
           borderWidth: 1,
           borderColor: isPending ? COLORS.primary[300] : borderColor,
-        }}
+          ...SHADOWS.sm,
+          opacity: pressed ? 0.98 : 1,
+          transform: [{ scale: pressed ? 0.995 : 1 }],
+        })}
       >
         {/* Status de revisão */}
         {isPending && (
@@ -490,14 +493,21 @@ const PostCard: React.FC<{
               backgroundColor: COLORS.primary[50],
               paddingHorizontal: SPACING.sm,
               paddingVertical: SPACING.xs,
-              borderRadius: RADIUS.md,
-              marginBottom: SPACING.sm,
+              borderRadius: RADIUS.full,
+              marginBottom: SPACING.md,
               alignSelf: "flex-start",
               gap: SPACING.xs,
             }}
           >
             <Ionicons name="time-outline" size={12} color={COLORS.primary[500]} />
-            <Text style={{ fontSize: 11, fontWeight: "600", color: COLORS.primary[600] }}>
+            <Text
+              style={{
+                fontSize: 11,
+                fontWeight: "600",
+                fontFamily: "Manrope_600SemiBold",
+                color: COLORS.primary[600],
+              }}
+            >
               Em revisão
             </Text>
           </View>
@@ -507,9 +517,9 @@ const PostCard: React.FC<{
         <View style={{ flexDirection: "row", alignItems: "center", marginBottom: SPACING.md }}>
           <View
             style={{
-              width: 40,
-              height: 40,
-              borderRadius: 20,
+              width: 42,
+              height: 42,
+              borderRadius: 21,
               backgroundColor: COLORS.primary[100],
               alignItems: "center",
               justifyContent: "center",
@@ -519,10 +529,24 @@ const PostCard: React.FC<{
             <Ionicons name="person" size={18} color={COLORS.primary[500]} />
           </View>
           <View style={{ flex: 1 }}>
-            <Text style={{ color: textPrimary, fontSize: 14, fontWeight: "600" }}>
+            <Text
+              style={{
+                color: textPrimary,
+                fontSize: 15,
+                fontWeight: "600",
+                fontFamily: "Manrope_600SemiBold",
+              }}
+            >
               {post.authorName}
             </Text>
-            <Text style={{ color: textSecondary, fontSize: 12, marginTop: 1 }}>
+            <Text
+              style={{
+                color: textSecondary,
+                fontSize: 12,
+                fontFamily: "Manrope_500Medium",
+                marginTop: 2,
+              }}
+            >
               {formatTimeAgo(post.createdAt)}
             </Text>
           </View>
@@ -532,8 +556,9 @@ const PostCard: React.FC<{
         <Text
           style={{
             color: textPrimary,
-            fontSize: 14,
-            lineHeight: 21,
+            fontSize: 15,
+            lineHeight: 22,
+            fontFamily: "Manrope_500Medium",
             marginBottom: SPACING.md,
           }}
         >
@@ -567,19 +592,25 @@ const PostCard: React.FC<{
         >
           <Pressable
             onPress={handleLikePress}
-            style={{ flexDirection: "row", alignItems: "center", marginRight: SPACING["2xl"] }}
+            style={({ pressed }) => ({
+              flexDirection: "row",
+              alignItems: "center",
+              marginRight: SPACING["2xl"],
+              opacity: pressed ? 0.7 : 1,
+            })}
           >
             <Ionicons
               name={post.isLiked ? "heart" : "heart-outline"}
-              size={18}
-              color={post.isLiked ? COLORS.primary[500] : textSecondary}
+              size={20}
+              color={post.isLiked ? COLORS.accent[500] : textSecondary}
             />
             <Text
               style={{
                 fontSize: 13,
                 marginLeft: SPACING.xs,
-                fontWeight: "500",
-                color: post.isLiked ? COLORS.primary[500] : textSecondary,
+                fontWeight: "600",
+                fontFamily: "Manrope_600SemiBold",
+                color: post.isLiked ? COLORS.accent[500] : textSecondary,
               }}
             >
               {post.likesCount}
@@ -588,14 +619,20 @@ const PostCard: React.FC<{
 
           <Pressable
             onPress={() => onComment(post.id)}
-            style={{ flexDirection: "row", alignItems: "center", marginRight: SPACING["2xl"] }}
+            style={({ pressed }) => ({
+              flexDirection: "row",
+              alignItems: "center",
+              marginRight: SPACING["2xl"],
+              opacity: pressed ? 0.7 : 1,
+            })}
           >
-            <Ionicons name="chatbubble-outline" size={16} color={textSecondary} />
+            <Ionicons name="chatbubble-outline" size={18} color={textSecondary} />
             <Text
               style={{
                 fontSize: 13,
                 marginLeft: SPACING.xs,
-                fontWeight: "500",
+                fontWeight: "600",
+                fontFamily: "Manrope_600SemiBold",
                 color: textSecondary,
               }}
             >
@@ -603,8 +640,14 @@ const PostCard: React.FC<{
             </Text>
           </Pressable>
 
-          <Pressable onPress={() => onShare(post)} style={{ marginLeft: "auto" }}>
-            <Ionicons name="share-outline" size={16} color={textSecondary} />
+          <Pressable
+            onPress={() => onShare(post)}
+            style={({ pressed }) => ({
+              marginLeft: "auto",
+              opacity: pressed ? 0.7 : 1,
+            })}
+          >
+            <Ionicons name="share-outline" size={18} color={textSecondary} />
           </Pressable>
         </View>
       </Pressable>
@@ -618,6 +661,12 @@ export default function CommunityScreen({ navigation }: MainTabScreenProps<"Comm
   const { width: screenWidth } = useWindowDimensions();
   useToast(); // Hook disponível para uso futuro
 
+  // Padding horizontal responsivo (igual à HomeScreen)
+  const horizontalPadding = useMemo(() => {
+    const scaleFactor = screenWidth / 375;
+    return Math.round(20 * scaleFactor);
+  }, [screenWidth]);
+
   const posts = useCommunityStore((s) => s.posts);
   const toggleLike = useCommunityStore((s) => s.toggleLike);
   const setPosts = useCommunityStore((s) => s.setPosts);
@@ -627,12 +676,6 @@ export default function CommunityScreen({ navigation }: MainTabScreenProps<"Comm
   const [isNewPostModalVisible, setIsNewPostModalVisible] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [isSearchVisible, setIsSearchVisible] = useState(false);
-
-  // Padding horizontal responsivo (igual à HomeScreen)
-  const horizontalPadding = useMemo(() => {
-    const scaleFactor = screenWidth / 375;
-    return Math.round(20 * scaleFactor);
-  }, [screenWidth]);
 
   // Carregar posts mock se vazio
   React.useEffect(() => {
@@ -707,16 +750,16 @@ export default function CommunityScreen({ navigation }: MainTabScreenProps<"Comm
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: bgPrimary }} edges={["top"]}>
       <View style={{ flex: 1, backgroundColor: bgPrimary }}>
-        {/* Header */}
+        {/* Header - Calm FemTech Premium */}
         <Animated.View
           entering={FadeInDown.duration(500).springify()}
           style={{
             paddingHorizontal: horizontalPadding,
-            paddingTop: spacing.md,
-            paddingBottom: spacing.md,
+            paddingTop: spacing.lg,
+            paddingBottom: spacing.lg,
           }}
         >
-          {/* Título + Busca - Calm FemTech: azul como base */}
+          {/* Título + Busca */}
           <View
             style={{
               flexDirection: "row",
@@ -725,25 +768,35 @@ export default function CommunityScreen({ navigation }: MainTabScreenProps<"Comm
             }}
           >
             <View style={{ flex: 1 }}>
+              {/* Emoji + Título na mesma linha */}
+              <View style={{ flexDirection: "row", alignItems: "center", marginBottom: 4 }}>
+                <Text style={{ fontSize: 22, marginRight: 8 }}>💕</Text>
+                <Text
+                  style={{
+                    color: textMain,
+                    fontSize: 22,
+                    fontWeight: "700",
+                    fontFamily: "Manrope_700Bold",
+                  }}
+                >
+                  Mães Valente
+                </Text>
+              </View>
               <Text
                 style={{
-                  color: textMain,
-                  fontSize: 20,
-                  fontWeight: "700",
-                  fontFamily: "Manrope_700Bold",
+                  color: textMuted,
+                  fontSize: 14,
+                  fontFamily: "Manrope_500Medium",
                 }}
               >
-                Mães Valente
-              </Text>
-              <Text style={{ color: textMuted, fontSize: 13, marginTop: 2 }}>
                 Comunidade de apoio e inspiração
               </Text>
             </View>
 
-            {/* Ícone de Busca - rosa como accent/ação */}
+            {/* Ícone de Busca */}
             <Pressable
               onPress={handleSearchToggle}
-              style={{
+              style={({ pressed }) => ({
                 width: 44,
                 height: 44,
                 borderRadius: 22,
@@ -752,7 +805,9 @@ export default function CommunityScreen({ navigation }: MainTabScreenProps<"Comm
                 justifyContent: "center",
                 borderWidth: 1,
                 borderColor: isDark ? colors.neutral[700] : colors.primary[100],
-              }}
+                opacity: pressed ? 0.8 : 1,
+                transform: [{ scale: pressed ? 0.95 : 1 }],
+              })}
             >
               <Ionicons
                 name={isSearchVisible ? "close" : "search"}
@@ -814,17 +869,20 @@ export default function CommunityScreen({ navigation }: MainTabScreenProps<"Comm
           )}
           ListHeaderComponent={
             // Composer estilo Facebook + Tópicos de dores/dúvidas
-            <View style={{ marginBottom: SPACING.lg }}>
+            <View style={{ marginBottom: SPACING.xl }}>
               {/* Card principal - "No que você está pensando?" */}
               <Pressable
                 onPress={() => setIsNewPostModalVisible(true)}
-                style={{
+                style={({ pressed }) => ({
                   backgroundColor: isDark ? COLORS.neutral[800] : COLORS.neutral[0],
                   borderRadius: RADIUS.xl,
                   padding: SPACING.lg,
                   borderWidth: 1,
-                  borderColor: isDark ? COLORS.neutral[700] : COLORS.neutral[200],
-                }}
+                  borderColor: isDark ? COLORS.neutral[700] : COLORS.neutral[100],
+                  ...SHADOWS.sm,
+                  opacity: pressed ? 0.95 : 1,
+                  transform: [{ scale: pressed ? 0.995 : 1 }],
+                })}
               >
                 {/* Linha superior: Avatar + Input */}
                 <View style={{ flexDirection: "row", alignItems: "center" }}>
@@ -845,6 +903,7 @@ export default function CommunityScreen({ navigation }: MainTabScreenProps<"Comm
                     style={{
                       flex: 1,
                       fontSize: 15,
+                      fontFamily: "Manrope_500Medium",
                       color: textSecondary,
                     }}
                   >
@@ -863,33 +922,43 @@ export default function CommunityScreen({ navigation }: MainTabScreenProps<"Comm
 
                 {/* Ações: Foto, Vídeo - Calm FemTech */}
                 <View style={{ flexDirection: "row", justifyContent: "space-around" }}>
-                  <Pressable
-                    style={{ flexDirection: "row", alignItems: "center", gap: SPACING.xs }}
-                  >
+                  <View style={{ flexDirection: "row", alignItems: "center", gap: SPACING.xs }}>
                     <Ionicons name="image" size={20} color={colors.primary[500]} />
-                    <Text style={{ fontSize: 13, fontWeight: "500", color: textSecondary }}>
+                    <Text
+                      style={{
+                        fontSize: 13,
+                        fontWeight: "600",
+                        fontFamily: "Manrope_600SemiBold",
+                        color: colors.primary[500],
+                      }}
+                    >
                       Foto
                     </Text>
-                  </Pressable>
-                  <Pressable
-                    style={{ flexDirection: "row", alignItems: "center", gap: SPACING.xs }}
-                  >
+                  </View>
+                  <View style={{ flexDirection: "row", alignItems: "center", gap: SPACING.xs }}>
                     <Ionicons name="videocam" size={20} color={brand.accent[500]} />
-                    <Text style={{ fontSize: 13, fontWeight: "500", color: textSecondary }}>
+                    <Text
+                      style={{
+                        fontSize: 13,
+                        fontWeight: "600",
+                        fontFamily: "Manrope_600SemiBold",
+                        color: brand.accent[500],
+                      }}
+                    >
                       Vídeo
                     </Text>
-                  </Pressable>
+                  </View>
                 </View>
               </Pressable>
 
               {/* Tópicos comuns - Calm FemTech: primary (azul) e accent (rosa) apenas */}
-              <View style={{ marginTop: SPACING.lg }}>
+              <View style={{ marginTop: SPACING.xl }}>
                 <Text
                   style={{
-                    fontSize: 14,
+                    fontSize: 15,
                     fontWeight: "600",
                     fontFamily: "Manrope_600SemiBold",
-                    color: textMuted,
+                    color: textMain,
                     marginBottom: SPACING.md,
                   }}
                 >
@@ -908,14 +977,26 @@ export default function CommunityScreen({ navigation }: MainTabScreenProps<"Comm
                   ].map((topic) => {
                     // Calm FemTech: azul como base, rosa para tópicos emocionais
                     const topicColor = topic.accent
-                      ? isDark ? brand.accent[300] : brand.accent[500]
-                      : isDark ? colors.primary[300] : colors.primary[500];
+                      ? isDark
+                        ? brand.accent[300]
+                        : brand.accent[500]
+                      : isDark
+                        ? colors.primary[300]
+                        : colors.primary[500];
                     const topicBg = topic.accent
-                      ? isDark ? `${brand.accent[500]}15` : brand.accent[50]
-                      : isDark ? `${colors.primary[500]}15` : colors.primary[50];
+                      ? isDark
+                        ? `${brand.accent[500]}15`
+                        : brand.accent[50]
+                      : isDark
+                        ? `${colors.primary[500]}15`
+                        : colors.primary[50];
                     const topicBorder = topic.accent
-                      ? isDark ? brand.accent[700] : brand.accent[200]
-                      : isDark ? colors.primary[700] : colors.primary[200];
+                      ? isDark
+                        ? brand.accent[700]
+                        : brand.accent[200]
+                      : isDark
+                        ? colors.primary[700]
+                        : colors.primary[200];
 
                     return (
                       <Pressable
@@ -962,9 +1043,9 @@ export default function CommunityScreen({ navigation }: MainTabScreenProps<"Comm
           }
           showsVerticalScrollIndicator={false}
           contentContainerStyle={{
-            paddingHorizontal: SPACING["2xl"],
-            paddingTop: SPACING.sm,
-            paddingBottom: 100 + insets.bottom,
+            paddingHorizontal: horizontalPadding,
+            paddingTop: SPACING.md,
+            paddingBottom: 120 + insets.bottom,
           }}
           initialNumToRender={5}
           maxToRenderPerBatch={5}
@@ -977,23 +1058,22 @@ export default function CommunityScreen({ navigation }: MainTabScreenProps<"Comm
           entering={FadeInUp.delay(300).duration(400)}
           style={{
             position: "absolute",
-            bottom: insets.bottom + SPACING.lg,
-            right: SPACING.lg,
+            bottom: insets.bottom + SPACING.xl,
+            right: SPACING.xl,
           }}
         >
           <Pressable
             onPress={() => setIsNewPostModalVisible(true)}
             style={({ pressed }) => ({
-              width: 56,
-              height: 56,
-              borderRadius: 28,
+              width: 58,
+              height: 58,
+              borderRadius: 29,
               backgroundColor: isDark ? brand.accent[500] : brand.accent[400],
               alignItems: "center",
               justifyContent: "center",
-              borderWidth: 1,
-              borderColor: brand.accent[500],
+              ...SHADOWS.lg,
               opacity: pressed ? 0.9 : 1,
-              transform: [{ scale: pressed ? 0.95 : 1 }],
+              transform: [{ scale: pressed ? 0.92 : 1 }],
             })}
           >
             <Ionicons name="add" size={28} color={colors.neutral[900]} />
