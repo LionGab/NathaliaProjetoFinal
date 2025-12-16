@@ -37,6 +37,8 @@ import { Avatar } from "../components/ui";
 import { VoiceMessagePlayer } from "../components/VoiceMessagePlayer";
 import {
   containsSensitiveTopic,
+  EmotionalMoodType,
+  getEmotionalResponse,
   getRandomFallbackMessage,
   prepareMessagesForAPI,
   SENSITIVE_TOPIC_DISCLAIMER,
@@ -105,7 +107,7 @@ const MESSAGE_COUNT_KEY = "nathia_message_count";
 // ============================================
 // MAIN COMPONENT
 // ============================================
-export default function AssistantScreen({ navigation }: MainTabScreenProps<"Assistant">) {
+export default function AssistantScreen({ navigation, route }: MainTabScreenProps<"Assistant">) {
   const insets = useSafeAreaInsets();
   const { isDark } = useTheme();
   const THEME = useMemo(() => getThemeColors(isDark), [isDark]);
@@ -114,6 +116,9 @@ export default function AssistantScreen({ navigation }: MainTabScreenProps<"Assi
   const [inputText, setInputText] = useState("");
   const [showHistory, setShowHistory] = useState(false);
   const [messageCount, setMessageCount] = useState(0);
+
+  // Contexto emocional vindo do check-in na Home
+  const emotionalContext = route?.params?.emotionalContext as EmotionalMoodType | undefined;
 
   // Store selectors
   const conversations = useChatStore((s) => s.conversations);
@@ -158,6 +163,28 @@ export default function AssistantScreen({ navigation }: MainTabScreenProps<"Assi
     };
     loadMessageCount();
   }, [isPremium, user?.id]);
+
+  // Processar contexto emocional vindo do check-in
+  React.useEffect(() => {
+    if (emotionalContext && hasAcceptedAITerms) {
+      // Adicionar resposta acolhedora da NathIA baseada no mood
+      const emotionalResponse = getEmotionalResponse(emotionalContext);
+
+      // Criar mensagem do assistente com a resposta emocional
+      const assistantMessage: ChatMessage = {
+        id: `emotional-${Date.now()}`,
+        role: "assistant",
+        content: emotionalResponse,
+        createdAt: new Date().toISOString(),
+      };
+
+      // Adicionar ao chat
+      addMessage(assistantMessage);
+
+      // Limpar o parâmetro para não repetir
+      navigation.setParams({ emotionalContext: undefined });
+    }
+  }, [emotionalContext, hasAcceptedAITerms, addMessage, navigation]);
 
   // Chat handlers hook
   const handlers = useChatHandlers({

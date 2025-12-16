@@ -59,7 +59,9 @@ export type RootStackParamList = {
 export type MainTabParamList = {
   Home: undefined;
   Community: undefined;
-  Assistant: undefined;
+  Assistant: {
+    emotionalContext?: "ansiosa" | "desanimada" | "com_sono" | "enjoada" | "em_paz" | "orgulhosa" | "bem" | "cansada" | "indisposta" | "amada";
+  } | undefined;
   MundoNath: undefined;
   MyCare: undefined;
 };

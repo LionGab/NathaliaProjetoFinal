@@ -160,3 +160,157 @@ Se precisar de apoio profissional:
 
 Estou aqui pra te ouvir, mas um profissional pode te ajudar de formas que eu não consigo. 💕
 `;
+
+/**
+ * ================================================
+ * SISTEMA DE CHECK-IN EMOCIONAL
+ * ================================================
+ *
+ * Prompt especializado para quando usuária vem do check-in emocional.
+ * Prioriza: VALIDAR → ACOLHER → REDUZIR ANSIEDADE → só depois orientar
+ */
+
+// Tipos de mood expandidos
+export type EmotionalMoodType =
+  | "ansiosa"
+  | "desanimada"
+  | "com_sono"
+  | "enjoada"
+  | "em_paz"
+  | "orgulhosa"
+  | "bem"
+  | "cansada"
+  | "indisposta"
+  | "amada";
+
+/**
+ * Prompt do sistema para contexto emocional
+ * Foco: Acolhimento > Informação
+ */
+export const NATHIA_EMOTIONAL_SYSTEM_PROMPT = `Você é a NathIA, uma assistente acolhedora, segura e emocionalmente inteligente.
+Seu público são mulheres — especialmente gestantes e mães — muitas vezes cansadas, sensíveis ou sobrecarregadas.
+
+A usuária acabou de tocar em um estado emocional na tela inicial.
+Antes de qualquer dica, informação ou orientação prática, sua prioridade é:
+
+1️⃣ VALIDAR a emoção
+2️⃣ ACOLHER sem julgar
+3️⃣ REDUZIR ansiedade (linguagem calma, curta, humana)
+4️⃣ SÓ DEPOIS oferecer ajuda ou direcionamento
+
+REGRAS ABSOLUTAS:
+- Nunca minimize o sentimento da usuária
+- Nunca use tom médico, técnico ou frio
+- Nunca use frases genéricas como "vai passar"
+- Nunca force positividade
+- Respostas curtas (2 a 4 frases no máximo)
+- Linguagem simples, calor humano, sem emojis excessivos
+- Fale como uma mulher próxima, não como uma IA
+
+ESTRUTURA DA RESPOSTA:
+1. Validação emocional direta
+2. Frase de presença ("estou aqui com você")
+3. Convite leve para continuar (pergunta simples)
+
+SE A USUÁRIA SELECIONAR UM TEMA DEPOIS (Bebê, Amamentação, Sono, Dúvida):
+- Mantenha o mesmo tom acolhedor
+- Conecte o tema com o estado emocional escolhido
+- Nunca responda de forma mecânica ou genérica`;
+
+/**
+ * Respostas iniciais por emoção
+ * Cada resposta segue: Validação → Presença → Convite leve
+ */
+export const EMOTIONAL_RESPONSES: Record<EmotionalMoodType, string> = {
+  ansiosa: `Entendo. Quando a ansiedade aparece, tudo parece mais pesado mesmo.
+Você não está exagerando — o que você sente é real.
+Estou aqui com você agora.
+Quer me contar o que mais está apertando aí dentro?`,
+
+  desanimada: `Ficar assim cansa, e muitas vezes a gente nem sabe explicar por quê.
+Você não precisa dar conta de tudo hoje.
+Eu estou aqui com você.
+O que mais tem pesado nesses dias?`,
+
+  com_sono: `O cansaço também fala — e fala alto.
+Seu corpo pode estar pedindo pausa, não cobrança.
+Estou aqui com você.
+Quer ajuda com descanso, rotina ou só conversar um pouco?`,
+
+  enjoada: `Sinto muito, enjoo desgasta mesmo, física e emocionalmente.
+Não é frescura, é o seu corpo passando por algo real.
+Estou aqui com você.
+Quer falar sobre isso ou prefere uma ajuda prática agora?`,
+
+  em_paz: `Que bom sentir isso.
+Momentos de calma também merecem atenção.
+Estou aqui com você.
+Quer aproveitar esse momento para cuidar de algo específico?`,
+
+  orgulhosa: `Você tem motivos para se sentir assim.
+Reconhecer suas conquistas também é cuidado.
+Estou aqui com você.
+Quer me contar o que te fez sentir assim hoje?`,
+
+  // Mapeamento dos moods atuais do check-in
+  bem: `Que bom sentir isso.
+Momentos de calma também merecem atenção.
+Estou aqui com você.
+Quer aproveitar esse momento para cuidar de algo específico?`,
+
+  cansada: `O cansaço também fala — e fala alto.
+Seu corpo pode estar pedindo pausa, não cobrança.
+Estou aqui com você.
+Quer ajuda com descanso, rotina ou só conversar um pouco?`,
+
+  indisposta: `Ficar assim cansa, e muitas vezes a gente nem sabe explicar por quê.
+Você não precisa dar conta de tudo hoje.
+Eu estou aqui com você.
+O que mais tem pesado nesses dias?`,
+
+  amada: `Você tem motivos para se sentir assim.
+Reconhecer seus sentimentos também é cuidado.
+Estou aqui com você.
+Quer me contar o que te fez sentir assim hoje?`,
+};
+
+/**
+ * Prepara mensagens para API com contexto emocional
+ * Usa prompt especializado + contexto do mood selecionado
+ */
+export const prepareEmotionalMessagesForAPI = (
+  mood: EmotionalMoodType,
+  conversationHistory: { role: "user" | "assistant"; content: string }[]
+): AIMessage[] => {
+  const emotionalContext = `A usuária informou que está se sentindo: ${mood.toUpperCase()}`;
+
+  const messages: AIMessage[] = [
+    {
+      role: "system",
+      content: `${NATHIA_EMOTIONAL_SYSTEM_PROMPT}\n\n${emotionalContext}`,
+    },
+    ...conversationHistory.map((msg) => ({
+      role: msg.role as "user" | "assistant",
+      content: msg.content,
+    })),
+  ];
+
+  return messages;
+};
+
+/**
+ * Retorna a resposta inicial para um mood específico
+ */
+export const getEmotionalResponse = (mood: EmotionalMoodType): string => {
+  return EMOTIONAL_RESPONSES[mood] || EMOTIONAL_RESPONSES.bem;
+};
+
+/**
+ * Configuração de API para contexto emocional
+ * Temperatura mais baixa para respostas mais consistentes e acolhedoras
+ */
+export const NATHIA_EMOTIONAL_API_CONFIG = {
+  temperature: 0.6, // Mais consistente para acolhimento
+  maxTokens: 300, // Respostas curtas e diretas
+  model: "gpt-4o",
+};

@@ -5,9 +5,13 @@
  * - 4 opções grandes: Bem, Cansada, Indisposta, Amada
  * - 1 toque = check-in completo
  * - Feedback imediato com mensagem acolhedora
+ * - Botão para conversar com NathIA sobre o mood
  * - Animação suave (FadeIn)
  */
 
+import { Ionicons } from "@expo/vector-icons";
+import { useNavigation } from "@react-navigation/native";
+import type { BottomTabNavigationProp } from "@react-navigation/bottom-tabs";
 import * as Haptics from "expo-haptics";
 import React, { useCallback } from "react";
 import { Pressable, StyleSheet, Text, View } from "react-native";
@@ -21,6 +25,7 @@ import { useTheme } from "../../hooks/useTheme";
 import { useCheckInStore } from "../../state/store";
 import { ACCESSIBILITY, RADIUS, SPACING } from "../../theme/design-system";
 import { brand, neutral, surface } from "../../theme/tokens";
+import type { MainTabParamList } from "../../types/navigation";
 
 // Tipos de mood
 type MoodType = "bem" | "cansada" | "indisposta" | "amada";
@@ -137,6 +142,7 @@ MoodButton.displayName = "MoodButton";
 // Componente principal
 export const EmotionalCheckInPrimary: React.FC = () => {
   const { colors, isDark } = useTheme();
+  const navigation = useNavigation<BottomTabNavigationProp<MainTabParamList>>();
 
   // Store
   const setTodayMood = useCheckInStore((s) => s.setTodayMood);
@@ -195,6 +201,13 @@ export const EmotionalCheckInPrimary: React.FC = () => {
     [setTodayMood]
   );
 
+  // Handler para conversar com NathIA sobre o mood
+  const handleTalkAboutMood = useCallback(async () => {
+    if (!selectedMood) return;
+    await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    navigation.navigate("Assistant", { emotionalContext: selectedMood });
+  }, [selectedMood, navigation]);
+
   // Cores do tema
   const textMain = isDark ? colors.neutral[100] : colors.neutral[900];
   const textMuted = isDark ? colors.neutral[400] : colors.neutral[500];
@@ -219,7 +232,7 @@ export const EmotionalCheckInPrimary: React.FC = () => {
         ))}
       </View>
 
-      {/* Feedback Message */}
+      {/* Feedback Message + CTA para conversar */}
       {feedbackMessage && (
         <Animated.View
           entering={FadeIn.duration(400)}
@@ -231,6 +244,24 @@ export const EmotionalCheckInPrimary: React.FC = () => {
           ]}
         >
           <Text style={[styles.feedbackText, { color: textMuted }]}>{feedbackMessage}</Text>
+
+          {/* Botão para conversar com NathIA */}
+          <Pressable
+            onPress={handleTalkAboutMood}
+            accessibilityLabel="Conversar com NathIA sobre como você está"
+            accessibilityRole="button"
+            style={({ pressed }) => [
+              styles.talkButton,
+              {
+                backgroundColor: isDark ? brand.accent[500] : brand.accent[400],
+                opacity: pressed ? 0.9 : 1,
+                transform: [{ scale: pressed ? 0.98 : 1 }],
+              },
+            ]}
+          >
+            <Ionicons name="chatbubble-ellipses" size={16} color={neutral[900]} />
+            <Text style={styles.talkButtonText}>Conversar sobre isso</Text>
+          </Pressable>
         </Animated.View>
       )}
     </View>
@@ -280,6 +311,7 @@ const styles = StyleSheet.create({
     paddingVertical: SPACING.md,
     paddingHorizontal: SPACING.lg,
     borderRadius: RADIUS.lg,
+    gap: SPACING.md,
   },
   feedbackText: {
     fontSize: 14,
@@ -287,6 +319,23 @@ const styles = StyleSheet.create({
     fontFamily: "Manrope_500Medium",
     textAlign: "center",
     lineHeight: 20,
+  },
+  talkButton: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: SPACING.xs,
+    paddingVertical: SPACING.sm,
+    paddingHorizontal: SPACING.md,
+    borderRadius: RADIUS.full,
+    alignSelf: "center",
+    minHeight: ACCESSIBILITY.minTapTarget,
+  },
+  talkButtonText: {
+    fontSize: 13,
+    fontWeight: "700",
+    fontFamily: "Manrope_700Bold",
+    color: neutral[900],
   },
 });
 
