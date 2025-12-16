@@ -485,7 +485,7 @@ export default function AssistantScreen({ navigation }: MainTabScreenProps<"Assi
 
             {/* Title - Centered */}
             <View style={styles.headerCenter}>
-              <Avatar size={28} isNathIA={true} style={{ marginRight: 8 }} />
+              <Avatar size={40} isNathIA={true} style={{ marginRight: 10 }} />
               <Text style={[styles.headerTitle, { color: THEME.textPrimary }]}>NathIA</Text>
             </View>
 
@@ -507,7 +507,7 @@ export default function AssistantScreen({ navigation }: MainTabScreenProps<"Assi
         <KeyboardAvoidingView
           behavior={Platform.OS === "ios" ? "padding" : "height"}
           style={styles.messagesContainer}
-          keyboardVerticalOffset={0}
+          keyboardVerticalOffset={Platform.OS === "ios" ? 88 : 0}
         >
           {currentMessages.length === 0 ? (
             <ScrollView
@@ -560,7 +560,10 @@ export default function AssistantScreen({ navigation }: MainTabScreenProps<"Assi
           <View
             style={[
               styles.inputContainer,
-              { paddingBottom: insets.bottom + 8, backgroundColor: THEME.bgPrimary },
+              {
+                paddingBottom: Math.max(insets.bottom, 8) + (Platform.OS === "ios" ? 88 : 72),
+                backgroundColor: THEME.bgPrimary,
+              },
             ]}
           >
             {/* Quick Chips - Show when there are messages */}
@@ -670,8 +673,8 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
-    paddingHorizontal: 12,
-    paddingVertical: 12,
+    paddingHorizontal: 16,
+    paddingVertical: 14,
   },
   headerButton: {
     width: 40,
@@ -689,8 +692,9 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   headerTitle: {
-    fontSize: 17,
-    fontWeight: "600",
+    fontSize: 20,
+    fontWeight: "700",
+    fontFamily: "Manrope_700Bold",
   },
   headerActions: {
     flexDirection: "row",
