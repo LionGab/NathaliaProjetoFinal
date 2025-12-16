@@ -56,6 +56,10 @@ import { useVoicePremiumGate } from "../hooks/useVoice";
 import { SHADOWS, COLORS as DS_COLORS, COLORS_DARK } from "../theme/design-system";
 import { useTheme } from "../hooks/useTheme";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { ChatEmptyState } from "../components/chat/ChatEmptyState";
+import { ChatHistorySidebar } from "../components/chat/ChatHistorySidebar";
+import { AIConsentModal } from "../components/chat/AIConsentModal";
+import { useChatHandlers } from "../hooks/useChatHandlers";
 
 const { width: SCREEN_WIDTH } = Dimensions.get("window");
 
@@ -95,38 +99,6 @@ const getThemeColors = (isDark: boolean) => {
 
 // Default para StyleSheet estático (light mode)
 const THEME_LIGHT = getThemeColors(false);
-
-// ============================================
-// SUGGESTED PROMPTS
-// ============================================
-interface SuggestedPrompt {
-  icon: keyof typeof Ionicons.glyphMap;
-  title: string;
-  subtitle: string;
-}
-
-const SUGGESTED_PROMPTS: SuggestedPrompt[] = [
-  {
-    icon: "nutrition-outline",
-    title: "Alimentação",
-    subtitle: "O que posso comer na gravidez?"
-  },
-  {
-    icon: "fitness-outline",
-    title: "Exercícios",
-    subtitle: "Atividades seguras para gestantes"
-  },
-  {
-    icon: "medical-outline",
-    title: "Sintomas",
-    subtitle: "Quando devo procurar um médico?"
-  },
-  {
-    icon: "heart-outline",
-    title: "Bem-estar",
-    subtitle: "Dicas para aliviar enjoos"
-  },
-];
 
 const QUICK_CHIPS = [
   "Como está meu bebê?",
@@ -193,11 +165,15 @@ export default function AssistantScreen({ navigation }: MainTabScreenProps<"Assi
     loadMessageCount();
   }, [isPremium, user?.id]);
 
-  // Handler para quando voz premium é necessária
-  const handleVoicePremiumRequired = useCallback(() => {
-    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-    navigation.navigate("Paywall", { source: "voice_nathia" });
-  }, [navigation]);
+  // Chat handlers hook
+  const handlers = useChatHandlers({
+    navigation,
+    inputText,
+    setInputText,
+    messageCount,
+    setMessageCount,
+    flatListRef,
+  });
 
   // Get current messages
   const currentMessages = useMemo(() => {
@@ -365,59 +341,37 @@ export default function AssistantScreen({ navigation }: MainTabScreenProps<"Assi
     }
   }, [inputText, isLoading, conversations, currentConversationId, addMessage, setLoading, isPremium, messageCount, navigation, user]);
 
-  const handleNewChat = async () => {
-    await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-    setCurrentConversation(null);
+  // Handlers usando hook customizado
+  const handleNewChat = useCallback(async () => {
+    await handlers.handleNewChat();
     setShowHistory(false);
-  };
+  }, [handlers]);
 
-  const handleSelectConversation = async (id: string) => {
-    await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-    setCurrentConversation(id);
-    setShowHistory(false);
-  };
+  const handleSelectConversation = useCallback(
+    async (id: string) => {
+      await handlers.handleSelectConversation(id);
+      setShowHistory(false);
+    },
+    [handlers]
+  );
 
-  const handleDeleteConversation = async (id: string) => {
-    await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
-    deleteConversation(id);
-  };
+  const handleDeleteConversation = handlers.handleDeleteConversation;
+  const handleSuggestedPrompt = handlers.handleSuggestedPrompt;
+  const handleMicPress = handlers.handleMicPress;
+  const handleAttachment = handlers.handleAttachment;
 
-  const handleSuggestedPrompt = async (text: string) => {
-    await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-    setInputText(text);
-  };
-
-  const handleMicPress = async () => {
-    await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-    navigation.navigate("ComingSoon", {
-      title: "Mensagem de Voz",
-      description: "Em breve você poderá enviar mensagens de voz para a NathIA.",
-      emoji: "🎙️",
-      primaryCtaLabel: "Voltar",
-    });
-  };
-
-  const handleAcceptAITerms = async () => {
+  const handleAcceptAITerms = useCallback(async () => {
     await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
     acceptAITerms();
     setShowAIConsent(false);
-  };
+  }, [acceptAITerms]);
 
-  const handleDeclineAITerms = async () => {
+  const handleDeclineAITerms = useCallback(async () => {
     await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-    // Navigate to Home tab instead of goBack() for consistent behavior in TabNavigator
     navigation.navigate("Home");
-  };
+  }, [navigation]);
 
-  const handleAttachment = async () => {
-    await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-    navigation.navigate("ComingSoon", {
-      title: "Anexos",
-      description: "Em breve você poderá enviar fotos e documentos para a NathIA analisar.",
-      emoji: "📎",
-      primaryCtaLabel: "Voltar",
-    });
-  };
+  const handleVoicePremiumRequired = handlers.handleVoicePremiumRequired;
 
   // ============================================
   // MESSAGE BUBBLE COMPONENT
@@ -475,238 +429,8 @@ export default function AssistantScreen({ navigation }: MainTabScreenProps<"Assi
   });
   MessageBubble.displayName = "MessageBubble";
 
-  // ============================================
-  // EMPTY STATE
-  // ============================================
-  const renderEmptyState = () => (
-    <Animated.View entering={FadeIn.duration(600)} style={styles.emptyContainer}>
-      {/* Logo/Avatar */}
-      <Animated.View entering={FadeInDown.delay(100).duration(600).springify()}>
-        <View style={styles.emptyAvatarContainer}>
-          <Avatar
-            size={72}
-            isNathIA={true}
-          />
-        </View>
-      </Animated.View>
 
-      {/* Title */}
-      <Animated.Text
-        entering={FadeInDown.delay(200).duration(600).springify()}
-        style={styles.emptyTitle}
-      >
-        NathIA
-      </Animated.Text>
-      <Animated.Text
-        entering={FadeInDown.delay(300).duration(600).springify()}
-        style={styles.emptySubtitle}
-      >
-        Sua assistente inteligente 24h
-      </Animated.Text>
 
-      {/* Welcome Message */}
-      <Animated.View
-        entering={FadeInUp.delay(400).duration(600).springify()}
-        style={styles.welcomeCard}
-      >
-        <View style={styles.welcomeIcon}>
-          <Ionicons name="sparkles" size={20} color={THEME.primary} />
-        </View>
-        <Text style={styles.welcomeText}>
-          Olá! Eu sou a NathIA. ✨ Estou aqui para tirar suas dúvidas, te acalmar e conversar sobre essa fase incrível. O que você gostaria de saber hoje?
-        </Text>
-      </Animated.View>
-
-      {/* Suggested Prompts Grid */}
-      <Animated.View entering={FadeInUp.delay(500).duration(600).springify()} style={styles.promptsGrid}>
-        {SUGGESTED_PROMPTS.map((prompt, index) => (
-          <Animated.View
-            key={index}
-            entering={FadeInUp.delay(600 + index * 80).duration(400)}
-            style={styles.promptCard}
-          >
-            <Pressable
-              onPress={() => handleSuggestedPrompt(prompt.subtitle)}
-              style={styles.promptPressable}
-            >
-              <View style={styles.promptIconContainer}>
-                <Ionicons name={prompt.icon} size={20} color={THEME.primary} />
-              </View>
-              <Text style={styles.promptTitle}>{prompt.title}</Text>
-              <Text style={styles.promptSubtitle} numberOfLines={2}>
-                {prompt.subtitle}
-              </Text>
-            </Pressable>
-          </Animated.View>
-        ))}
-      </Animated.View>
-    </Animated.View>
-  );
-
-  // ============================================
-  // AI CONSENT MODAL
-  // ============================================
-  const renderAIConsentModal = () => (
-    <Modal visible={showAIConsent} animationType="fade" transparent statusBarTranslucent>
-      <View style={styles.modalOverlay}>
-        <Animated.View entering={FadeInUp.duration(400).springify()} style={styles.consentCard}>
-          {/* Header */}
-          <View style={styles.consentHeader}>
-            <View style={styles.consentIconContainer}>
-              <Ionicons name="sparkles" size={28} color={THEME.primary} />
-            </View>
-            <Text style={styles.consentTitle}>Antes de começar</Text>
-          </View>
-
-          {/* Content */}
-          <Text style={styles.consentText}>
-            A NathIA utiliza inteligência artificial para oferecer apoio. Suas conversas são processadas para gerar respostas personalizadas.
-          </Text>
-
-          {/* Links */}
-          <View style={styles.consentLinks}>
-            <Pressable
-              onPress={() => navigation.navigate("Legal")}
-              style={styles.consentLink}
-            >
-              <Ionicons name="shield-checkmark-outline" size={18} color={THEME.primary} />
-              <Text style={[styles.consentLinkText, { color: THEME_LIGHT.primary }]}>
-                Política de Privacidade
-              </Text>
-              <Ionicons name="chevron-forward" size={16} color={THEME.primary} />
-            </Pressable>
-            <Pressable
-              onPress={() => navigation.navigate("Legal")}
-              style={styles.consentLink}
-            >
-              <Ionicons name="document-text-outline" size={18} color={THEME.primary} />
-              <Text style={[styles.consentLinkText, { color: THEME_LIGHT.primary }]}>
-                Termos de Uso
-              </Text>
-              <Ionicons name="chevron-forward" size={16} color={THEME.primary} />
-            </Pressable>
-          </View>
-
-          {/* Disclaimer */}
-          <View style={styles.consentDisclaimer}>
-            <Ionicons name="medkit-outline" size={16} color={DS_COLORS.semantic.warning} style={{ marginTop: 2 }} />
-            <Text style={styles.disclaimerText}>
-              A NathIA não substitui atendimento médico. Em caso de emergência, procure ajuda profissional.
-            </Text>
-          </View>
-
-          {/* Buttons */}
-          <Pressable onPress={handleAcceptAITerms} style={styles.consentButtonPrimary}>
-            <Text style={styles.consentButtonPrimaryText}>Aceito e quero continuar</Text>
-          </Pressable>
-          <Pressable onPress={handleDeclineAITerms} style={styles.consentButtonSecondary}>
-            <Text style={styles.consentButtonSecondaryText}>Não, obrigada</Text>
-          </Pressable>
-        </Animated.View>
-      </View>
-    </Modal>
-  );
-
-  // ============================================
-  // HISTORY SIDEBAR
-  // ============================================
-  const renderHistorySidebar = () => (
-    <Modal visible={showHistory} animationType="none" transparent statusBarTranslucent>
-      <View style={styles.sidebarOverlay}>
-        {/* Backdrop */}
-        <Pressable
-          style={StyleSheet.absoluteFill}
-          onPress={() => setShowHistory(false)}
-        />
-
-        {/* Sidebar */}
-        <Animated.View
-          entering={SlideInLeft.duration(300)}
-          exiting={SlideOutLeft.duration(300)}
-          style={[styles.sidebar, { paddingTop: insets.top }]}
-        >
-          {/* Sidebar Header */}
-          <View style={styles.sidebarHeader}>
-            <Text style={styles.sidebarTitle}>Conversas</Text>
-            <Pressable
-              onPress={() => setShowHistory(false)}
-              style={styles.sidebarCloseButton}
-            >
-              <Ionicons name="close" size={20} color={THEME.textSecondary} />
-            </Pressable>
-          </View>
-
-          {/* New Chat Button */}
-          <Pressable onPress={handleNewChat} style={styles.newChatButton}>
-            <Ionicons name="add" size={20} color="#FFF" />
-            <Text style={styles.newChatText}>Nova conversa</Text>
-          </Pressable>
-
-          {/* Conversations List */}
-          <ScrollView style={styles.sidebarList} showsVerticalScrollIndicator={false}>
-            {groupedConversations.length === 0 ? (
-              <View style={styles.sidebarEmpty}>
-                <Ionicons name="chatbubbles-outline" size={48} color={THEME.border} />
-                <Text style={styles.sidebarEmptyText}>Nenhuma conversa ainda</Text>
-              </View>
-            ) : (
-              groupedConversations.map((group) => (
-                <View key={group.title} style={styles.sidebarGroup}>
-                  <Text style={styles.sidebarGroupTitle}>{group.title}</Text>
-                  {group.conversations.map((conv) => (
-                    <Pressable
-                      key={conv.id}
-                      onPress={() => handleSelectConversation(conv.id)}
-                      style={[
-                        styles.sidebarItem,
-                        conv.id === currentConversationId && styles.sidebarItemActive
-                      ]}
-                    >
-                      <Ionicons
-                        name="chatbubble-outline"
-                        size={16}
-                        color={conv.id === currentConversationId ? THEME_LIGHT.primary : THEME_LIGHT.textMuted}
-                      />
-                      <View style={styles.sidebarItemContent}>
-                        <Text
-                          style={[
-                            styles.sidebarItemTitle,
-                            conv.id === currentConversationId && { color: THEME_LIGHT.primary }
-                          ]}
-                          numberOfLines={1}
-                        >
-                          {conv.title}
-                        </Text>
-                        <Text style={styles.sidebarItemSubtitle}>
-                          {conv.messages.length} mensagens
-                        </Text>
-                      </View>
-                      <Pressable
-                        onPress={() => handleDeleteConversation(conv.id)}
-                        style={styles.sidebarItemDelete}
-                        hitSlop={8}
-                      >
-                        <Ionicons name="trash-outline" size={14} color={THEME.textMuted} />
-                      </Pressable>
-                    </Pressable>
-                  ))}
-                </View>
-              ))
-            )}
-          </ScrollView>
-
-          {/* Sidebar Footer */}
-          <View style={[styles.sidebarFooter, { paddingBottom: insets.bottom + 16 }]}>
-            <Avatar size={36} isNathIA={true} style={{ marginRight: 12 }} />
-            <View>
-              <Text style={styles.sidebarFooterTitle}>NathIA</Text>
-              <Text style={styles.sidebarFooterSubtitle}>Sua assistente</Text>
-            </View>
-          </View>
-        </Animated.View>
-      </View>
-    </Modal>
-  );
 
   // ============================================
   // MAIN RENDER
@@ -733,7 +457,7 @@ export default function AssistantScreen({ navigation }: MainTabScreenProps<"Assi
           {/* Actions */}
           <View style={styles.headerActions}>
             {currentMessages.length > 0 && (
-              <Pressable onPress={clearCurrentChat} style={styles.headerButton}>
+              <Pressable onPress={handlers.handleClearChat} style={styles.headerButton}>
                 <Ionicons name="trash-outline" size={22} color={THEME.textMuted} />
               </Pressable>
             )}
@@ -755,7 +479,7 @@ export default function AssistantScreen({ navigation }: MainTabScreenProps<"Assi
             contentContainerStyle={styles.emptyScrollContent}
             showsVerticalScrollIndicator={false}
           >
-            {renderEmptyState()}
+            <ChatEmptyState onSuggestedPrompt={handleSuggestedPrompt} />
           </ScrollView>
         ) : (
           <FlatList
@@ -833,7 +557,7 @@ export default function AssistantScreen({ navigation }: MainTabScreenProps<"Assi
             {/* Send/Mic Button */}
             {inputText.trim() ? (
               <Pressable onPress={handleSend} style={[styles.sendButton, { backgroundColor: THEME.primary }]}>
-                <Ionicons name="send" size={18} color="#FFF" />
+                <Ionicons name="send" size={18} color={DS_COLORS.text.inverse} />
               </Pressable>
             ) : (
               <Pressable onPress={handleMicPress} style={styles.micButton}>
@@ -850,8 +574,22 @@ export default function AssistantScreen({ navigation }: MainTabScreenProps<"Assi
       </KeyboardAvoidingView>
 
       {/* Modals */}
-      {renderHistorySidebar()}
-      {renderAIConsentModal()}
+      <ChatHistorySidebar
+        visible={showHistory}
+        conversations={conversations}
+        currentConversationId={currentConversationId}
+        groupedConversations={groupedConversations}
+        onClose={() => setShowHistory(false)}
+        onNewChat={handleNewChat}
+        onSelectConversation={handleSelectConversation}
+        onDeleteConversation={handleDeleteConversation}
+      />
+      <AIConsentModal
+        visible={showAIConsent}
+        onAccept={handleAcceptAITerms}
+        onDecline={handleDeclineAITerms}
+        onNavigateToLegal={() => navigation.navigate("Legal")}
+      />
     </View>
   );
 }
@@ -988,90 +726,6 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     paddingBottom: 20,
   },
-  emptyContainer: {
-    flex: 1,
-    alignItems: "center",
-    paddingHorizontal: 24,
-  },
-  emptyAvatarContainer: {
-    marginBottom: 16,
-  },
-  emptyTitle: {
-    fontSize: 24,
-    fontWeight: "700",
-    color: THEME_LIGHT.textPrimary,
-    textAlign: "center",
-    marginBottom: 4,
-  },
-  emptySubtitle: {
-    fontSize: 15,
-    color: THEME_LIGHT.textSecondary,
-    textAlign: "center",
-    marginBottom: 24,
-  },
-  welcomeCard: {
-    backgroundColor: THEME_LIGHT.primaryLight,
-    borderRadius: 16,
-    padding: 16,
-    marginBottom: 24,
-    width: "100%",
-    flexDirection: "row",
-    alignItems: "flex-start",
-  },
-  welcomeIcon: {
-    width: 36,
-    height: 36,
-    borderRadius: 18,
-    backgroundColor: THEME_LIGHT.bgSecondary,
-    alignItems: "center",
-    justifyContent: "center",
-    marginRight: 12,
-  },
-  welcomeText: {
-    flex: 1,
-    fontSize: 14,
-    lineHeight: 20,
-    color: THEME_LIGHT.textSecondary,
-  },
-  promptsGrid: {
-    flexDirection: "row",
-    flexWrap: "wrap",
-    marginHorizontal: -6,
-    width: "100%",
-  },
-  promptCard: {
-    width: "50%",
-    paddingHorizontal: 6,
-    marginBottom: 12,
-  },
-  promptPressable: {
-    backgroundColor: THEME_LIGHT.bgSecondary,
-    borderRadius: 16,
-    padding: 16,
-    borderWidth: 1,
-    borderColor: THEME_LIGHT.border,
-    minHeight: 100,
-  },
-  promptIconContainer: {
-    width: 36,
-    height: 36,
-    borderRadius: 12,
-    backgroundColor: THEME_LIGHT.primaryLight,
-    alignItems: "center",
-    justifyContent: "center",
-    marginBottom: 10,
-  },
-  promptTitle: {
-    fontSize: 14,
-    fontWeight: "600",
-    color: THEME_LIGHT.textPrimary,
-    marginBottom: 4,
-  },
-  promptSubtitle: {
-    fontSize: 12,
-    color: THEME_LIGHT.textSecondary,
-    lineHeight: 16,
-  },
 
   // Input
   inputContainer: {
@@ -1140,217 +794,4 @@ const styles = StyleSheet.create({
   },
 
   // Modal
-  modalOverlay: {
-    flex: 1,
-    backgroundColor: "rgba(0, 0, 0, 0.5)",
-    justifyContent: "center",
-    alignItems: "center",
-    padding: 24,
-  },
-  consentCard: {
-    backgroundColor: THEME_LIGHT.bgSecondary,
-    borderRadius: 24,
-    padding: 24,
-    width: "100%",
-    maxWidth: 340,
-  },
-  consentHeader: {
-    alignItems: "center",
-    marginBottom: 20,
-  },
-  consentIconContainer: {
-    width: 64,
-    height: 64,
-    borderRadius: 32,
-    backgroundColor: THEME_LIGHT.primaryLight,
-    alignItems: "center",
-    justifyContent: "center",
-    marginBottom: 16,
-  },
-  consentTitle: {
-    fontSize: 20,
-    fontWeight: "600",
-    color: THEME_LIGHT.textPrimary,
-    textAlign: "center",
-  },
-  consentText: {
-    fontSize: 15,
-    color: THEME_LIGHT.textSecondary,
-    textAlign: "center",
-    lineHeight: 22,
-    marginBottom: 16,
-  },
-  consentLinks: {
-    marginBottom: 16,
-  },
-  consentLink: {
-    flexDirection: "row",
-    alignItems: "center",
-    paddingVertical: 12,
-    borderBottomWidth: 1,
-    borderBottomColor: THEME_LIGHT.borderLight,
-  },
-  consentLinkText: {
-    fontSize: 14,
-    marginLeft: 10,
-    flex: 1,
-  },
-  consentDisclaimer: {
-    backgroundColor: DS_COLORS.semantic.warningLight,
-    borderRadius: 12,
-    padding: 12,
-    marginBottom: 20,
-    flexDirection: "row",
-    alignItems: "flex-start",
-  },
-  disclaimerText: {
-    fontSize: 12,
-    color: DS_COLORS.neutral[700],
-    marginLeft: 8,
-    flex: 1,
-    lineHeight: 18,
-  },
-  consentButtonPrimary: {
-    backgroundColor: THEME_LIGHT.primary,
-    borderRadius: 16,
-    paddingVertical: 14,
-    alignItems: "center",
-    marginBottom: 10,
-  },
-  consentButtonPrimaryText: {
-    color: DS_COLORS.text.inverse,
-    fontSize: 16,
-    fontWeight: "600",
-  },
-  consentButtonSecondary: {
-    backgroundColor: THEME_LIGHT.bgTertiary,
-    borderRadius: 16,
-    paddingVertical: 14,
-    alignItems: "center",
-  },
-  consentButtonSecondaryText: {
-    color: THEME_LIGHT.textSecondary,
-    fontSize: 16,
-    fontWeight: "500",
-  },
-
-  // Sidebar
-  sidebarOverlay: {
-    flex: 1,
-    flexDirection: "row",
-    backgroundColor: "rgba(0, 0, 0, 0.4)",
-  },
-  sidebar: {
-    width: SCREEN_WIDTH * 0.82,
-    backgroundColor: THEME_LIGHT.bgSidebar,
-    height: "100%",
-  },
-  sidebarHeader: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    paddingHorizontal: 20,
-    paddingVertical: 16,
-    borderBottomWidth: 1,
-    borderBottomColor: THEME_LIGHT.borderLight,
-  },
-  sidebarTitle: {
-    fontSize: 20,
-    fontWeight: "600",
-    color: THEME_LIGHT.textPrimary,
-  },
-  sidebarCloseButton: {
-    width: 36,
-    height: 36,
-    borderRadius: 18,
-    backgroundColor: THEME_LIGHT.bgTertiary,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  newChatButton: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
-    backgroundColor: THEME_LIGHT.primary,
-    marginHorizontal: 20,
-    marginVertical: 16,
-    paddingVertical: 12,
-    borderRadius: 12,
-  },
-  newChatText: {
-    color: DS_COLORS.text.inverse,
-    fontSize: 15,
-    fontWeight: "600",
-    marginLeft: 8,
-  },
-  sidebarList: {
-    flex: 1,
-  },
-  sidebarEmpty: {
-    alignItems: "center",
-    justifyContent: "center",
-    paddingVertical: 60,
-  },
-  sidebarEmptyText: {
-    fontSize: 14,
-    color: THEME_LIGHT.textMuted,
-    marginTop: 12,
-  },
-  sidebarGroup: {
-    paddingHorizontal: 20,
-    paddingVertical: 12,
-  },
-  sidebarGroupTitle: {
-    fontSize: 11,
-    fontWeight: "600",
-    color: THEME_LIGHT.textMuted,
-    textTransform: "uppercase",
-    letterSpacing: 0.5,
-    marginBottom: 8,
-  },
-  sidebarItem: {
-    flexDirection: "row",
-    alignItems: "center",
-    paddingVertical: 12,
-    paddingHorizontal: 12,
-    borderRadius: 10,
-    marginBottom: 4,
-  },
-  sidebarItemActive: {
-    backgroundColor: THEME_LIGHT.primaryLight,
-  },
-  sidebarItemContent: {
-    flex: 1,
-    marginLeft: 10,
-  },
-  sidebarItemTitle: {
-    fontSize: 14,
-    fontWeight: "500",
-    color: THEME_LIGHT.textPrimary,
-  },
-  sidebarItemSubtitle: {
-    fontSize: 12,
-    color: THEME_LIGHT.textMuted,
-    marginTop: 2,
-  },
-  sidebarItemDelete: {
-    padding: 8,
-  },
-  sidebarFooter: {
-    flexDirection: "row",
-    alignItems: "center",
-    paddingHorizontal: 20,
-    paddingTop: 16,
-    borderTopWidth: 1,
-    borderTopColor: THEME_LIGHT.borderLight,
-  },
-  sidebarFooterTitle: {
-    fontSize: 14,
-    fontWeight: "600",
-    color: THEME_LIGHT.textPrimary,
-  },
-  sidebarFooterSubtitle: {
-    fontSize: 12,
-    color: THEME_LIGHT.textMuted,
-  },
 });

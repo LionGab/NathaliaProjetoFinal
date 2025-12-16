@@ -42,10 +42,9 @@
   "editor.minimap.enabled": false,
   "editor.renderWhitespace": "selection",
   "editor.renderControlCharacters": false,
-  "editor.renderIndentGuides": false,
   "editor.smoothScrolling": false,
   "editor.cursorBlinking": "solid",
-  "editor.cursorSmoothCaretAnimation": false,
+  "editor.cursorSmoothCaretAnimation": "off",
 
   // ===========================================
   // File Watcher (otimizar para M1)
@@ -207,5 +206,6 @@
 
   "extensions.autoCheckUpdates": false,
   "extensions.autoUpdate": false,
-  "update.mode": "manual"
+  "update.mode": "manual",
+  "editor.guides.indentation": false
 }
