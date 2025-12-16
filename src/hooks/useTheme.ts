@@ -1,12 +1,27 @@
 /**
  * Hook para gerenciar tema (light/dark)
  * Integra com useAppStore para persistência
+ *
+ * Usa tokens.ts como fonte única de verdade (azul + rosa híbrido)
  */
 
-import React from "react";
+import React, { useMemo } from "react";
 import { useColorScheme } from "react-native";
 import { useAppStore } from "../state/store";
 import { COLORS, COLORS_DARK } from "../theme/design-system";
+import {
+  brand,
+  neutral,
+  feeling,
+  typography,
+  spacing,
+  radius,
+  shadows,
+  gradients,
+  components,
+  layout,
+  getThemeTokens,
+} from "../theme/tokens";
 
 export type ThemeMode = "light" | "dark" | "system";
 
@@ -28,10 +43,14 @@ export function useTheme() {
     }
   }, [shouldUseDark, isDarkMode, setIsDarkMode]);
 
-  // Retorna as cores baseadas no tema (usando design-system.ts)
+  // Retorna as cores baseadas no tema (usando design-system.ts para compat)
   const colors = shouldUseDark ? COLORS_DARK : COLORS;
 
+  // Novos tokens semânticos (azul + rosa híbrido)
+  const tokens = useMemo(() => getThemeTokens(shouldUseDark ? "dark" : "light"), [shouldUseDark]);
+
   return {
+    // Compat com código existente
     theme,
     isDark: shouldUseDark,
     colors,
@@ -40,5 +59,21 @@ export function useTheme() {
       const newTheme = theme === "light" ? "dark" : "light";
       setTheme(newTheme);
     },
+
+    // Novos tokens semânticos (Fase 2+)
+    tokens,
+    brand,
+    surface: tokens.surface,
+    text: tokens.text,
+    semantic: tokens.semantic,
+    neutral,
+    feeling,
+    typography,
+    spacing,
+    radius,
+    shadows,
+    gradients,
+    components,
+    layout,
   };
 }

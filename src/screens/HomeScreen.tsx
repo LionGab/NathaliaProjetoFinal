@@ -19,7 +19,6 @@ import * as Haptics from "expo-haptics";
 import { useAppStore } from "../state/store";
 import { MainTabScreenProps } from "../types/navigation";
 import { useTheme } from "../hooks/useTheme";
-import { SPACING, SHADOWS, COLORS, RADIUS, GRADIENTS } from "../theme/design-system";
 import { LinearGradient } from "expo-linear-gradient";
 
 // Componentes da Home
@@ -38,7 +37,7 @@ const getResponsiveValue = (screenWidth: number, baseValue: number, scale: numbe
 
 export default function HomeScreen({ navigation }: MainTabScreenProps<"Home">): React.JSX.Element {
   const insets = useSafeAreaInsets();
-  const { colors, isDark } = useTheme();
+  const { colors, isDark, spacing, shadows, radius, brand } = useTheme();
   const { width: screenWidth } = useWindowDimensions();
 
   // Valores responsivos
@@ -145,14 +144,14 @@ export default function HomeScreen({ navigation }: MainTabScreenProps<"Home">): 
           entering={FadeInDown.duration(500).springify()}
           style={{
             paddingHorizontal: horizontalPadding,
-            paddingTop: SPACING.md,
-            paddingBottom: SPACING.md,
+            paddingTop: spacing.md,
+            paddingBottom: spacing.md,
             flexDirection: "row",
             alignItems: "center",
             justifyContent: "space-between",
           }}
         >
-          <View style={{ flex: 1, paddingRight: SPACING.md }}>
+          <View style={{ flex: 1, paddingRight: spacing.md }}>
             <Text
               style={{
                 color: textMain,
@@ -193,7 +192,7 @@ export default function HomeScreen({ navigation }: MainTabScreenProps<"Home">): 
                 borderWidth: 2,
                 borderColor: isDark ? colors.neutral[700] : colors.neutral[200],
                 overflow: "hidden",
-                ...SHADOWS.sm,
+                ...shadows.sm,
               }}
             >
               {userAvatar ? (
@@ -251,26 +250,26 @@ export default function HomeScreen({ navigation }: MainTabScreenProps<"Home">): 
           {/* 2. SECUNDÁRIO: Card NathIA */}
           <NathiaAdviceCard onPressChat={handleNathiaChat} />
 
-          {/* 2.5. Mundo da Nath - Conteúdo Exclusivo */}
+          {/* 2.5. Mundo da Nath - Conteúdo Exclusivo (Rosa Accent - Momento de Alegria) */}
           <Animated.View entering={FadeInUp.delay(150).duration(500).springify()}>
             <Pressable
               onPress={handleMundoDaNath}
               style={{
-                borderRadius: RADIUS.xl,
+                borderRadius: radius.xl,
                 overflow: "hidden",
-                shadowColor: COLORS.primary[500],
-                shadowOffset: { width: 0, height: 2 },
-                shadowOpacity: 0.12,
-                shadowRadius: 8,
-                elevation: 4,
+                shadowColor: brand.accent[500],
+                shadowOffset: { width: 0, height: 4 },
+                shadowOpacity: 0.2,
+                shadowRadius: 12,
+                elevation: 6,
               }}
             >
               <LinearGradient
-                colors={GRADIENTS.primary as unknown as readonly [string, string]}
+                colors={[brand.accent[400], brand.accent[500]] as const}
                 start={{ x: 0, y: 0 }}
                 end={{ x: 1, y: 1 }}
                 style={{
-                  padding: SPACING.md,
+                  padding: spacing.md,
                   flexDirection: "row",
                   alignItems: "center",
                 }}
@@ -284,14 +283,14 @@ export default function HomeScreen({ navigation }: MainTabScreenProps<"Home">): 
                     backgroundColor: "rgba(255,255,255,0.95)",
                     alignItems: "center",
                     justifyContent: "center",
-                    marginRight: SPACING.md,
+                    marginRight: spacing.md,
                     shadowColor: "#000",
                     shadowOffset: { width: 0, height: 2 },
                     shadowOpacity: 0.1,
                     shadowRadius: 4,
                   }}
                 >
-                  <Text style={{ fontSize: 22, fontWeight: "700", color: COLORS.primary[500] }}>N</Text>
+                  <Text style={{ fontSize: 22, fontWeight: "700", color: brand.accent[500] }}>N</Text>
                 </View>
 
                 {/* Content */}
@@ -302,7 +301,7 @@ export default function HomeScreen({ navigation }: MainTabScreenProps<"Home">): 
                         fontSize: 14,
                         fontWeight: "700",
                         color: "#FFFFFF",
-                        marginRight: SPACING.xs,
+                        marginRight: spacing.xs,
                       }}
                     >
                       Mundo da Nath
@@ -310,9 +309,9 @@ export default function HomeScreen({ navigation }: MainTabScreenProps<"Home">): 
                     <View
                       style={{
                         backgroundColor: "rgba(255,255,255,0.25)",
-                        paddingHorizontal: SPACING.xs,
+                        paddingHorizontal: spacing.xs,
                         paddingVertical: 1,
-                        borderRadius: RADIUS.full,
+                        borderRadius: radius.full,
                       }}
                     >
                       <Text style={{ fontSize: 8, fontWeight: "600", color: "#FFFFFF" }}>NOVO</Text>

@@ -12,43 +12,73 @@ module.exports = {
     // NOTE to AI: You can extend the theme with custom colors or styles here.
     extend: {
       colors: {
-        // Nossa Maternidade Premium - Sistema de cores 2025
-        // Primary Rose - Rosa vibrante principal
+        // Nossa Maternidade - Sistema Calm FemTech 2025
+        // Híbrido: Azul (base calm) + Rosa (accent CTA)
+        //
+        // Primary: Azul Pastel (calma, confiança, estrutura)
         primary: {
-          DEFAULT: "#f4258c", // Primary rose
-          50: "#FFF1F2",
-          100: "#FFE4E6",
-          200: "#FECDD3",
-          300: "#FDA4AF",
-          400: "#FB7185",
-          500: "#f4258c", // Main primary
+          DEFAULT: "#7DB9D5",
+          50: "#F7FBFD",
+          100: "#E8F3F9",
+          200: "#DCE9F1",
+          300: "#B4D7E8",
+          400: "#96C7DE",
+          500: "#7DB9D5",
+          600: "#5BA3C7",
+          700: "#4488AB",
+          800: "#376E8C",
+          900: "#2B576D",
+        },
+        // Accent: Rosa Vibrante (CTAs, warmth, destaques)
+        accent: {
+          DEFAULT: "#F4258C",
+          50: "#FFF1F5",
+          100: "#FFE4EC",
+          200: "#FECDD6",
+          300: "#FDA4B8",
+          400: "#FB7190",
+          500: "#F4258C",
           600: "#DB1F7D",
           700: "#B8196A",
           800: "#961456",
           900: "#7A1047",
         },
-        // Secondary Purple - Roxo vibrante
+        // Secondary: Lilás/Roxo (apoio, meditação, introspecção)
         secondary: {
-          DEFAULT: "#A855F7", // Purple
+          DEFAULT: "#A855F7",
           50: "#FAF5FF",
           100: "#F3E8FF",
           200: "#E9D5FF",
           300: "#D8B4FE",
           400: "#C084FC",
-          500: "#A855F7", // Main secondary
+          500: "#A855F7",
           600: "#9333EA",
           700: "#7C3AED",
           800: "#6B21A8",
           900: "#581C87",
         },
-        // Rose (alinhado com primary)
+        // Teal: Saúde, bem-estar físico
+        teal: {
+          DEFAULT: "#14B8A6",
+          50: "#F0FDFA",
+          100: "#CCFBF1",
+          200: "#99F6E4",
+          300: "#5EEAD4",
+          400: "#2DD4BF",
+          500: "#14B8A6",
+          600: "#0D9488",
+          700: "#0F766E",
+          800: "#115E59",
+          900: "#134E4A",
+        },
+        // Rose (legacy compat - aponta para accent)
         rose: {
-          50: "#FFF1F2",
-          100: "#FFE4E6",
-          200: "#FECDD3",
-          300: "#FDA4AF",
-          400: "#FB7185",
-          500: "#f4258c",
+          50: "#FFF1F5",
+          100: "#FFE4EC",
+          200: "#FECDD6",
+          300: "#FDA4B8",
+          400: "#FB7190",
+          500: "#F4258C",
           600: "#DB1F7D",
           700: "#B8196A",
           800: "#961456",
@@ -102,38 +132,44 @@ module.exports = {
           800: "#292524",
           900: "#1C1917",
         },
-        // Cores de sentimentos (Daily Feelings)
+        // Cores de sentimentos (Daily Feelings) - Pastéis suaves
         feeling: {
-          sunny: {
-            DEFAULT: "#F59E0B", // Amarelo - Ótima
-            light: "#FEF3C7",
+          bem: {
+            DEFAULT: "#FFE4B5", // Amarelo pastel (sol)
+            light: "#FFEFC7",
           },
-          cloud: {
-            DEFAULT: "#60A5FA", // Azul - Bem
-            light: "#DBEAFE",
+          cansada: {
+            DEFAULT: "#BAE6FD", // Azul pastel (nuvem)
+            light: "#D4E9FD",
           },
-          rainy: {
-            DEFAULT: "#A855F7", // Purple - Cansada
-            light: "#F3E8FF",
+          indisposta: {
+            DEFAULT: "#DDD6FE", // Lavanda (chuva)
+            light: "#EDE9FE",
           },
-          heart: {
-            DEFAULT: "#f4258c", // Rose - Ansiosa
-            light: "#FFE4E6",
+          amada: {
+            DEFAULT: "#FECDD3", // Rosa pastel (coração)
+            light: "#FFE4E9",
+          },
+          ansiosa: {
+            DEFAULT: "#FED7AA", // Coral pastel
+            light: "#FFE4C7",
           },
         },
-        // Text colors
+        // Text colors - Hierarquia clara
         text: {
-          dark: "#1a2b4b", // Azul escuro para textos principais
-          DEFAULT: "#1a2b4b",
-          light: "#64748b",
-          muted: "#94a3b8",
+          dark: "#1F2937",
+          DEFAULT: "#1F2937",
+          light: "#6B7280",
+          muted: "#9CA3AF",
+          accent: "#F4258C",
+          link: "#4488AB",
         },
-        // Background colors
+        // Background colors - Azul pastel base
         background: {
-          DEFAULT: "#f8f5f7", // Creme suave
-          primary: "#f8f5f7",
-          secondary: "#F8F5F7",
-          tertiary: "#F5F5F4",
+          DEFAULT: "#F7FBFD",
+          primary: "#F7FBFD",
+          secondary: "#FFFFFF",
+          tertiary: "#EDF4F8",
           elevated: "#FFFFFF",
         },
         // Neutral colors
@@ -175,60 +211,75 @@ module.exports = {
         "22": "88px",
       },
     },
-    // Dark mode colors
+    // Dark mode colors - Azul escuro base (não preto puro)
     dark: {
       colors: {
         primary: {
-          DEFAULT: "#FF80B7",
+          DEFAULT: "#8BC5DD",
+          50: "#0F1419",
+          100: "#1A2027",
+          200: "#242D36",
+          300: "#2F3B46",
+          400: "#A8D4E8",
+          500: "#8BC5DD",
+          600: "#7DB9D5",
+          700: "#5BA3C7",
+          800: "#4488AB",
+          900: "#376E8C",
+        },
+        accent: {
+          DEFAULT: "#FB7190",
           50: "#1A0A12",
           100: "#2D0F1A",
           200: "#4D1A2E",
           300: "#6D2542",
-          400: "#8D3056",
-          500: "#FF80B7",
-          600: "#FF66A6",
-          700: "#FF4D95",
-          800: "#FF3384",
-          900: "#FF1A73",
+          400: "#FB7190",
+          500: "#F4258C",
+          600: "#DB1F7D",
+          700: "#B8196A",
+          800: "#961456",
+          900: "#7A1047",
         },
         secondary: {
-          DEFAULT: "#3397FF",
-          50: "#0A1526",
-          100: "#0F1F3D",
-          200: "#1F3F7A",
-          300: "#2F5FB7",
-          400: "#3F7FF4",
-          500: "#3397FF",
-          600: "#66B1FF",
-          700: "#99CBFF",
-          800: "#CCE5FF",
-          900: "#E6F2FF",
+          DEFAULT: "#C084FC",
+          50: "#1A1025",
+          100: "#2D1A3D",
+          200: "#3D2A5A",
+          300: "#5A3F8A",
+          400: "#C084FC",
+          500: "#A855F7",
+          600: "#9333EA",
+          700: "#7C3AED",
+          800: "#6B21A8",
+          900: "#581C87",
         },
         text: {
-          dark: "#E2E8F0",
-          DEFAULT: "#E2E8F0",
-          light: "#A0AEC0",
-          muted: "#718096",
+          dark: "#F3F5F7",
+          DEFAULT: "#F3F5F7",
+          light: "#9DA8B4",
+          muted: "#7D8B99",
+          accent: "#FB7190",
+          link: "#96C7DE",
         },
         background: {
-          DEFAULT: "#0F0F0F",
-          primary: "#0F0F0F",
-          secondary: "#1A1A1A",
-          tertiary: "#141414",
-          elevated: "#1A1A1A",
+          DEFAULT: "#0F1419",
+          primary: "#0F1419",
+          secondary: "#1A2027",
+          tertiary: "#242D36",
+          elevated: "#1A2027",
         },
         neutral: {
-          0: "#0F0F0F",
-          50: "#1A1A1A",
-          100: "#2D2D2D",
-          200: "#3D3D3D",
-          300: "#4D4D4D",
-          400: "#6D6D6D",
-          500: "#8D8D8D",
-          600: "#ADADAD",
-          700: "#CDCDCD",
-          800: "#E2E2E2",
-          900: "#FFFFFF",
+          0: "#0F1419",
+          50: "#1A2027",
+          100: "#242D36",
+          200: "#2F3B46",
+          300: "#3D4A57",
+          400: "#5C6B7A",
+          500: "#7D8B99",
+          600: "#9DA8B4",
+          700: "#C7CED5",
+          800: "#E2E7EC",
+          900: "#F3F5F7",
         },
       },
     },

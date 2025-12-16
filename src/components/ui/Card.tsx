@@ -1,12 +1,19 @@
-import React from "react";
+import React, { useMemo } from "react";
 import { View, ViewProps, Pressable } from "react-native";
 import Animated, { FadeInUp } from "react-native-reanimated";
 import * as Haptics from "expo-haptics";
 import { useTheme } from "../../hooks/useTheme";
 
 interface CardProps extends ViewProps {
-  /** Visual variant */
-  variant?: "default" | "elevated" | "outlined" | "soft";
+  /**
+   * Visual variant:
+   * - default: Fundo branco simples
+   * - elevated: Com sombra suave
+   * - outlined: Borda sutil
+   * - soft: Fundo azul suave
+   * - accent: Destaque com borda rosa (raro)
+   */
+  variant?: "default" | "elevated" | "outlined" | "soft" | "accent";
   /** Custom background color override */
   color?: string;
   /** Internal padding */
@@ -38,10 +45,10 @@ const RADIUS_MAP = {
 };
 
 /**
- * Design System Card Component
+ * Design System Card Component - Calm FemTech 2025
  *
- * Container component with variants, shadows, borders, and dark mode support.
- * Can be interactive (with onPress) and animated.
+ * Container com variantes, sombras, bordas e suporte a dark mode.
+ * Base azul pastel para superfícies calmas.
  *
  * @example
  * ```tsx
@@ -53,8 +60,8 @@ const RADIUS_MAP = {
  *   <Text>Clickable card</Text>
  * </Card>
  *
- * <Card animated animationDelay={200}>
- *   <Text>Animated entry</Text>
+ * <Card variant="accent">
+ *   <Text>Highlight card</Text>
  * </Card>
  * ```
  */
@@ -70,31 +77,36 @@ export function Card({
   style,
   ...props
 }: CardProps) {
-  const { colors } = useTheme();
+  const { surface, neutral, brand, isDark } = useTheme();
 
-  const baseStyle = {
-    backgroundColor: color || colors.background.card,
+  const baseStyle = useMemo(() => ({
+    backgroundColor: color || surface.card,
     borderRadius: RADIUS_MAP[radius],
     padding: PADDING_MAP[padding],
-  };
+  }), [color, surface.card, radius, padding]);
 
-  const variantStyle = {
+  const variantStyle = useMemo(() => ({
     default: {},
     elevated: {
-      shadowColor: colors.neutral[900],
+      shadowColor: "#000",
       shadowOffset: { width: 0, height: 4 },
-      shadowOpacity: 0.06,
+      shadowOpacity: isDark ? 0.3 : 0.06,
       shadowRadius: 16,
       elevation: 3,
     },
     outlined: {
       borderWidth: 1,
-      borderColor: colors.neutral[200],
+      borderColor: isDark ? neutral[700] : neutral[200],
     },
     soft: {
-      backgroundColor: color || colors.background.tertiary,
+      backgroundColor: color || (isDark ? neutral[800] : brand.primary[50]),
     },
-  };
+    accent: {
+      borderWidth: 1.5,
+      borderColor: brand.accent[300],
+      backgroundColor: isDark ? "rgba(244, 37, 140, 0.08)" : brand.accent[50],
+    },
+  }), [isDark, neutral, brand, color]);
 
   const combinedStyle = [baseStyle, variantStyle[variant], style];
 
