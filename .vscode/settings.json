@@ -1,4 +1,211 @@
 {
-    "claudeCode.allowDangerouslySkipPermissions": true,
-    "claudeCode.initialPermissionMode": "acceptEdits"
+  // ===========================================
+  // Otimizações para MacBook M1 8GB RAM
+  // ===========================================
+
+  // Desabilitar HTTP/2 se houver problemas de rede
+  "cursor.general.disableHttp2": true,
+
+  // ===========================================
+  // TypeScript & Performance
+  // ===========================================
+
+  "typescript.tsdk": "node_modules/typescript/lib",
+  "typescript.enablePromptUseWorkspaceTsdk": true,
+  "typescript.preferences.importModuleSpecifier": "relative",
+  "typescript.updateImportsOnFileMove.enabled": "always",
+  "typescript.suggest.autoImports": true,
+  "typescript.preferences.quoteStyle": "single",
+
+  // Otimizar performance do TypeScript
+  "typescript.disableAutomaticTypeAcquisition": false,
+  "typescript.tsserver.maxTsServerMemory": 4096,
+  "typescript.tsserver.watchOptions": {
+    "excludeDirectories": ["**/node_modules", "**/.expo", "**/dist", "**/build", "**/.git"]
+  },
+
+  // ===========================================
+  // Editor Performance
+  // ===========================================
+
+  "editor.semanticHighlighting.enabled": true,
+  "editor.bracketPairColorization.enabled": true,
+  "editor.guides.bracketPairs": "active",
+  "editor.formatOnSave": true,
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": "explicit",
+    "source.organizeImports": "explicit"
+  },
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+
+  // Reduzir uso de recursos (otimizado para reduzir Renderer de 831MB)
+  "editor.minimap.enabled": false,
+  "editor.renderWhitespace": "selection",
+  "editor.renderControlCharacters": false,
+  "editor.renderIndentGuides": false,
+  "editor.smoothScrolling": false,
+  "editor.cursorBlinking": "solid",
+  "editor.cursorSmoothCaretAnimation": false,
+
+  // ===========================================
+  // File Watcher (otimizar para M1)
+  // ===========================================
+
+  "files.watcherExclude": {
+    "**/.git/objects/**": true,
+    "**/.git/subtree-cache/**": true,
+    "**/node_modules/**": true,
+    "**/.expo/**": true,
+    "**/dist/**": true,
+    "**/build/**": true,
+    "**/.expo-shared/**": true,
+    "**/.next/**": true,
+    "**/.vscode/**": true,
+    "**/bun.lock": true,
+    "**/package-lock.json": true
+  },
+
+  "files.exclude": {
+    "**/.git": true,
+    "**/.DS_Store": true,
+    "**/node_modules": true,
+    "**/.expo": true,
+    "**/.expo-shared": true
+  },
+
+  "search.exclude": {
+    "**/node_modules": true,
+    "**/.expo": true,
+    "**/dist": true,
+    "**/build": true,
+    "**/bun.lock": true,
+    "**/package-lock.json": true
+  },
+
+  // ===========================================
+  // Extensions & Language Specific
+  // ===========================================
+
+  "[typescript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "editor.formatOnSave": true
+  },
+  "[typescriptreact]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "editor.formatOnSave": true
+  },
+  "[javascript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "editor.formatOnSave": true
+  },
+  "[javascriptreact]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "editor.formatOnSave": true
+  },
+  "[json]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[jsonc]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+
+  // ===========================================
+  // ESLint
+  // ===========================================
+
+  "eslint.enable": true,
+  "eslint.validate": ["javascript", "javascriptreact", "typescript", "typescriptreact"],
+  "eslint.workingDirectories": ["."],
+  "eslint.options": {
+    "cache": true,
+    "cacheLocation": ".eslintcache"
+  },
+
+  // ===========================================
+  // Prettier
+  // ===========================================
+
+  "prettier.requireConfig": true,
+  "prettier.useEditorConfig": false,
+
+  // ===========================================
+  // Tailwind CSS IntelliSense
+  // ===========================================
+
+  "tailwindCSS.experimental.classRegex": [
+    ["cva\\(([^)]*)\\)", "[\"'`]([^\"'`]*).*?[\"'`]"],
+    ["cn\\(([^)]*)\\)", "(?:'|\"|`)([^\"'`]*)(?:'|\"|`)"]
+  ],
+  "tailwindCSS.includeLanguages": {
+    "typescript": "javascript",
+    "typescriptreact": "javascript"
+  },
+
+  // ===========================================
+  // Git (reduzir overhead)
+  // ===========================================
+
+  "git.enabled": true,
+  "git.autofetch": false,
+  "git.autoRepositoryDetection": false,
+  "git.decorations.enabled": true,
+  "git.enableSmartCommit": true,
+
+  // ===========================================
+  // GitLens (otimizado para M1 8GB RAM)
+  // ===========================================
+
+  "gitlens.views.home.enabled": false,
+  "gitlens.codeLens.enabled": true,
+  "gitlens.currentLine.enabled": true,
+  "gitlens.hovers.enabled": true,
+
+  // ===========================================
+  // Terminal (otimizado para M1)
+  // ===========================================
+
+  "terminal.integrated.fontSize": 13,
+  "terminal.integrated.cursorBlinking": true,
+  "terminal.integrated.cursorStyle": "line",
+  "terminal.integrated.gpuAcceleration": "off",
+  "terminal.integrated.profiles.osx": {
+    "zsh": {
+      "path": "/bin/zsh",
+      "args": ["-l"]
+    }
+  },
+
+  // ===========================================
+  // Workbench (reduzir uso de recursos)
+  // ===========================================
+
+  "workbench.editor.enablePreview": false,
+  "workbench.startupEditor": "none",
+  "workbench.iconTheme": "vs-seti",
+  "workbench.colorTheme": "Default Dark+",
+
+  // ===========================================
+  // React Native / Expo
+  // ===========================================
+
+  "files.associations": {
+    "*.tsx": "typescriptreact",
+    "*.ts": "typescript"
+  },
+
+  // ===========================================
+  // Cursor AI Specific
+  // ===========================================
+
+  "cursor.chat.model": "claude-3.5-sonnet",
+  "cursor.general.enableCodeActions": true,
+  "cursor.general.enableCodebaseIndexing": true,
+
+  // ===========================================
+  // Memory & Performance Limits
+  // ===========================================
+
+  "extensions.autoCheckUpdates": false,
+  "extensions.autoUpdate": false,
+  "update.mode": "manual"
 }

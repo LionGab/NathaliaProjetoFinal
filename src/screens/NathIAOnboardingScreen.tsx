@@ -92,13 +92,13 @@ const OptionButton = ({
         onPress={handlePress}
         style={{
           backgroundColor: selected ? COLORS.primary[50] : COLORS.neutral[0],
-          borderRadius: isLarge ? RADIUS["2xl"] : RADIUS.xl,
-          padding: isSmall ? SPACING.lg : SPACING.xl,
+          borderRadius: isLarge ? RADIUS.xl : RADIUS.xl,
+          padding: isSmall ? SPACING.md : isLarge ? SPACING.lg : SPACING.xl,
           borderWidth: selected ? 2 : 1.5,
           borderColor: selected ? COLORS.primary[500] : COLORS.neutral[200],
           marginBottom: SPACING.md,
-          flexDirection: isLarge ? "column" : "row",
-          alignItems: isLarge ? "flex-start" : "center",
+          flexDirection: "row",
+          alignItems: "center",
           minHeight: 60,
           shadowColor: selected ? COLORS.primary[500] : "#000",
           shadowOffset: { width: 0, height: selected ? 4 : 2 },
@@ -111,25 +111,35 @@ const OptionButton = ({
         accessibilityState={{ selected }}
       >
         {emoji && (
-          <Text
+          <View
             style={{
-              fontSize: isLarge ? 36 : 28,
-              marginRight: isLarge ? 0 : SPACING.md,
-              marginBottom: isLarge ? SPACING.sm : 0,
+              width: isLarge ? 48 : 40,
+              height: isLarge ? 48 : 40,
+              borderRadius: RADIUS.xl,
+              backgroundColor: selected ? COLORS.primary[100] : COLORS.neutral[100],
+              alignItems: "center",
+              justifyContent: "center",
+              marginRight: SPACING.md,
             }}
           >
-            {emoji}
-          </Text>
+            <Text
+              style={{
+                fontSize: isLarge ? 24 : 20,
+              }}
+            >
+              {emoji}
+            </Text>
+          </View>
         )}
         <View style={{ flex: 1 }}>
           <Text
             style={{
               fontSize: isLarge
-                ? TYPOGRAPHY.titleLarge.fontSize
+                ? TYPOGRAPHY.bodyLarge.fontSize + 1
                 : TYPOGRAPHY.bodyLarge.fontSize,
               fontWeight: "600",
               color: selected ? COLORS.primary[700] : COLORS.neutral[800],
-              marginBottom: description ? 4 : 0,
+              marginBottom: description ? 2 : 0,
             }}
           >
             {label}
@@ -137,9 +147,9 @@ const OptionButton = ({
           {description && (
             <Text
               style={{
-                fontSize: TYPOGRAPHY.bodySmall.fontSize,
+                fontSize: TYPOGRAPHY.bodySmall.fontSize - 1,
                 color: selected ? COLORS.primary[600] : COLORS.neutral[500],
-                lineHeight: 18,
+                lineHeight: 16,
               }}
             >
               {description}
@@ -149,7 +159,7 @@ const OptionButton = ({
         {selected && (
           <Ionicons
             name="checkmark-circle"
-            size={26}
+            size={24}
             color={COLORS.primary[500]}
           />
         )}
@@ -353,11 +363,12 @@ const ContinueButton = ({
   );
 };
 
-// Screen 1: Phase Selection
+// Screen 1: Phase Selection - PREMIUM DESIGN
 const PhaseScreen = ({ onNext }: { onNext: () => void }) => {
   const { profile, setNickname, setLifeStage, canProceed } =
     useNathIAOnboardingStore();
   const [localNickname, setLocalNickname] = useState(profile.nickname || "");
+  const [nicknameIsFocused, setNicknameIsFocused] = useState(false);
 
   const handleContinue = () => {
     if (localNickname.trim()) {
@@ -369,72 +380,188 @@ const PhaseScreen = ({ onNext }: { onNext: () => void }) => {
   return (
     <Animated.View
       entering={FadeIn.duration(400)}
-      style={{ flex: 1, paddingHorizontal: SPACING["2xl"] }}
+      style={{ flex: 1 }}
     >
-      <ScrollView showsVerticalScrollIndicator={false}>
-        <Animated.View entering={FadeInDown.delay(100).duration(500)}>
+      <ScrollView
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={{
+          paddingHorizontal: SPACING["2xl"],
+          paddingTop: SPACING.lg,
+        }}
+      >
+        {/* Hero Section - Glassmorphism Card */}
+        <Animated.View
+          entering={FadeInDown.delay(100).duration(600)}
+          style={{
+            backgroundColor: "rgba(255, 255, 255, 0.7)",
+            borderRadius: RADIUS["3xl"],
+            padding: SPACING["2xl"],
+            marginBottom: SPACING["3xl"],
+            borderWidth: 1,
+            borderColor: "rgba(244, 37, 140, 0.1)",
+            shadowColor: COLORS.primary[500],
+            shadowOffset: { width: 0, height: 8 },
+            shadowOpacity: 0.1,
+            shadowRadius: 24,
+            elevation: 8,
+          }}
+        >
+          {/* Decorative dots */}
+          <View
+            style={{
+              position: "absolute",
+              top: SPACING.xl,
+              right: SPACING.xl,
+              flexDirection: "row",
+              gap: 6,
+            }}
+          >
+            {[0, 1, 2].map((i) => (
+              <View
+                key={i}
+                style={{
+                  width: 8,
+                  height: 8,
+                  borderRadius: 4,
+                  backgroundColor: COLORS.primary[300],
+                  opacity: 0.4,
+                }}
+              />
+            ))}
+          </View>
+
           <Text
             style={{
-              fontSize: TYPOGRAPHY.headlineMedium.fontSize,
-              fontWeight: "700",
-              color: COLORS.neutral[800],
-              marginBottom: SPACING.sm,
-              letterSpacing: -0.5,
+              fontSize: 34,
+              fontFamily: "DMSerifDisplay-Regular",
+              fontWeight: "400",
+              color: COLORS.neutral[900],
+              marginBottom: SPACING.md,
+              lineHeight: 42,
+              letterSpacing: -0.8,
             }}
           >
             Qual é a sua fase atual, amor? ✨
           </Text>
           <Text
             style={{
-              fontSize: TYPOGRAPHY.bodyLarge.fontSize,
-              color: COLORS.neutral[500],
-              marginBottom: SPACING["2xl"],
+              fontSize: TYPOGRAPHY.bodyLarge.fontSize + 1,
+              color: COLORS.neutral[600],
+              lineHeight: 26,
+              fontWeight: "400",
             }}
           >
-            Isso ajuda a NathIA a te entender melhor
+            Vou personalizar toda a sua experiência para este momento tão especial da sua vida
           </Text>
         </Animated.View>
 
-        {/* Nickname input */}
+        {/* Nickname Input - Premium Design */}
         <Animated.View
-          entering={FadeInUp.delay(200).duration(500)}
-          style={{ marginBottom: SPACING["2xl"] }}
+          entering={FadeInUp.delay(250).duration(600)}
+          style={{ marginBottom: SPACING["3xl"] }}
+        >
+          <View
+            style={{
+              backgroundColor: COLORS.neutral[0],
+              borderRadius: RADIUS["2xl"],
+              padding: SPACING.xl,
+              borderWidth: nicknameIsFocused ? 2 : 1.5,
+              borderColor: nicknameIsFocused
+                ? COLORS.primary[400]
+                : COLORS.neutral[200],
+              shadowColor: nicknameIsFocused
+                ? COLORS.primary[500]
+                : "#000",
+              shadowOffset: { width: 0, height: nicknameIsFocused ? 6 : 3 },
+              shadowOpacity: nicknameIsFocused ? 0.15 : 0.06,
+              shadowRadius: nicknameIsFocused ? 12 : 8,
+              elevation: nicknameIsFocused ? 6 : 3,
+            }}
+          >
+            <View
+              style={{
+                flexDirection: "row",
+                alignItems: "center",
+                marginBottom: SPACING.sm,
+              }}
+            >
+              <View
+                style={{
+                  width: 40,
+                  height: 40,
+                  borderRadius: RADIUS.full,
+                  backgroundColor: COLORS.primary[50],
+                  alignItems: "center",
+                  justifyContent: "center",
+                  marginRight: SPACING.md,
+                }}
+              >
+                <Text style={{ fontSize: 20 }}>💖</Text>
+              </View>
+              <Text
+                style={{
+                  fontSize: TYPOGRAPHY.titleSmall.fontSize,
+                  fontWeight: "600",
+                  color: COLORS.neutral[800],
+                  letterSpacing: -0.2,
+                }}
+              >
+                Como você quer que eu te chame?
+              </Text>
+            </View>
+            <TextInput
+              value={localNickname}
+              onChangeText={setLocalNickname}
+              onFocus={() => setNicknameIsFocused(true)}
+              onBlur={() => setNicknameIsFocused(false)}
+              placeholder="Ex: Manu, Carol, Lu..."
+              placeholderTextColor={COLORS.neutral[400]}
+              style={{
+                backgroundColor: COLORS.neutral[50],
+                borderRadius: RADIUS.xl,
+                paddingHorizontal: SPACING.lg,
+                paddingVertical: SPACING.md + 2,
+                fontSize: TYPOGRAPHY.bodyLarge.fontSize + 1,
+                color: COLORS.neutral[900],
+                fontWeight: "500",
+                minHeight: 54,
+                borderWidth: 0,
+              }}
+              returnKeyType="done"
+            />
+            <Text
+              style={{
+                fontSize: TYPOGRAPHY.bodySmall.fontSize,
+                color: COLORS.neutral[500],
+                marginTop: SPACING.sm,
+                fontStyle: "italic",
+              }}
+            >
+              Opcional - pode deixar em branco se preferir
+            </Text>
+          </View>
+        </Animated.View>
+
+        {/* Life Stage Options - Premium Grid */}
+        <Animated.View
+          entering={FadeInUp.delay(400).duration(600)}
+          style={{ marginBottom: SPACING.sm }}
         >
           <Text
             style={{
-              fontSize: TYPOGRAPHY.labelMedium.fontSize,
-              fontWeight: "600",
-              color: COLORS.neutral[600],
-              marginBottom: SPACING.sm,
+              fontSize: TYPOGRAPHY.titleMedium.fontSize,
+              fontWeight: "700",
+              color: COLORS.neutral[800],
+              marginBottom: SPACING.lg,
+              letterSpacing: -0.3,
             }}
           >
-            Como você quer que eu te chame? 💖
+            Escolha sua fase atual
           </Text>
-          <TextInput
-            value={localNickname}
-            onChangeText={setLocalNickname}
-            placeholder="Seu apelido (opcional)"
-            placeholderTextColor={COLORS.neutral[400]}
-            style={{
-              backgroundColor: COLORS.neutral[0],
-              borderRadius: RADIUS.xl,
-              paddingHorizontal: SPACING.lg,
-              paddingVertical: SPACING.md,
-              fontSize: TYPOGRAPHY.bodyLarge.fontSize,
-              color: COLORS.neutral[800],
-              borderWidth: 1,
-              borderColor: COLORS.neutral[200],
-              minHeight: 52,
-            }}
-          />
-        </Animated.View>
-
-        {/* Life stage options */}
-        <Animated.View entering={FadeInUp.delay(300).duration(500)}>
           {LIFE_STAGE_OPTIONS.map((option, index) => (
             <Animated.View
               key={option.id}
-              entering={FadeInUp.delay(350 + index * 50).duration(400)}
+              entering={FadeInUp.delay(450 + index * 80).duration(500)}
             >
               <OptionButton
                 selected={profile.life_stage === option.id}
@@ -448,9 +575,10 @@ const PhaseScreen = ({ onNext }: { onNext: () => void }) => {
           ))}
         </Animated.View>
 
-        <View style={{ height: 100 }} />
+        <View style={{ height: 120 }} />
       </ScrollView>
 
+      {/* Floating Continue Button with Blur Background */}
       <View
         style={{
           position: "absolute",
@@ -458,15 +586,32 @@ const PhaseScreen = ({ onNext }: { onNext: () => void }) => {
           left: 0,
           right: 0,
           paddingHorizontal: SPACING["2xl"],
+          paddingTop: SPACING.xl,
           paddingBottom: SPACING["2xl"],
-          backgroundColor: COLORS.background.primary,
         }}
       >
-        <ContinueButton
-          onPress={handleContinue}
-          disabled={!canProceed()}
-          label="Continuar"
+        <LinearGradient
+          colors={[
+            "rgba(247, 251, 253, 0)",
+            "rgba(247, 251, 253, 0.95)",
+            COLORS.background.primary,
+          ]}
+          locations={[0, 0.3, 1]}
+          style={{
+            position: "absolute",
+            bottom: 0,
+            left: 0,
+            right: 0,
+            height: 180,
+          }}
         />
+        <Animated.View entering={FadeInUp.delay(600).duration(500)}>
+          <ContinueButton
+            onPress={handleContinue}
+            disabled={!canProceed()}
+            label="Continuar"
+          />
+        </Animated.View>
       </View>
     </Animated.View>
   );

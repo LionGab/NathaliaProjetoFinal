@@ -10,8 +10,9 @@
  */
 
 import React, { useMemo, useCallback } from "react";
-import { View, Text, ScrollView, Pressable, RefreshControl, Image, Dimensions } from "react-native";
+import { View, Text, ScrollView, Pressable, RefreshControl, useWindowDimensions, Platform } from "react-native";
 import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context";
+import { Image } from "expo-image";
 import { Ionicons } from "@expo/vector-icons";
 import Animated, { FadeInDown, FadeInUp } from "react-native-reanimated";
 import * as Haptics from "expo-haptics";
@@ -28,21 +29,20 @@ import {
   BelongingCard,
 } from "../components/home";
 
-const { width: SCREEN_WIDTH } = Dimensions.get("window");
-
 // Responsividade
-const getResponsiveValue = (baseValue: number, scale: number = 1) => {
-  const scaleFactor = SCREEN_WIDTH / 375;
+const getResponsiveValue = (screenWidth: number, baseValue: number, scale: number = 1): number => {
+  const scaleFactor = screenWidth / 375;
   return Math.round(baseValue * scaleFactor * scale);
 };
 
-export default function HomeScreen({ navigation }: MainTabScreenProps<"Home">) {
+export default function HomeScreen({ navigation }: MainTabScreenProps<"Home">): React.JSX.Element {
   const insets = useSafeAreaInsets();
   const { colors, isDark } = useTheme();
+  const { width: screenWidth } = useWindowDimensions();
 
   // Valores responsivos
-  const horizontalPadding = getResponsiveValue(20, 1);
-  const gap = getResponsiveValue(16, 1);
+  const horizontalPadding = useMemo(() => getResponsiveValue(screenWidth, 20, 1), [screenWidth]);
+  const gap = useMemo(() => getResponsiveValue(screenWidth, 16, 1), [screenWidth]);
 
   // User data
   const userName = useAppStore((s) => s.user?.name);
@@ -55,7 +55,7 @@ export default function HomeScreen({ navigation }: MainTabScreenProps<"Home">) {
   const [refreshing, setRefreshing] = React.useState(false);
 
   // Greeting
-  const getGreeting = useCallback(() => {
+  const greeting = useMemo(() => {
     const hour = new Date().getHours();
     if (hour < 12) return "Bom dia";
     if (hour < 18) return "Boa tarde";
@@ -63,7 +63,7 @@ export default function HomeScreen({ navigation }: MainTabScreenProps<"Home">) {
   }, []);
 
   // Pregnancy info
-  const getPregnancyInfo = useMemo(() => {
+  const pregnancyInfo = useMemo((): string | null => {
     if (userStage === "pregnant" && dueDate) {
       const today = new Date();
       const due = new Date(dueDate);
@@ -86,28 +86,32 @@ export default function HomeScreen({ navigation }: MainTabScreenProps<"Home">) {
   }, [userStage, dueDate, babyBirthDate]);
 
   // Refresh handler
-  const onRefresh = useCallback(async () => {
+  const onRefresh = useCallback(async (): Promise<void> => {
     setRefreshing(true);
     // Simular refresh
-    await new Promise((resolve) => setTimeout(resolve, 800));
+    await new Promise<void>((resolve) => {
+      setTimeout(() => {
+        resolve();
+      }, 800);
+    });
     setRefreshing(false);
   }, []);
 
   // Navigation handlers
-  const handleAvatarPress = useCallback(async () => {
+  const handleAvatarPress = useCallback(async (): Promise<void> => {
     await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
     navigation.navigate("Profile");
   }, [navigation]);
 
-  const handleNathiaChat = useCallback(() => {
+  const handleNathiaChat = useCallback((): void => {
     navigation.navigate("Assistant");
   }, [navigation]);
 
-  const handleCommunity = useCallback(() => {
+  const handleCommunity = useCallback((): void => {
     navigation.navigate("Community");
   }, [navigation]);
 
-  const handleQuickNavigation = useCallback((route: string) => {
+  const handleQuickNavigation = useCallback((route: string): void => {
     // Mapear rotas para navegação
     const routeMap: Record<string, () => void> = {
       Habits: () => navigation.navigate("Habits"),
@@ -146,23 +150,23 @@ export default function HomeScreen({ navigation }: MainTabScreenProps<"Home">) {
             <Text
               style={{
                 color: textMain,
-                fontSize: getResponsiveValue(24, 1),
+                fontSize: getResponsiveValue(screenWidth, 24, 1),
                 fontWeight: "800",
                 letterSpacing: -0.3,
               }}
             >
-              {getGreeting()}, {userName || "Mamãe"}
+              {greeting}, {userName || "Mamãe"}
             </Text>
-            {getPregnancyInfo && (
+            {pregnancyInfo && (
               <Text
                 style={{
                   color: textMuted,
-                  fontSize: getResponsiveValue(14, 1),
+                  fontSize: getResponsiveValue(screenWidth, 14, 1),
                   fontWeight: "600",
                   marginTop: 2,
                 }}
               >
-                {getPregnancyInfo}
+                {pregnancyInfo}
               </Text>
             )}
           </View>
@@ -172,11 +176,13 @@ export default function HomeScreen({ navigation }: MainTabScreenProps<"Home">) {
             onPress={handleAvatarPress}
             accessibilityLabel="Ir para perfil"
             accessibilityRole="button"
+            accessibilityHint="Abre a tela de perfil do usuário"
+            hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
           >
             <View
               style={{
-                height: getResponsiveValue(44, 1),
-                width: getResponsiveValue(44, 1),
+                height: getResponsiveValue(screenWidth, 44, 1),
+                width: getResponsiveValue(screenWidth, 44, 1),
                 borderRadius: 999,
                 borderWidth: 2,
                 borderColor: isDark ? colors.neutral[700] : colors.neutral[200],
@@ -188,6 +194,9 @@ export default function HomeScreen({ navigation }: MainTabScreenProps<"Home">) {
                 <Image
                   source={{ uri: userAvatar }}
                   style={{ height: "100%", width: "100%" }}
+                  contentFit="cover"
+                  transition={200}
+                  placeholder={{ blurhash: "LKO2?U%2Tw=w]~RBVZRi};RPxuwH" }}
                 />
               ) : (
                 <View
@@ -199,7 +208,11 @@ export default function HomeScreen({ navigation }: MainTabScreenProps<"Home">) {
                     justifyContent: "center",
                   }}
                 >
-                  <Ionicons name="person" size={22} color="#fff" />
+                  <Ionicons 
+                    name="person" 
+                    size={22} 
+                    color={colors.text.inverse || colors.neutral[0]} 
+                  />
                 </View>
               )}
             </View>
@@ -210,7 +223,7 @@ export default function HomeScreen({ navigation }: MainTabScreenProps<"Home">) {
         <ScrollView
           contentContainerStyle={{
             paddingHorizontal: horizontalPadding,
-            paddingBottom: getResponsiveValue(24) + getResponsiveValue(100) + insets.bottom,
+            paddingBottom: getResponsiveValue(screenWidth, 24) + getResponsiveValue(screenWidth, 100) + insets.bottom,
             gap: gap,
           }}
           showsVerticalScrollIndicator={false}
@@ -219,8 +232,10 @@ export default function HomeScreen({ navigation }: MainTabScreenProps<"Home">) {
               refreshing={refreshing}
               onRefresh={onRefresh}
               tintColor={colors.primary[500]}
+              colors={Platform.OS === "android" ? [colors.primary[500]] : undefined}
             />
           }
+          accessibilityLabel="Conteúdo principal da tela inicial"
         >
           {/* 1. PRIMÁRIO: Check-in Emocional (1 toque) */}
           <Animated.View entering={FadeInUp.delay(50).duration(500).springify()}>

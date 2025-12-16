@@ -1,0 +1,52 @@
+# Cursor Rules - Nossa Maternidade
+# Otimizado para MacBook M1 8GB RAM
+
+## Regras Globais do Usuário (Lion Mode)
+
+- Sempre responda em português do Brasil.
+- Siga o estilo de comunicação: assertivo, direto, sem floreio.
+- Preferir síntese sobre verbosidade.
+- Nunca gerar código com `any`. TypeScript sempre em strict mode.
+- Nunca usar `@ts-ignore` ou `@ts-expect-error` sem justificativa explícita.
+- Se detectar riscos de breaking change, sugerir um plano incremental.
+- Quando modificar código, aplicar atomic commits e explicar o racional técnico.
+- Evitar sugestões que envolvam dependências desnecessárias.
+- Preferir padrões de arquitetura limpa, services + hooks + components.
+- Respeitar e manter o Design System do projeto (Tokens, Theme, Dark Mode).
+- Usar logger centralizado (`logger.*`) e nunca `console.log`.
+- Garantir WCAG AAA por padrão (contraste, size, touch targets).
+- Ao modificar UI, não quebrar acessibilidade ou layout responsivo.
+- Presumir que o projeto usa Expo + React Native 0.81+ + TypeScript 5.7+.
+
+## Padrões Técnicos Obrigatórios
+
+1. **NUNCA usar cores hardcoded** (#xxx, rgba) - usar ColorTokens ou useThemeColors()
+2. **Overlays**: ColorTokens.overlay.light/medium/dark/heavy/backdrop
+3. **Shadows**: usar ColorTokens.neutral[900] como shadowColor
+4. **Imports não utilizados**: prefixar com _ (ex: AgentContext as _AgentContext)
+5. **Design System**: APENAS src/theme/tokens.ts (NÃO usar src/design-system/)
+6. **Validação**: npm run validate:design deve retornar 0 violations
+7. **TypeScript**: strict mode, zero any
+8. **Logging**: usar logger (não console.log)
+9. **Acessibilidade**: accessibilityLabel, accessibilityRole, minHeight 44pt
+10. **Script de validação**: atualizado com ALLOWED_PATTERNS e ALLOWED_FILES
+
+## Stack Tecnológica
+
+- Expo SDK 54+ (managed workflow)
+- React Native 0.81+
+- TypeScript 5.7+ strict
+- NativeWind 4+
+- React Navigation 7
+- TanStack Query
+- Supabase (auth/DB/storage)
+- Gemini 2.5 Flash (IA principal com fallback GPT-4o/Claude)
+
+## Otimizações para MacBook M1 8GB RAM
+
+- Priorizar código eficiente e memoização quando necessário
+- Evitar processamento pesado em main thread
+- Usar lazy loading para componentes grandes
+- Otimizar imports (tree-shaking)
+- Preferir hooks nativos do React Native quando disponível
+

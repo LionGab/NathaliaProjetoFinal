@@ -36,7 +36,18 @@
       "Bash(tee:*)",
       "Bash(bun run lint:*)",
       "Bash(bun run check-build-ready:*)",
-      "Bash(git push:*)"
+      "Bash(git push:*)",
+      "Bash(bun run:*)",
+      "Bash(lsof:*)",
+      "Bash(xargs kill:*)",
+      "Bash(bun start)",
+      "Bash(xcrun simctl:*)",
+      "Bash(npx expo:*)",
+      "Bash(bunx expo run:ios:*)",
+      "Bash(sudo gem install:*)",
+      "Bash(gem install:*)",
+      "Bash(bun start:*)",
+      "Bash(ruby --version:*)"
     ]
   }
 }

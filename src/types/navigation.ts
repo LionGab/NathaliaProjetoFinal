@@ -39,6 +39,9 @@ export type RootStackParamList = {
   // Premium
   Paywall: { source?: string };
 
+  // Mundo da Nath
+  MundoDaNath: undefined;
+
   // Other
   Legal: undefined;
   ComingSoon: {

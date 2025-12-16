@@ -38,6 +38,7 @@ import RestSoundsScreen from "../screens/RestSoundsScreen";
 import HabitsEnhancedScreen from "../screens/HabitsEnhancedScreen";
 import MaeValenteProgressScreen from "../screens/MaeValenteProgressScreen";
 import Paywall from "../screens/PaywallScreen";
+import MundoDaNathScreen from "../screens/MundoDaNathScreen";
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
@@ -225,6 +226,16 @@ export default function RootNavigator() {
               headerShown: false,
               presentation: "modal",
               animation: "slide_from_bottom",
+            }}
+          />
+
+          {/* Mundo da Nath Screen */}
+          <Stack.Screen
+            name="MundoDaNath"
+            component={MundoDaNathScreen}
+            options={{
+              headerShown: false,
+              animation: "slide_from_right",
             }}
           />
         </>

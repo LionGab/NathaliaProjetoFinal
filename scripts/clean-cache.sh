@@ -12,10 +12,21 @@ if [ -d ".expo" ]; then
   rm -rf .expo
 fi
 
-# Limpar cache do Metro
+# Limpar cache do Metro (local e global)
 if [ -d ".metro-cache" ]; then
-  echo "🗑️  Removendo .metro-cache..."
+  echo "🗑️  Removendo .metro-cache (local)..."
   rm -rf .metro-cache
+fi
+
+# Limpar cache global do Metro (~/.metro-cache)
+if [ -d "$HOME/.metro-cache" ]; then
+  echo "🗑️  Removendo ~/.metro-cache (global)..."
+  if rm -rf "$HOME/.metro-cache" 2>/dev/null; then
+    echo "✅ Cache global removido"
+  else
+    echo "⚠️  Não foi possível remover cache global (permissões insuficientes)"
+    echo "   Execute manualmente: rm -rf ~/.metro-cache"
+  fi
 fi
 
 # Limpar cache do node_modules
