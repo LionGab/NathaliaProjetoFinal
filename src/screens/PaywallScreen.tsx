@@ -431,7 +431,7 @@ export const PaywallScreen: React.FC<PaywallScreenProps> = ({ navigation, route 
    * Abre termos de uso
    */
   const openTerms = useCallback(() => {
-    Linking.openURL("https://nossmaternidade.com/termos");
+    Linking.openURL("https://nossamaternidade.com/termos");
   }, []);
 
   /**

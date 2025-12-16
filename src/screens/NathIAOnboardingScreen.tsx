@@ -92,19 +92,19 @@ const OptionButton = ({
         onPress={handlePress}
         style={{
           backgroundColor: selected ? COLORS.primary[50] : COLORS.neutral[0],
-          borderRadius: isLarge ? RADIUS.xl : RADIUS.xl,
-          padding: isSmall ? SPACING.md : isLarge ? SPACING.lg : SPACING.xl,
-          borderWidth: selected ? 2 : 1.5,
+          borderRadius: isLarge ? RADIUS.lg : RADIUS.lg,
+          padding: isSmall ? SPACING.sm : isLarge ? SPACING.md : SPACING.lg,
+          borderWidth: selected ? 2 : 1,
           borderColor: selected ? COLORS.primary[500] : COLORS.neutral[200],
-          marginBottom: SPACING.md,
+          marginBottom: SPACING.sm,
           flexDirection: "row",
           alignItems: "center",
-          minHeight: 60,
+          minHeight: 52,
           shadowColor: selected ? COLORS.primary[500] : "#000",
-          shadowOffset: { width: 0, height: selected ? 4 : 2 },
-          shadowOpacity: selected ? 0.15 : 0.05,
-          shadowRadius: selected ? 8 : 4,
-          elevation: selected ? 4 : 2,
+          shadowOffset: { width: 0, height: selected ? 2 : 1 },
+          shadowOpacity: selected ? 0.12 : 0.04,
+          shadowRadius: selected ? 6 : 3,
+          elevation: selected ? 3 : 1,
         }}
         accessibilityLabel={`${label}${description ? `, ${description}` : ""}`}
         accessibilityRole="button"
@@ -113,18 +113,18 @@ const OptionButton = ({
         {emoji && (
           <View
             style={{
-              width: isLarge ? 48 : 40,
-              height: isLarge ? 48 : 40,
-              borderRadius: RADIUS.xl,
+              width: isLarge ? 36 : 32,
+              height: isLarge ? 36 : 32,
+              borderRadius: RADIUS.lg,
               backgroundColor: selected ? COLORS.primary[100] : COLORS.neutral[100],
               alignItems: "center",
               justifyContent: "center",
-              marginRight: SPACING.md,
+              marginRight: SPACING.sm,
             }}
           >
             <Text
               style={{
-                fontSize: isLarge ? 24 : 20,
+                fontSize: isLarge ? 18 : 16,
               }}
             >
               {emoji}
@@ -135,11 +135,11 @@ const OptionButton = ({
           <Text
             style={{
               fontSize: isLarge
-                ? TYPOGRAPHY.bodyLarge.fontSize + 1
-                : TYPOGRAPHY.bodyLarge.fontSize,
+                ? TYPOGRAPHY.bodyMedium.fontSize
+                : TYPOGRAPHY.bodySmall.fontSize + 1,
               fontWeight: "600",
               color: selected ? COLORS.primary[700] : COLORS.neutral[800],
-              marginBottom: description ? 2 : 0,
+              marginBottom: description ? 1 : 0,
             }}
           >
             {label}
@@ -147,9 +147,9 @@ const OptionButton = ({
           {description && (
             <Text
               style={{
-                fontSize: TYPOGRAPHY.bodySmall.fontSize - 1,
+                fontSize: 11,
                 color: selected ? COLORS.primary[600] : COLORS.neutral[500],
-                lineHeight: 16,
+                lineHeight: 14,
               }}
             >
               {description}
@@ -159,7 +159,7 @@ const OptionButton = ({
         {selected && (
           <Ionicons
             name="checkmark-circle"
-            size={24}
+            size={20}
             color={COLORS.primary[500]}
           />
         )}
@@ -336,24 +336,24 @@ const ContinueButton = ({
         start={{ x: 0, y: 0 }}
         end={{ x: 1, y: 0 }}
         style={{
-          borderRadius: RADIUS.xl,
-          paddingVertical: SPACING.lg + 4,
+          borderRadius: RADIUS.lg,
+          paddingVertical: SPACING.md + 2,
           alignItems: "center",
           justifyContent: "center",
-          minHeight: 60,
+          minHeight: 48,
           shadowColor: isPrimary ? COLORS.primary[500] : "#000",
-          shadowOffset: { width: 0, height: isPrimary ? 6 : 2 },
-          shadowOpacity: isPrimary ? 0.3 : 0.08,
-          shadowRadius: isPrimary ? 12 : 4,
-          elevation: isPrimary ? 6 : 2,
+          shadowOffset: { width: 0, height: isPrimary ? 4 : 2 },
+          shadowOpacity: isPrimary ? 0.25 : 0.06,
+          shadowRadius: isPrimary ? 8 : 4,
+          elevation: isPrimary ? 4 : 2,
         }}
       >
         <Text
           style={{
             color: isPrimary ? COLORS.neutral[0] : COLORS.neutral[700],
-            fontSize: TYPOGRAPHY.labelLarge.fontSize,
+            fontSize: TYPOGRAPHY.labelMedium.fontSize,
             fontWeight: "700",
-            letterSpacing: 0.5,
+            letterSpacing: 0.3,
           }}
         >
           {label}
@@ -385,8 +385,8 @@ const PhaseScreen = ({ onNext }: { onNext: () => void }) => {
       <ScrollView
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{
-          paddingHorizontal: SPACING["2xl"],
-          paddingTop: SPACING.lg,
+          paddingHorizontal: SPACING.lg,
+          paddingTop: SPACING.md,
         }}
       >
         {/* Hero Section - Glassmorphism Card */}
@@ -394,35 +394,35 @@ const PhaseScreen = ({ onNext }: { onNext: () => void }) => {
           entering={FadeInDown.delay(100).duration(600)}
           style={{
             backgroundColor: "rgba(255, 255, 255, 0.7)",
-            borderRadius: RADIUS["3xl"],
-            padding: SPACING["2xl"],
-            marginBottom: SPACING["3xl"],
+            borderRadius: RADIUS["2xl"],
+            padding: SPACING.lg,
+            marginBottom: SPACING.xl,
             borderWidth: 1,
             borderColor: "rgba(244, 37, 140, 0.1)",
             shadowColor: COLORS.primary[500],
-            shadowOffset: { width: 0, height: 8 },
-            shadowOpacity: 0.1,
-            shadowRadius: 24,
-            elevation: 8,
+            shadowOffset: { width: 0, height: 4 },
+            shadowOpacity: 0.08,
+            shadowRadius: 16,
+            elevation: 6,
           }}
         >
           {/* Decorative dots */}
           <View
             style={{
               position: "absolute",
-              top: SPACING.xl,
-              right: SPACING.xl,
+              top: SPACING.md,
+              right: SPACING.md,
               flexDirection: "row",
-              gap: 6,
+              gap: 4,
             }}
           >
             {[0, 1, 2].map((i) => (
               <View
                 key={i}
                 style={{
-                  width: 8,
-                  height: 8,
-                  borderRadius: 4,
+                  width: 6,
+                  height: 6,
+                  borderRadius: 3,
                   backgroundColor: COLORS.primary[300],
                   opacity: 0.4,
                 }}
@@ -432,22 +432,22 @@ const PhaseScreen = ({ onNext }: { onNext: () => void }) => {
 
           <Text
             style={{
-              fontSize: 34,
+              fontSize: 24,
               fontFamily: "DMSerifDisplay-Regular",
               fontWeight: "400",
               color: COLORS.neutral[900],
-              marginBottom: SPACING.md,
-              lineHeight: 42,
-              letterSpacing: -0.8,
+              marginBottom: SPACING.sm,
+              lineHeight: 30,
+              letterSpacing: -0.5,
             }}
           >
             Qual é a sua fase atual, amor? ✨
           </Text>
           <Text
             style={{
-              fontSize: TYPOGRAPHY.bodyLarge.fontSize + 1,
+              fontSize: TYPOGRAPHY.bodyMedium.fontSize,
               color: COLORS.neutral[600],
-              lineHeight: 26,
+              lineHeight: 22,
               fontWeight: "400",
             }}
           >
@@ -458,13 +458,13 @@ const PhaseScreen = ({ onNext }: { onNext: () => void }) => {
         {/* Nickname Input - Premium Design */}
         <Animated.View
           entering={FadeInUp.delay(250).duration(600)}
-          style={{ marginBottom: SPACING["3xl"] }}
+          style={{ marginBottom: SPACING.xl }}
         >
           <View
             style={{
               backgroundColor: COLORS.neutral[0],
-              borderRadius: RADIUS["2xl"],
-              padding: SPACING.xl,
+              borderRadius: RADIUS.xl,
+              padding: SPACING.md,
               borderWidth: nicknameIsFocused ? 2 : 1.5,
               borderColor: nicknameIsFocused
                 ? COLORS.primary[400]
@@ -472,35 +472,35 @@ const PhaseScreen = ({ onNext }: { onNext: () => void }) => {
               shadowColor: nicknameIsFocused
                 ? COLORS.primary[500]
                 : "#000",
-              shadowOffset: { width: 0, height: nicknameIsFocused ? 6 : 3 },
-              shadowOpacity: nicknameIsFocused ? 0.15 : 0.06,
-              shadowRadius: nicknameIsFocused ? 12 : 8,
-              elevation: nicknameIsFocused ? 6 : 3,
+              shadowOffset: { width: 0, height: nicknameIsFocused ? 4 : 2 },
+              shadowOpacity: nicknameIsFocused ? 0.12 : 0.05,
+              shadowRadius: nicknameIsFocused ? 8 : 6,
+              elevation: nicknameIsFocused ? 4 : 2,
             }}
           >
             <View
               style={{
                 flexDirection: "row",
                 alignItems: "center",
-                marginBottom: SPACING.sm,
+                marginBottom: SPACING.xs,
               }}
             >
               <View
                 style={{
-                  width: 40,
-                  height: 40,
+                  width: 32,
+                  height: 32,
                   borderRadius: RADIUS.full,
                   backgroundColor: COLORS.primary[50],
                   alignItems: "center",
                   justifyContent: "center",
-                  marginRight: SPACING.md,
+                  marginRight: SPACING.sm,
                 }}
               >
-                <Text style={{ fontSize: 20 }}>💖</Text>
+                <Text style={{ fontSize: 16 }}>💖</Text>
               </View>
               <Text
                 style={{
-                  fontSize: TYPOGRAPHY.titleSmall.fontSize,
+                  fontSize: TYPOGRAPHY.bodyMedium.fontSize,
                   fontWeight: "600",
                   color: COLORS.neutral[800],
                   letterSpacing: -0.2,
@@ -518,22 +518,22 @@ const PhaseScreen = ({ onNext }: { onNext: () => void }) => {
               placeholderTextColor={COLORS.neutral[400]}
               style={{
                 backgroundColor: COLORS.neutral[50],
-                borderRadius: RADIUS.xl,
-                paddingHorizontal: SPACING.lg,
-                paddingVertical: SPACING.md + 2,
-                fontSize: TYPOGRAPHY.bodyLarge.fontSize + 1,
+                borderRadius: RADIUS.lg,
+                paddingHorizontal: SPACING.md,
+                paddingVertical: SPACING.sm + 2,
+                fontSize: TYPOGRAPHY.bodyMedium.fontSize,
                 color: COLORS.neutral[900],
                 fontWeight: "500",
-                minHeight: 54,
+                minHeight: 44,
                 borderWidth: 0,
               }}
               returnKeyType="done"
             />
             <Text
               style={{
-                fontSize: TYPOGRAPHY.bodySmall.fontSize,
+                fontSize: 11,
                 color: COLORS.neutral[500],
-                marginTop: SPACING.sm,
+                marginTop: SPACING.xs,
                 fontStyle: "italic",
               }}
             >
@@ -545,14 +545,14 @@ const PhaseScreen = ({ onNext }: { onNext: () => void }) => {
         {/* Life Stage Options - Premium Grid */}
         <Animated.View
           entering={FadeInUp.delay(400).duration(600)}
-          style={{ marginBottom: SPACING.sm }}
+          style={{ marginBottom: SPACING.xs }}
         >
           <Text
             style={{
-              fontSize: TYPOGRAPHY.titleMedium.fontSize,
+              fontSize: TYPOGRAPHY.bodyLarge.fontSize,
               fontWeight: "700",
               color: COLORS.neutral[800],
-              marginBottom: SPACING.lg,
+              marginBottom: SPACING.md,
               letterSpacing: -0.3,
             }}
           >
@@ -575,7 +575,7 @@ const PhaseScreen = ({ onNext }: { onNext: () => void }) => {
           ))}
         </Animated.View>
 
-        <View style={{ height: 120 }} />
+        <View style={{ height: 90 }} />
       </ScrollView>
 
       {/* Floating Continue Button with Blur Background */}
@@ -585,9 +585,9 @@ const PhaseScreen = ({ onNext }: { onNext: () => void }) => {
           bottom: 0,
           left: 0,
           right: 0,
-          paddingHorizontal: SPACING["2xl"],
-          paddingTop: SPACING.xl,
-          paddingBottom: SPACING["2xl"],
+          paddingHorizontal: SPACING.lg,
+          paddingTop: SPACING.lg,
+          paddingBottom: SPACING.xl,
         }}
       >
         <LinearGradient
@@ -602,7 +602,7 @@ const PhaseScreen = ({ onNext }: { onNext: () => void }) => {
             bottom: 0,
             left: 0,
             right: 0,
-            height: 180,
+            height: 120,
           }}
         />
         <Animated.View entering={FadeInUp.delay(600).duration(500)}>

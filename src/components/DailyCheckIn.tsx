@@ -4,6 +4,8 @@ import { Ionicons } from "@expo/vector-icons";
 import Animated, { FadeIn, FadeInUp, ZoomIn } from "react-native-reanimated";
 import * as Haptics from "expo-haptics";
 import { useCheckInStore } from "../state/store";
+import { useTheme } from "../hooks/useTheme";
+import { COLORS as DS_COLORS } from "../theme/design-system";
 
 const MOOD_OPTIONS = [
   { value: 1, emoji: "😢", label: "Difícil" },
@@ -14,11 +16,11 @@ const MOOD_OPTIONS = [
 ];
 
 const ENERGY_OPTIONS = [
-  { value: 1, emoji: "🔋", label: "Esgotada", color: "#EF4444" },
-  { value: 2, emoji: "🪫", label: "Cansada", color: "#F97316" },
-  { value: 3, emoji: "⚡", label: "Normal", color: "#EAB308" },
-  { value: 4, emoji: "✨", label: "Boa", color: "#22C55E" },
-  { value: 5, emoji: "🌟", label: "Plena", color: "#10B981" },
+  { value: 1, emoji: "🔋", label: "Esgotada", color: DS_COLORS.semantic.error },
+  { value: 2, emoji: "🪫", label: "Cansada", color: DS_COLORS.semantic.warning },
+  { value: 3, emoji: "⚡", label: "Normal", color: DS_COLORS.legacyAccent.peach },
+  { value: 4, emoji: "✨", label: "Boa", color: DS_COLORS.semantic.success },
+  { value: 5, emoji: "🌟", label: "Plena", color: DS_COLORS.accent[500] },
 ];
 
 const SLEEP_OPTIONS = [
@@ -35,9 +37,44 @@ interface DailyCheckInProps {
   onComplete?: () => void;
 }
 
+/**
+ * Cores semânticas para check-in com suporte a dark mode
+ */
+const getCheckInColors = (isDark: boolean) => ({
+  // Estado completo - verde suave
+  completeBg: isDark ? "rgba(20, 184, 166, 0.15)" : DS_COLORS.semantic.successLight,
+  completeBorder: isDark ? "rgba(20, 184, 166, 0.3)" : "#D1FAE5",
+  completeIcon: DS_COLORS.semantic.success,
+  completeText: isDark ? DS_COLORS.accent[300] : "#065F46",
+  completeSubtext: isDark ? DS_COLORS.accent[400] : "#047857",
+  // Estado pendente - amarelo suave
+  pendingBg: isDark ? "rgba(245, 158, 11, 0.15)" : DS_COLORS.semantic.warningLight,
+  pendingBorder: isDark ? "rgba(245, 158, 11, 0.3)" : "#FDE68A",
+  pendingIcon: DS_COLORS.semantic.warning,
+  pendingText: isDark ? DS_COLORS.legacyAccent.peach : "#92400E",
+  pendingSubtext: isDark ? DS_COLORS.neutral[400] : "#B45309",
+  pendingChevron: isDark ? DS_COLORS.neutral[400] : "#D97706",
+  // Modal
+  modalBg: isDark ? DS_COLORS.background.secondary : DS_COLORS.text.inverse,
+  modalOverlay: "rgba(0, 0, 0, 0.5)",
+  closeBg: isDark ? DS_COLORS.neutral[700] : "#F5F5F4",
+  closeIcon: DS_COLORS.neutral[500],
+  // Progress bar
+  progressActive: DS_COLORS.primary[500],
+  progressComplete: DS_COLORS.semantic.success,
+  progressPending: isDark ? DS_COLORS.neutral[600] : "#E5E5E5",
+  // Text
+  title: isDark ? DS_COLORS.text.primary : "#1F2937",
+  subtitle: DS_COLORS.neutral[500],
+  // Options
+  optionBg: isDark ? DS_COLORS.neutral[700] : "#FBF9F7",
+});
+
 export default function DailyCheckIn({ onComplete }: DailyCheckInProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [currentStep, setCurrentStep] = useState<CheckInStep>("mood");
+  const { isDark } = useTheme();
+  const checkInColors = useMemo(() => getCheckInColors(isDark), [isDark]);
 
   const checkIns = useCheckInStore((s) => s.checkIns);
   const setTodayMood = useCheckInStore((s) => s.setTodayMood);
@@ -108,11 +145,11 @@ export default function DailyCheckIn({ onComplete }: DailyCheckInProps) {
         <Pressable
           onPress={handleOpen}
           style={{
-            backgroundColor: "#ECFDF5",
+            backgroundColor: checkInColors.completeBg,
             borderRadius: 16,
             padding: 16,
             borderWidth: 1,
-            borderColor: "#D1FAE5",
+            borderColor: checkInColors.completeBorder,
           }}
         >
           <View className="flex-row items-center justify-between">
@@ -122,19 +159,19 @@ export default function DailyCheckIn({ onComplete }: DailyCheckInProps) {
                   width: 40,
                   height: 40,
                   borderRadius: 12,
-                  backgroundColor: "#10B981",
+                  backgroundColor: checkInColors.completeIcon,
                   alignItems: "center",
                   justifyContent: "center",
                   marginRight: 12,
                 }}
               >
-                <Ionicons name="checkmark" size={22} color="#FFFFFF" />
+                <Ionicons name="checkmark" size={22} color={DS_COLORS.text.inverse} />
               </View>
               <View>
-                <Text style={{ color: "#065F46", fontSize: 15, fontWeight: "600" }}>
+                <Text style={{ color: checkInColors.completeText, fontSize: 15, fontWeight: "600" }}>
                   Check-in feito!
                 </Text>
-                <Text style={{ color: "#047857", fontSize: 13, marginTop: 2 }}>
+                <Text style={{ color: checkInColors.completeSubtext, fontSize: 13, marginTop: 2 }}>
                   Humor: {MOOD_OPTIONS.find((m) => m.value === todayCheckIn?.mood)?.emoji} ·
                   Energia: {ENERGY_OPTIONS.find((e) => e.value === todayCheckIn?.energy)?.emoji} ·
                   Sono: {SLEEP_OPTIONS.find((s) => s.value === todayCheckIn?.sleep)?.emoji}
@@ -150,11 +187,11 @@ export default function DailyCheckIn({ onComplete }: DailyCheckInProps) {
       <Pressable
         onPress={handleOpen}
         style={{
-          backgroundColor: "#FEF3C7",
+          backgroundColor: checkInColors.pendingBg,
           borderRadius: 16,
           padding: 16,
           borderWidth: 1,
-          borderColor: "#FDE68A",
+          borderColor: checkInColors.pendingBorder,
         }}
       >
         <View className="flex-row items-center justify-between">
@@ -164,7 +201,7 @@ export default function DailyCheckIn({ onComplete }: DailyCheckInProps) {
                 width: 40,
                 height: 40,
                 borderRadius: 12,
-                backgroundColor: "#F59E0B",
+                backgroundColor: checkInColors.pendingIcon,
                 alignItems: "center",
                 justifyContent: "center",
                 marginRight: 12,
@@ -173,15 +210,15 @@ export default function DailyCheckIn({ onComplete }: DailyCheckInProps) {
               <Text style={{ fontSize: 20 }}>✨</Text>
             </View>
             <View className="flex-1">
-              <Text style={{ color: "#92400E", fontSize: 15, fontWeight: "600" }}>
+              <Text style={{ color: checkInColors.pendingText, fontSize: 15, fontWeight: "600" }}>
                 Check-in de hoje
               </Text>
-              <Text style={{ color: "#B45309", fontSize: 13, marginTop: 2 }}>
+              <Text style={{ color: checkInColors.pendingSubtext, fontSize: 13, marginTop: 2 }}>
                 10 segundos · Humor, energia e sono
               </Text>
             </View>
           </View>
-          <Ionicons name="chevron-forward" size={20} color="#D97706" />
+          <Ionicons name="chevron-forward" size={20} color={checkInColors.pendingChevron} />
         </View>
       </Pressable>
     );
@@ -195,7 +232,7 @@ export default function DailyCheckIn({ onComplete }: DailyCheckInProps) {
         <View
           style={{
             flex: 1,
-            backgroundColor: "rgba(0, 0, 0, 0.5)",
+            backgroundColor: checkInColors.modalOverlay,
             justifyContent: "center",
             alignItems: "center",
             padding: 24,
@@ -204,7 +241,7 @@ export default function DailyCheckIn({ onComplete }: DailyCheckInProps) {
           <Animated.View
             entering={ZoomIn.duration(300).springify()}
             style={{
-              backgroundColor: "#FFFFFF",
+              backgroundColor: checkInColors.modalBg,
               borderRadius: 24,
               padding: 24,
               width: "100%",
@@ -221,12 +258,12 @@ export default function DailyCheckIn({ onComplete }: DailyCheckInProps) {
                 width: 32,
                 height: 32,
                 borderRadius: 16,
-                backgroundColor: "#F5F5F4",
+                backgroundColor: checkInColors.closeBg,
                 alignItems: "center",
                 justifyContent: "center",
               }}
             >
-              <Ionicons name="close" size={18} color="#78716C" />
+              <Ionicons name="close" size={18} color={checkInColors.closeIcon} />
             </Pressable>
 
             {/* Progress */}
@@ -240,10 +277,10 @@ export default function DailyCheckIn({ onComplete }: DailyCheckInProps) {
                     borderRadius: 2,
                     backgroundColor:
                       currentStep === step
-                        ? "#E11D48"
+                        ? checkInColors.progressActive
                         : index < ["mood", "energy", "sleep"].indexOf(currentStep)
-                        ? "#10B981"
-                        : "#E5E5E5",
+                        ? checkInColors.progressComplete
+                        : checkInColors.progressPending,
                     marginRight: index < 2 ? 8 : 0,
                   }}
                 />
@@ -256,7 +293,7 @@ export default function DailyCheckIn({ onComplete }: DailyCheckInProps) {
               style={{
                 fontSize: 20,
                 fontWeight: "600",
-                color: "#1F2937",
+                color: checkInColors.title,
                 textAlign: "center",
                 marginBottom: 24,
               }}
@@ -275,15 +312,15 @@ export default function DailyCheckIn({ onComplete }: DailyCheckInProps) {
                     width: 80,
                     height: 80,
                     borderRadius: 40,
-                    backgroundColor: "#10B981",
+                    backgroundColor: checkInColors.completeIcon,
                     alignItems: "center",
                     justifyContent: "center",
                     marginBottom: 16,
                   }}
                 >
-                  <Ionicons name="checkmark" size={40} color="#FFFFFF" />
+                  <Ionicons name="checkmark" size={40} color={DS_COLORS.text.inverse} />
                 </View>
-                <Text style={{ fontSize: 16, color: "#6B7280", textAlign: "center" }}>
+                <Text style={{ fontSize: 16, color: checkInColors.subtitle, textAlign: "center" }}>
                   Obrigada por cuidar de você!
                 </Text>
               </Animated.View>
@@ -300,12 +337,12 @@ export default function DailyCheckIn({ onComplete }: DailyCheckInProps) {
                         alignItems: "center",
                         padding: 12,
                         borderRadius: 16,
-                        backgroundColor: "#FBF9F7",
+                        backgroundColor: checkInColors.optionBg,
                         minWidth: 56,
                       }}
                     >
                       <Text style={{ fontSize: 28, marginBottom: 4 }}>{option.emoji}</Text>
-                      <Text style={{ fontSize: 11, color: "#6B7280", fontWeight: "500" }}>
+                      <Text style={{ fontSize: 11, color: checkInColors.subtitle, fontWeight: "500" }}>
                         {option.label}
                       </Text>
                     </Pressable>

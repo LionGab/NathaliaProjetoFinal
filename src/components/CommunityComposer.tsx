@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
 import { View, Text, Pressable, TextInput, Image, ActivityIndicator } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import * as ImagePicker from "expo-image-picker";
@@ -9,18 +9,45 @@ import { uploadImageToImgur } from "../api/imgur";
 import { logger } from "../utils/logger";
 import * as Haptics from "expo-haptics";
 import { useToast } from "../context/ToastContext";
+import { useTheme } from "../hooks/useTheme";
+import { COLORS as DS_COLORS, SHADOWS } from "../theme/design-system";
 
 const POST_TYPES = [
-  { id: "duvida", label: "Dúvida", emoji: "❓", color: "#3B82F6", bgColor: "#EFF6FF" },
-  { id: "desabafo", label: "Desabafo", emoji: "💭", color: "#8B5CF6", bgColor: "#F5F3FF" },
-  { id: "vitoria", label: "Vitória", emoji: "🎉", color: "#10B981", bgColor: "#ECFDF5" },
-  { id: "dica", label: "Dica", emoji: "💡", color: "#F59E0B", bgColor: "#FFFBEB" },
+  { id: "duvida", label: "Dúvida", emoji: "❓", color: DS_COLORS.primary[500], bgColor: DS_COLORS.primary[50] },
+  { id: "desabafo", label: "Desabafo", emoji: "💭", color: DS_COLORS.secondary[500], bgColor: DS_COLORS.secondary[50] },
+  { id: "vitoria", label: "Vitória", emoji: "🎉", color: DS_COLORS.semantic.success, bgColor: DS_COLORS.semantic.successLight },
+  { id: "dica", label: "Dica", emoji: "💡", color: DS_COLORS.semantic.warning, bgColor: DS_COLORS.semantic.warningLight },
 ];
 
 interface CommunityComposerProps {
   onPost: (content: string, type: string, imageUrl?: string) => void;
   onExpand?: () => void;
 }
+
+/**
+ * Cores semânticas para composer com suporte a dark mode
+ */
+const getComposerColors = (isDark: boolean) => ({
+  // Card backgrounds
+  cardBg: isDark ? DS_COLORS.background.secondary : DS_COLORS.text.inverse,
+  // Text
+  placeholder: DS_COLORS.neutral[400],
+  textPrimary: isDark ? DS_COLORS.text.primary : "#1F2937",
+  textSecondary: DS_COLORS.neutral[400],
+  // Actions
+  addButton: DS_COLORS.primary[500],
+  addIcon: DS_COLORS.text.inverse,
+  actionBg: isDark ? DS_COLORS.neutral[700] : "#F3F4F6",
+  actionIcon: DS_COLORS.neutral[500],
+  // Post button
+  postActive: DS_COLORS.primary[500],
+  postInactive: isDark ? DS_COLORS.neutral[700] : "#F3F4F6",
+  postTextActive: DS_COLORS.text.inverse,
+  postTextInactive: DS_COLORS.neutral[400],
+  // Avatar fallback
+  avatarColor: DS_COLORS.primary[500],
+  avatarBg: DS_COLORS.primary[50],
+});
 
 export default function CommunityComposer({ onPost, onExpand }: CommunityComposerProps) {
   const [isExpanded, setIsExpanded] = useState(false);
@@ -30,6 +57,8 @@ export default function CommunityComposer({ onPost, onExpand }: CommunityCompose
   const [isUploading, setIsUploading] = useState(false);
   const user = useAppStore((s) => s.user);
   const { showError, showInfo } = useToast();
+  const { isDark } = useTheme();
+  const composerColors = useMemo(() => getComposerColors(isDark), [isDark]);
 
   const handleExpand = async () => {
     await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
@@ -112,14 +141,11 @@ export default function CommunityComposer({ onPost, onExpand }: CommunityCompose
       <Pressable
         onPress={handleExpand}
         style={{
-          backgroundColor: "#FFFFFF",
+          backgroundColor: composerColors.cardBg,
           borderRadius: 20,
           padding: 16,
           marginBottom: 16,
-          shadowColor: "#000",
-          shadowOffset: { width: 0, height: 2 },
-          shadowOpacity: 0.04,
-          shadowRadius: 8,
+          ...SHADOWS.sm,
         }}
       >
         <View className="flex-row items-center">
@@ -128,11 +154,11 @@ export default function CommunityComposer({ onPost, onExpand }: CommunityCompose
             source={user?.avatarUrl ? { uri: user.avatarUrl } : null}
             isNathalia={!user?.avatarUrl}
             fallbackIcon="person"
-            fallbackColor="#E11D48"
-            fallbackBgColor="#FEE2E2"
+            fallbackColor={composerColors.avatarColor}
+            fallbackBgColor={composerColors.avatarBg}
             style={{ marginRight: 12 }}
           />
-          <Text style={{ flex: 1, color: "#9CA3AF", fontSize: 15 }}>
+          <Text style={{ flex: 1, color: composerColors.placeholder, fontSize: 15 }}>
             Como você está hoje?
           </Text>
           <View
@@ -140,12 +166,12 @@ export default function CommunityComposer({ onPost, onExpand }: CommunityCompose
               width: 36,
               height: 36,
               borderRadius: 18,
-              backgroundColor: "#E11D48",
+              backgroundColor: composerColors.addButton,
               alignItems: "center",
               justifyContent: "center",
             }}
           >
-            <Ionicons name="add" size={20} color="#FFFFFF" />
+            <Ionicons name="add" size={20} color={composerColors.addIcon} />
           </View>
         </View>
 
@@ -183,14 +209,11 @@ export default function CommunityComposer({ onPost, onExpand }: CommunityCompose
     <Animated.View
       entering={FadeIn.duration(200)}
       style={{
-        backgroundColor: "#FFFFFF",
+        backgroundColor: composerColors.cardBg,
         borderRadius: 20,
         padding: 16,
         marginBottom: 16,
-        shadowColor: "#000",
-        shadowOffset: { width: 0, height: 4 },
-        shadowOpacity: 0.08,
-        shadowRadius: 12,
+        ...SHADOWS.md,
       }}
     >
       {/* Header */}
@@ -201,16 +224,16 @@ export default function CommunityComposer({ onPost, onExpand }: CommunityCompose
             source={user?.avatarUrl ? { uri: user.avatarUrl } : null}
             isNathalia={!user?.avatarUrl}
             fallbackIcon="person"
-            fallbackColor="#E11D48"
-            fallbackBgColor="#FEE2E2"
+            fallbackColor={composerColors.avatarColor}
+            fallbackBgColor={composerColors.avatarBg}
             style={{ marginRight: 10 }}
           />
-          <Text style={{ color: "#1F2937", fontSize: 15, fontWeight: "600" }}>
+          <Text style={{ color: composerColors.textPrimary, fontSize: 15, fontWeight: "600" }}>
             Nova publicação
           </Text>
         </View>
         <Pressable onPress={handleCancel}>
-          <Ionicons name="close" size={24} color="#9CA3AF" />
+          <Ionicons name="close" size={24} color={composerColors.textSecondary} />
         </Pressable>
       </View>
 
@@ -236,7 +259,7 @@ export default function CommunityComposer({ onPost, onExpand }: CommunityCompose
               <Text style={{ fontSize: 14, marginRight: 4 }}>{type.emoji}</Text>
               <Text
                 style={{
-                  color: selectedType === type.id ? "#FFFFFF" : type.color,
+                  color: selectedType === type.id ? DS_COLORS.text.inverse : type.color,
                   fontSize: 13,
                   fontWeight: "500",
                 }}
@@ -253,12 +276,12 @@ export default function CommunityComposer({ onPost, onExpand }: CommunityCompose
         value={content}
         onChangeText={setContent}
         placeholder="Compartilhe o que está pensando..."
-        placeholderTextColor="#9CA3AF"
+        placeholderTextColor={composerColors.placeholder}
         multiline
         autoFocus
         style={{
           fontSize: 16,
-          color: "#1F2937",
+          color: composerColors.textPrimary,
           minHeight: 100,
           textAlignVertical: "top",
           marginBottom: 16,
@@ -285,7 +308,7 @@ export default function CommunityComposer({ onPost, onExpand }: CommunityCompose
               padding: 8,
             }}
           >
-            <Ionicons name="close" size={20} color="#FFFFFF" />
+            <Ionicons name="close" size={20} color={DS_COLORS.text.inverse} />
           </Pressable>
         </View>
       )}
@@ -300,25 +323,25 @@ export default function CommunityComposer({ onPost, onExpand }: CommunityCompose
               width: 40,
               height: 40,
               borderRadius: 20,
-              backgroundColor: "#F3F4F6",
+              backgroundColor: composerColors.actionBg,
               alignItems: "center",
               justifyContent: "center",
               marginRight: 8,
             }}
           >
-            <Ionicons name="image-outline" size={20} color="#6B7280" />
+            <Ionicons name="image-outline" size={20} color={composerColors.actionIcon} />
           </Pressable>
           <Pressable
             style={{
               width: 40,
               height: 40,
               borderRadius: 20,
-              backgroundColor: "#F3F4F6",
+              backgroundColor: composerColors.actionBg,
               alignItems: "center",
               justifyContent: "center",
             }}
           >
-            <Ionicons name="happy-outline" size={20} color="#6B7280" />
+            <Ionicons name="happy-outline" size={20} color={composerColors.actionIcon} />
           </Pressable>
         </View>
 
@@ -326,7 +349,7 @@ export default function CommunityComposer({ onPost, onExpand }: CommunityCompose
           onPress={handlePost}
           disabled={(!content.trim() && !selectedImage) || isUploading}
           style={{
-            backgroundColor: (content.trim() || selectedImage) && !isUploading ? "#E11D48" : "#F3F4F6",
+            backgroundColor: (content.trim() || selectedImage) && !isUploading ? composerColors.postActive : composerColors.postInactive,
             paddingHorizontal: 20,
             paddingVertical: 10,
             borderRadius: 20,
@@ -336,10 +359,10 @@ export default function CommunityComposer({ onPost, onExpand }: CommunityCompose
         >
           {isUploading ? (
             <>
-              <ActivityIndicator size="small" color="#FFFFFF" style={{ marginRight: 8 }} />
+              <ActivityIndicator size="small" color={composerColors.postTextActive} style={{ marginRight: 8 }} />
               <Text
                 style={{
-                  color: "#FFFFFF",
+                  color: composerColors.postTextActive,
                   fontSize: 14,
                   fontWeight: "600",
                 }}
@@ -351,7 +374,7 @@ export default function CommunityComposer({ onPost, onExpand }: CommunityCompose
             <>
               <Text
                 style={{
-                  color: (content.trim() || selectedImage) ? "#FFFFFF" : "#9CA3AF",
+                  color: (content.trim() || selectedImage) ? composerColors.postTextActive : composerColors.postTextInactive,
                   fontSize: 14,
                   fontWeight: "600",
                   marginRight: 4,
@@ -362,7 +385,7 @@ export default function CommunityComposer({ onPost, onExpand }: CommunityCompose
               <Ionicons
                 name="send"
                 size={16}
-                color={(content.trim() || selectedImage) ? "#FFFFFF" : "#9CA3AF"}
+                color={(content.trim() || selectedImage) ? composerColors.postTextActive : composerColors.postTextInactive}
               />
             </>
           )}

@@ -6,14 +6,9 @@
  * - Se fez: mensagem baseada no mood + CTA "Conversar com NathIA"
  */
 
-import React, { useMemo } from "react";
+import React, { useMemo, useCallback } from "react";
 import { View, Text, Pressable, StyleSheet } from "react-native";
-import Animated, {
-  FadeInUp,
-  useAnimatedStyle,
-  useSharedValue,
-  withSpring,
-} from "react-native-reanimated";
+import Animated, { FadeInUp } from "react-native-reanimated";
 import { Ionicons } from "@expo/vector-icons";
 import * as Haptics from "expo-haptics";
 import { useTheme } from "../../hooks/useTheme";
@@ -37,7 +32,6 @@ export const NathiaAdviceCard: React.FC<NathiaAdviceCardProps> = ({
   onPressChat,
 }) => {
   const { colors, isDark } = useTheme();
-  const scale = useSharedValue(1);
 
   // Store
   const getTodayCheckIn = useCheckInStore((s) => s.getTodayCheckIn);
@@ -45,65 +39,46 @@ export const NathiaAdviceCard: React.FC<NathiaAdviceCardProps> = ({
   const hasMoodToday = todayCheckIn?.mood !== null && todayCheckIn?.mood !== undefined;
 
   // Determinar conteúdo do card
-  const { message, ctaAction } = useMemo(() => {
+  const message = useMemo(() => {
     if (!hasMoodToday) {
-      return {
-        message: "Como você está hoje? Vamos começar por aí.",
-        ctaAction: onPressChat,
-      };
+      return "Como você está hoje? Vamos começar por aí.";
     }
+    return MOOD_TIPS[todayCheckIn?.mood ?? 3] ?? MOOD_TIPS[3];
+  }, [hasMoodToday, todayCheckIn?.mood]);
 
-    const tip = MOOD_TIPS[todayCheckIn?.mood ?? 3] ?? MOOD_TIPS[3];
-    return {
-      message: tip,
-      ctaAction: onPressChat,
-    };
-  }, [hasMoodToday, todayCheckIn?.mood, onPressChat]);
-
-  // Handlers
-  const handlePressIn = () => {
-    scale.value = withSpring(0.98, { damping: 15 });
-  };
-
-  const handlePressOut = () => {
-    scale.value = withSpring(1, { damping: 10 });
-  };
-
-  const handlePress = async () => {
+  // Handler simples
+  const handlePress = useCallback(async () => {
     await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
-    ctaAction();
-  };
+    onPressChat();
+  }, [onPressChat]);
 
-  const animatedStyle = useAnimatedStyle(() => ({
-    transform: [{ scale: scale.value }],
-  }));
-
-  // Cores do tema
-  const cardBg = isDark ? "rgba(59, 130, 246, 0.12)" : "#EFF6FF";
-  const borderColor = isDark ? "rgba(59, 130, 246, 0.25)" : "rgba(59, 130, 246, 0.15)";
+  // Cores do tema - usando cores do app (rosa/primary)
+  const cardBg = isDark ? COLORS.primary[900] + "20" : COLORS.primary[50];
+  const borderColor = isDark ? COLORS.primary[700] + "40" : COLORS.primary[200];
   const textMain = isDark ? colors.neutral[100] : colors.neutral[900];
   const textMuted = isDark ? colors.neutral[400] : colors.neutral[600];
-  const iconBg = isDark ? "rgba(59, 130, 246, 0.2)" : colors.legacyAccent.sky + "33";
-  const accentColor = isDark ? colors.legacyAccent.sky : COLORS.semantic.info;
+  const iconBg = isDark ? COLORS.primary[800] : COLORS.primary[100];
+  const accentColor = COLORS.primary[500];
 
   return (
-    <Animated.View entering={FadeInUp.delay(100).duration(500)} style={animatedStyle}>
+    <Animated.View entering={FadeInUp.delay(100).duration(500)}>
       <Pressable
         onPress={handlePress}
-        onPressIn={handlePressIn}
-        onPressOut={handlePressOut}
         accessibilityLabel="Conselho da NathIA"
         accessibilityRole="button"
         accessibilityHint="Toque para conversar com NathIA"
-        style={[
+        hitSlop={{ top: 12, bottom: 12, left: 12, right: 12 }}
+        style={({ pressed }) => [
           styles.container,
           {
             backgroundColor: cardBg,
             borderColor,
+            opacity: pressed ? 0.8 : 1,
+            transform: [{ scale: pressed ? 0.98 : 1 }],
           },
         ]}
       >
-        {/* Icon */}
+        {/* Icon - Sparkles para representar IA */}
         <View style={[styles.iconContainer, { backgroundColor: iconBg }]}>
           <Ionicons name="sparkles" size={22} color={accentColor} />
         </View>
@@ -118,7 +93,7 @@ export const NathiaAdviceCard: React.FC<NathiaAdviceCardProps> = ({
 
         {/* CTA Button */}
         <View style={[styles.ctaButton, { backgroundColor: accentColor }]}>
-          <Ionicons name="chatbubble" size={16} color="#FFFFFF" />
+          <Ionicons name="chevron-forward" size={20} color="#FFFFFF" />
         </View>
       </Pressable>
     </Animated.View>

@@ -3,7 +3,7 @@
  * Relaxation sounds categorized by nature, meditation, and sleep
  */
 
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
 import { View, Text, Pressable, ScrollView } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import Animated, { FadeInDown, FadeInUp } from "react-native-reanimated";
@@ -18,6 +18,7 @@ import {
   RADIUS,
   TYPOGRAPHY,
 } from "../theme/design-system";
+import { useTheme } from "../hooks/useTheme";
 
 type SoundCategory = "nature" | "meditation" | "sleep";
 
@@ -40,7 +41,7 @@ const SOUNDS: SoundItem[] = [
     subtitle: "Som relaxante de chuva",
     duration: "30 min",
     icon: "rainy",
-    color: "#60A5FA",
+    color: COLORS.primary[400],
     category: "nature",
   },
   {
@@ -49,7 +50,7 @@ const SOUNDS: SoundItem[] = [
     subtitle: "Paz do oceano",
     duration: "45 min",
     icon: "water",
-    color: "#06B6D4",
+    color: COLORS.accent[500],
     category: "nature",
   },
   {
@@ -67,7 +68,7 @@ const SOUNDS: SoundItem[] = [
     subtitle: "Crepitar do fogo",
     duration: "60 min",
     icon: "flame",
-    color: "#F59E0B",
+    color: COLORS.semantic.warning,
     category: "nature",
   },
 
@@ -96,7 +97,7 @@ const SOUNDS: SoundItem[] = [
     subtitle: "Meditacao de bondade",
     duration: "12 min",
     icon: "sparkles",
-    color: "#F472B6",
+    color: COLORS.legacyAccent.coral,
     category: "meditation",
   },
 
@@ -107,7 +108,7 @@ const SOUNDS: SoundItem[] = [
     subtitle: "Para voce e seu bebe",
     duration: "20 min",
     icon: "musical-notes",
-    color: "#8B5CF6",
+    color: COLORS.secondary[500],
     category: "sleep",
   },
   {
@@ -116,7 +117,7 @@ const SOUNDS: SoundItem[] = [
     subtitle: "Narracao tranquila",
     duration: "25 min",
     icon: "book",
-    color: "#6366F1",
+    color: COLORS.primary[500],
     category: "sleep",
   },
   {
@@ -125,10 +126,41 @@ const SOUNDS: SoundItem[] = [
     subtitle: "Som continuo suave",
     duration: "60 min",
     icon: "radio",
-    color: "#94A3B8",
+    color: COLORS.neutral[400],
     category: "sleep",
   },
 ];
+
+/**
+ * Cores semânticas para tela de descanso (dark theme by design)
+ * Esta tela usa tema escuro intencionalmente para ajudar no relaxamento
+ */
+const getRestColors = (_isDark: boolean) => ({
+  // Backgrounds - always dark for relaxation
+  bgPrimary: "#1F2937",
+  bgSecondary: "#111827",
+  cardBg: "rgba(255, 255, 255, 0.1)",
+  cardBgActive: (color: string) => `${color}20`,
+  // Text
+  textPrimary: COLORS.text.inverse,
+  textSecondary: COLORS.neutral[400],
+  textMuted: "rgba(255, 255, 255, 0.6)",
+  // UI elements
+  iconBg: "#374151",
+  iconBgActive: (color: string) => color,
+  border: "rgba(255, 255, 255, 0.1)",
+  borderActive: (color: string) => color,
+  // Info card
+  infoBg: "rgba(255, 255, 255, 0.1)",
+  infoIconBg: "rgba(192, 132, 252, 0.2)",
+  infoIcon: "#C084FC",
+  // Tab
+  tabBg: "rgba(255, 255, 255, 0.1)",
+  tabActive: "rgba(255, 255, 255, 0.2)",
+  // Tip
+  tipBg: "rgba(168, 85, 247, 0.1)",
+  tipBorder: "rgba(168, 85, 247, 0.2)",
+});
 
 const CATEGORIES = [
   { id: "nature" as SoundCategory, name: "Natureza", icon: "leaf" as keyof typeof Ionicons.glyphMap },
@@ -139,6 +171,8 @@ const CATEGORIES = [
 export default function RestSoundsScreen() {
   const navigation = useNavigation();
   const insets = useSafeAreaInsets();
+  const { isDark } = useTheme();
+  const restColors = useMemo(() => getRestColors(isDark), [isDark]);
   const [selectedCategory, setSelectedCategory] = useState<SoundCategory>("nature");
   const [playingSound, setPlayingSound] = useState<string | null>(null);
   const [sound, setSound] = useState<Audio.Sound | null>(null);
@@ -181,10 +215,10 @@ export default function RestSoundsScreen() {
   };
 
   return (
-    <View style={{ flex: 1, backgroundColor: "#1F2937" }}>
+    <View style={{ flex: 1, backgroundColor: restColors.bgPrimary }}>
       {/* Header */}
       <LinearGradient
-        colors={["#1F2937", "#111827"]}
+        colors={[restColors.bgPrimary, restColors.bgSecondary]}
         style={{
           paddingTop: insets.top + SPACING.lg,
           paddingBottom: SPACING.xl,
@@ -200,11 +234,11 @@ export default function RestSoundsScreen() {
           }}
         >
           <Pressable onPress={handleClose} style={{ padding: SPACING.sm }}>
-            <Ionicons name="close" size={28} color="#FFF" />
+            <Ionicons name="close" size={28} color={restColors.textPrimary} />
           </Pressable>
           <Text
             style={{
-              color: "#FFFFFF",
+              color: restColors.textPrimary,
               fontSize: TYPOGRAPHY.titleMedium.fontSize,
               fontWeight: "700",
             }}
@@ -217,7 +251,7 @@ export default function RestSoundsScreen() {
         {/* Info Card */}
         <View
           style={{
-            backgroundColor: "rgba(255, 255, 255, 0.1)",
+            backgroundColor: restColors.infoBg,
             borderRadius: RADIUS["2xl"],
             padding: SPACING.lg,
             marginBottom: SPACING.lg,
@@ -226,18 +260,18 @@ export default function RestSoundsScreen() {
           <View style={{ flexDirection: "row", alignItems: "center" }}>
             <View
               style={{
-                backgroundColor: "rgba(192, 132, 252, 0.2)",
+                backgroundColor: restColors.infoIconBg,
                 borderRadius: RADIUS.full,
                 padding: SPACING.sm,
                 marginRight: SPACING.md,
               }}
             >
-              <Ionicons name="moon" size={20} color="#C084FC" />
+              <Ionicons name="moon" size={20} color={restColors.infoIcon} />
             </View>
             <View style={{ flex: 1 }}>
               <Text
                 style={{
-                  color: "#FFFFFF",
+                  color: restColors.textPrimary,
                   fontSize: TYPOGRAPHY.bodySmall.fontSize,
                   fontWeight: "600",
                 }}
@@ -246,7 +280,7 @@ export default function RestSoundsScreen() {
               </Text>
               <Text
                 style={{
-                  color: "rgba(255, 255, 255, 0.6)",
+                  color: restColors.textMuted,
                   fontSize: TYPOGRAPHY.labelSmall.fontSize,
                   marginTop: 2,
                 }}
@@ -261,7 +295,7 @@ export default function RestSoundsScreen() {
         <View
           style={{
             flexDirection: "row",
-            backgroundColor: "rgba(255, 255, 255, 0.1)",
+            backgroundColor: restColors.tabBg,
             borderRadius: RADIUS.full,
             padding: SPACING.xs,
           }}
@@ -281,21 +315,21 @@ export default function RestSoundsScreen() {
                   justifyContent: "center",
                   backgroundColor:
                     selectedCategory === cat.id
-                      ? "rgba(255, 255, 255, 0.2)"
+                      ? restColors.tabActive
                       : "transparent",
                 }}
               >
                 <Ionicons
                   name={cat.icon}
                   size={16}
-                  color={selectedCategory === cat.id ? "#FFF" : "#9CA3AF"}
+                  color={selectedCategory === cat.id ? restColors.textPrimary : restColors.textSecondary}
                 />
                 <Text
                   style={{
                     marginLeft: SPACING.sm,
                     fontSize: TYPOGRAPHY.bodySmall.fontSize,
                     fontWeight: "600",
-                    color: selectedCategory === cat.id ? "#FFFFFF" : "#9CA3AF",
+                    color: selectedCategory === cat.id ? restColors.textPrimary : restColors.textSecondary,
                   }}
                 >
                   {cat.name}
@@ -324,15 +358,15 @@ export default function RestSoundsScreen() {
                   style={{
                     backgroundColor:
                       playingSound === item.id
-                        ? `${item.color}20`
-                        : "rgba(255, 255, 255, 0.1)",
+                        ? restColors.cardBgActive(item.color)
+                        : restColors.cardBg,
                     borderRadius: RADIUS["2xl"],
                     padding: SPACING.xl,
                     borderWidth: 1,
                     borderColor:
                       playingSound === item.id
-                        ? item.color
-                        : "rgba(255, 255, 255, 0.1)",
+                        ? restColors.borderActive(item.color)
+                        : restColors.border,
                   }}
                 >
                   <View style={{ flexDirection: "row", alignItems: "center" }}>
@@ -343,19 +377,19 @@ export default function RestSoundsScreen() {
                         height: 56,
                         borderRadius: 28,
                         backgroundColor:
-                          playingSound === item.id ? item.color : "#374151",
+                          playingSound === item.id ? restColors.iconBgActive(item.color) : restColors.iconBg,
                         alignItems: "center",
                         justifyContent: "center",
                         marginRight: SPACING.lg,
                       }}
                     >
                       {playingSound === item.id ? (
-                        <Ionicons name="pause" size={28} color="#FFF" />
+                        <Ionicons name="pause" size={28} color={restColors.textPrimary} />
                       ) : (
                         <Ionicons
                           name={item.icon}
                           size={28}
-                          color={playingSound === item.id ? "#FFF" : item.color}
+                          color={playingSound === item.id ? restColors.textPrimary : item.color}
                         />
                       )}
                     </View>
@@ -364,7 +398,7 @@ export default function RestSoundsScreen() {
                     <View style={{ flex: 1 }}>
                       <Text
                         style={{
-                          color: "#FFFFFF",
+                          color: restColors.textPrimary,
                           fontSize: TYPOGRAPHY.bodyLarge.fontSize,
                           fontWeight: "700",
                           marginBottom: 2,
@@ -374,7 +408,7 @@ export default function RestSoundsScreen() {
                       </Text>
                       <Text
                         style={{
-                          color: "#9CA3AF",
+                          color: restColors.textSecondary,
                           fontSize: TYPOGRAPHY.bodySmall.fontSize,
                           marginBottom: SPACING.sm,
                         }}
@@ -382,10 +416,10 @@ export default function RestSoundsScreen() {
                         {item.subtitle}
                       </Text>
                       <View style={{ flexDirection: "row", alignItems: "center" }}>
-                        <Ionicons name="time-outline" size={14} color="#9CA3AF" />
+                        <Ionicons name="time-outline" size={14} color={restColors.textSecondary} />
                         <Text
                           style={{
-                            color: "#9CA3AF",
+                            color: restColors.textSecondary,
                             fontSize: TYPOGRAPHY.labelSmall.fontSize,
                             marginLeft: 4,
                           }}
@@ -402,7 +436,7 @@ export default function RestSoundsScreen() {
                         height: 44,
                         borderRadius: 22,
                         backgroundColor:
-                          playingSound === item.id ? item.color : "#374151",
+                          playingSound === item.id ? restColors.iconBgActive(item.color) : restColors.iconBg,
                         alignItems: "center",
                         justifyContent: "center",
                       }}
@@ -410,7 +444,7 @@ export default function RestSoundsScreen() {
                       <Ionicons
                         name={playingSound === item.id ? "pause" : "play"}
                         size={22}
-                        color="#FFF"
+                        color={restColors.textPrimary}
                       />
                     </View>
                   </View>
@@ -423,7 +457,7 @@ export default function RestSoundsScreen() {
                         marginTop: SPACING.lg,
                         paddingTop: SPACING.lg,
                         borderTopWidth: 1,
-                        borderTopColor: "rgba(255, 255, 255, 0.1)",
+                        borderTopColor: restColors.border,
                       }}
                     >
                       <View
@@ -435,7 +469,7 @@ export default function RestSoundsScreen() {
                       >
                         <Text
                           style={{
-                            color: "rgba(255, 255, 255, 0.6)",
+                            color: restColors.textMuted,
                             fontSize: TYPOGRAPHY.labelSmall.fontSize,
                           }}
                         >
@@ -467,11 +501,11 @@ export default function RestSoundsScreen() {
         <View style={{ paddingHorizontal: SPACING["2xl"], marginTop: SPACING.lg }}>
           <View
             style={{
-              backgroundColor: "rgba(168, 85, 247, 0.1)",
+              backgroundColor: restColors.tipBg,
               borderRadius: RADIUS["2xl"],
               padding: SPACING.xl,
               borderWidth: 1,
-              borderColor: "rgba(168, 85, 247, 0.2)",
+              borderColor: restColors.tipBorder,
             }}
           >
             <View style={{ flexDirection: "row", alignItems: "flex-start" }}>
@@ -479,7 +513,7 @@ export default function RestSoundsScreen() {
               <View style={{ flex: 1 }}>
                 <Text
                   style={{
-                    color: "#FFFFFF",
+                    color: restColors.textPrimary,
                     fontWeight: "600",
                     marginBottom: SPACING.sm,
                   }}
@@ -488,7 +522,7 @@ export default function RestSoundsScreen() {
                 </Text>
                 <Text
                   style={{
-                    color: "rgba(255, 255, 255, 0.7)",
+                    color: restColors.textMuted,
                     fontSize: TYPOGRAPHY.bodySmall.fontSize,
                     lineHeight: 20,
                   }}

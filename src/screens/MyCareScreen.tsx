@@ -9,25 +9,33 @@ import { useAppStore } from "../state/store";
 import * as Haptics from "expo-haptics";
 import { useTheme } from "../hooks/useTheme";
 import { IconName } from "../types/icons";
+import { COLORS as DS_COLORS } from "../theme/design-system";
 
-// Paleta suave e acolhedora
-const COLORS = {
-  background: "#FBF9F7",
-  cardBg: "#FFFFFF",
-  lilac: "#D4C4E8",
-  lilacSoft: "#EDE7F6",
-  rose: "#F5D0D0",
-  roseSoft: "#FDF0F0",
-  blueCalm: "#C5DAE8",
-  blueSoft: "#E8F2F8",
-  sage: "#D4E5D7",
-  sageSoft: "#EDF5EE",
-  peach: "#F5E0D4",
-  peachSoft: "#FDF6F2",
-  text: "#4A4A4A",
-  textMuted: "#7A7A7A",
-  textLight: "#9A9A9A",
-};
+/**
+ * Cores semânticas para tela de cuidados
+ * Mapeadas para o design-system azul pastel
+ */
+const getCareColors = (isDark: boolean) => ({
+  // Lilac/Roxo suave - descanso e meditação
+  lilac: isDark ? DS_COLORS.secondary[400] : DS_COLORS.secondary[300],
+  lilacSoft: isDark ? "rgba(92, 163, 219, 0.15)" : DS_COLORS.secondary[50],
+  // Rose/Rosa suave - sentimentos e emoções
+  rose: isDark ? DS_COLORS.feeling.amada : DS_COLORS.feeling.amada,
+  roseSoft: isDark ? "rgba(254, 205, 211, 0.15)" : "#FDF0F0",
+  // Blue/Azul calmo - conexão e comunidade
+  blueCalm: isDark ? DS_COLORS.primary[400] : DS_COLORS.primary[300],
+  blueSoft: isDark ? "rgba(125, 185, 213, 0.15)" : DS_COLORS.primary[50],
+  // Sage/Verde suave - respiração e bem-estar
+  sage: isDark ? DS_COLORS.accent[400] : DS_COLORS.accent[200],
+  sageSoft: isDark ? "rgba(20, 184, 166, 0.15)" : DS_COLORS.accent[50],
+  // Peach/Pêssego - afirmações e positividade
+  peach: isDark ? DS_COLORS.legacyAccent.peach : DS_COLORS.legacyAccent.peach,
+  peachSoft: isDark ? "rgba(254, 215, 170, 0.15)" : "#FDF6F2",
+  // Bordas sutis
+  borderLilac: isDark ? "rgba(92, 163, 219, 0.3)" : "#E0D4F0",
+  borderRose: isDark ? "rgba(254, 205, 211, 0.3)" : "#F5E0E0",
+  borderBlue: isDark ? "rgba(125, 185, 213, 0.3)" : "#D6E6F2",
+});
 
 const DAILY_AFFIRMATIONS = [
   "Voce esta fazendo o melhor que pode, e isso e suficiente",
@@ -39,14 +47,16 @@ const DAILY_AFFIRMATIONS = [
   "Cada dia e uma nova chance de se conectar",
 ];
 
-const CARE_SECTIONS = [
+type CareColors = ReturnType<typeof getCareColors>;
+
+const getCareSections = (careColors: CareColors) => [
   {
     id: "breathe",
     title: "Respira comigo",
     subtitle: "Um momento so seu",
     icon: "leaf-outline",
-    color: COLORS.sage,
-    bgColor: COLORS.sageSoft,
+    color: careColors.sage,
+    bgColor: careColors.sageSoft,
     description: "Exercicios de respiracao para acalmar",
   },
   {
@@ -54,8 +64,8 @@ const CARE_SECTIONS = [
     title: "Como voce esta?",
     subtitle: "Registro emocional",
     icon: "heart-outline",
-    color: COLORS.rose,
-    bgColor: COLORS.roseSoft,
+    color: careColors.rose,
+    bgColor: careColors.roseSoft,
     description: "Espaco seguro para seus sentimentos",
   },
   {
@@ -63,8 +73,8 @@ const CARE_SECTIONS = [
     title: "Descanso",
     subtitle: "Sons e meditacoes",
     icon: "moon-outline",
-    color: COLORS.lilac,
-    bgColor: COLORS.lilacSoft,
+    color: careColors.lilac,
+    bgColor: careColors.lilacSoft,
     description: "Ajuda para relaxar e dormir melhor",
   },
   {
@@ -72,8 +82,8 @@ const CARE_SECTIONS = [
     title: "Conexao",
     subtitle: "Comunidade de maes",
     icon: "people-outline",
-    color: COLORS.blueCalm,
-    bgColor: COLORS.blueSoft,
+    color: careColors.blueCalm,
+    bgColor: careColors.blueSoft,
     description: "Voce nao esta sozinha nessa jornada",
   },
 ];
@@ -107,8 +117,12 @@ const QUICK_SUPPORT = [
 
 export default function MyCareScreen({ navigation }: MainTabScreenProps<"MyCare">) {
   const insets = useSafeAreaInsets();
-  const { colors } = useTheme();
+  const { colors, isDark } = useTheme();
   const userName = useAppStore((s) => s.user?.name);
+
+  // Cores semânticas para esta tela
+  const careColors = useMemo(() => getCareColors(isDark), [isDark]);
+  const careSections = useMemo(() => getCareSections(careColors), [careColors]);
 
   const greeting = useMemo(() => {
     const hour = new Date().getHours();
@@ -254,7 +268,7 @@ export default function MyCareScreen({ navigation }: MainTabScreenProps<"MyCare"
                   width: 44,
                   height: 44,
                   borderRadius: 22,
-                  backgroundColor: COLORS.peachSoft,
+                  backgroundColor: careColors.peachSoft,
                   alignItems: "center",
                   justifyContent: "center",
                   marginRight: 14,
@@ -304,7 +318,7 @@ export default function MyCareScreen({ navigation }: MainTabScreenProps<"MyCare"
                   width: 32,
                   height: 32,
                   borderRadius: 16,
-                  backgroundColor: COLORS.lilacSoft,
+                  backgroundColor: careColors.lilacSoft,
                   alignItems: "center",
                   justifyContent: "center",
                   marginRight: 10,
@@ -326,11 +340,11 @@ export default function MyCareScreen({ navigation }: MainTabScreenProps<"MyCare"
         >
           <View
             style={{
-              backgroundColor: COLORS.blueSoft,
+              backgroundColor: careColors.blueSoft,
               borderRadius: 20,
               padding: 20,
               borderWidth: 1,
-              borderColor: "#D6E6F2",
+              borderColor: careColors.borderBlue,
             }}
           >
             <View className="flex-row items-center">
@@ -377,7 +391,7 @@ export default function MyCareScreen({ navigation }: MainTabScreenProps<"MyCare"
           </Text>
 
           <View className="flex-row flex-wrap" style={{ marginHorizontal: -6 }}>
-            {CARE_SECTIONS.map((section, index) => (
+            {careSections.map((section, index) => (
               <Animated.View
                 key={section.id}
                 entering={FadeInUp.delay(300 + index * 60).duration(500).springify()}
@@ -523,11 +537,11 @@ export default function MyCareScreen({ navigation }: MainTabScreenProps<"MyCare"
           <Pressable
             onPress={handleTalkPress}
             style={{
-              backgroundColor: COLORS.roseSoft,
+              backgroundColor: careColors.roseSoft,
               borderRadius: 20,
               padding: 20,
               borderWidth: 1,
-              borderColor: "#F5E0E0",
+              borderColor: careColors.borderRose,
             }}
           >
             <View className="flex-row items-center">
@@ -542,7 +556,7 @@ export default function MyCareScreen({ navigation }: MainTabScreenProps<"MyCare"
                   marginRight: 16,
                 }}
               >
-                <Ionicons name="chatbubble-ellipses-outline" size={24} color={COLORS.rose} />
+                <Ionicons name="chatbubble-ellipses-outline" size={24} color={careColors.rose} />
               </View>
               <View className="flex-1">
                 <Text
@@ -577,11 +591,11 @@ export default function MyCareScreen({ navigation }: MainTabScreenProps<"MyCare"
           <Pressable
             onPress={() => navigation.navigate("Community")}
             style={{
-              backgroundColor: COLORS.lilacSoft,
+              backgroundColor: careColors.lilacSoft,
               borderRadius: 20,
               padding: 24,
               borderWidth: 1,
-              borderColor: "#E0D4F0",
+              borderColor: careColors.borderLilac,
             }}
           >
             <View className="flex-row items-center mb-3">
@@ -620,7 +634,7 @@ export default function MyCareScreen({ navigation }: MainTabScreenProps<"MyCare"
                       justifyContent: "center",
                       marginLeft: i > 0 ? -8 : 0,
                       borderWidth: 2,
-                      borderColor: COLORS.lilacSoft,
+                      borderColor: careColors.lilacSoft,
                     }}
                   >
                     <Text style={{ fontSize: 14 }}>{emoji}</Text>
@@ -645,7 +659,7 @@ export default function MyCareScreen({ navigation }: MainTabScreenProps<"MyCare"
               style={{
                 flex: 1,
                 marginHorizontal: 6,
-                backgroundColor: COLORS.peach,
+                backgroundColor: careColors.peach,
                 borderRadius: 16,
                 padding: 18,
                 flexDirection: "row",
@@ -670,7 +684,7 @@ export default function MyCareScreen({ navigation }: MainTabScreenProps<"MyCare"
               style={{
                 flex: 1,
                 marginHorizontal: 6,
-                backgroundColor: COLORS.sage,
+                backgroundColor: careColors.sage,
                 borderRadius: 16,
                 padding: 18,
                 flexDirection: "row",

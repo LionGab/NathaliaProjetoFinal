@@ -33,7 +33,48 @@ supabase link --project-ref YOUR_PROJECT_REF
 # (via MCP tool: mcp_Supabase_get_advisors)
 ```
 
-### 2. Context7 MCP (Prioridade Alta)
+### 2. Expo MCP (Prioridade Alta)
+
+**Status**: ⚠️ Requer configuração manual
+
+**Configuração**:
+
+Para **Claude Desktop**:
+
+```bash
+claude mcp add --transport http expo-mcp https://mcp.expo.dev/mcp
+```
+
+**Autenticação**:
+
+Após adicionar o servidor, você pode precisar autenticar via OAuth 2.0. Execute `/mcp` no Claude Desktop e siga as instruções no navegador para fazer login.
+
+**Uso**:
+
+- Gerenciamento de projetos Expo
+- Interação com EAS (Expo Application Services)
+- Builds e deployments
+- Acesso à documentação em tempo real
+- Gerenciamento inteligente de dependências
+- Testes visuais automatizados
+
+**Recursos**:
+
+- Criar e gerenciar builds via EAS
+- Verificar status de builds
+- Gerenciar atualizações OTA (Over-The-Air)
+- Acessar documentação do Expo SDK
+- Validar configurações do projeto
+
+**Exemplo de Uso**:
+
+```bash
+# No Claude Desktop, após configurar:
+# Use comandos MCP para interagir com projetos Expo
+# Exemplo: criar build, verificar status, etc.
+```
+
+### 3. Context7 MCP (Prioridade Alta)
 
 **Status**: ✅ Já disponível via ferramentas MCP
 
@@ -62,7 +103,7 @@ mcp_Context7_get -
   });
 ```
 
-### 3. Figma MCP (Prioridade Média - Requer Figma Desktop)
+### 4. Figma MCP (Prioridade Média - Requer Figma Desktop)
 
 **Status**: ⚠️ Requer configuração manual
 
@@ -99,7 +140,7 @@ mcp_Figma_get_design_context({
 });
 ```
 
-### 4. Linear MCP (Prioridade Média - Requer Linear Account)
+### 5. Linear MCP (Prioridade Média - Requer Linear Account)
 
 **Status**: ⚠️ Requer configuração manual
 
@@ -133,7 +174,7 @@ mcp_Linear_create_issue({
 });
 ```
 
-### 5. Playwright MCP (Prioridade Baixa - Para Web Testing)
+### 6. Playwright MCP (Prioridade Baixa - Para Web Testing)
 
 **Status**: ✅ Já disponível via ferramentas MCP
 
@@ -156,10 +197,11 @@ mcp_Playwright_browser_take_screenshot({ fullPage: true });
 ## Ordem de Implementação Recomendada
 
 1. **Supabase MCP** - Já configurado, usar imediatamente
-2. **Context7** - Já disponível, usar para documentação
-3. **Playwright** - Para validação visual durante desenvolvimento
-4. **Figma** - Se você tem acesso ao design file
-5. **Linear** - Se você usa Linear para gerenciamento de projetos
+2. **Expo MCP** - ⭐ **RECOMENDADO** - Essencial para builds e EAS
+3. **Context7** - Já disponível, usar para documentação
+4. **Playwright** - Para validação visual durante desenvolvimento
+5. **Figma** - Se você tem acesso ao design file
+6. **Linear** - Se você usa Linear para gerenciamento de projetos
 
 ## Verificação de Configuração
 
@@ -183,6 +225,13 @@ Para verificar quais MCPs estão disponíveis, use:
 - Certifique-se de que o Figma Desktop App está aberto
 - Verifique se o arquivo está aberto no Figma
 - Confirme que o fileKey está correto
+
+### Expo MCP não funciona
+
+- Verifique se o comando foi executado corretamente: `claude mcp add --transport http expo-mcp https://mcp.expo.dev/mcp`
+- Certifique-se de estar autenticado no Expo: `npx expo login` ou `eas login`
+- Se necessário, autentique via OAuth 2.0 usando `/mcp` no Claude Desktop
+- Verifique se você tem acesso ao projeto Expo configurado
 
 ### Linear MCP não funciona
 

@@ -1,0 +1,132 @@
+{
+  "$schema": "https://modelcontextprotocol.io/schema/config.json",
+  "version": "1.0.0",
+  "project": "Nossa Maternidade",
+  "description": "Configuracao de MCPs para desenvolvimento do app",
+
+  "mcpServers": {
+    "figma-devmode": {
+      "description": "Figma Dev Mode MCP Server (local)",
+      "transport": "sse",
+      "url": "http://127.0.0.1:3845/sse",
+      "requires": ["Figma Desktop App com Dev Mode MCP habilitado"],
+      "setupCommand": "Figma > Preferences > Developer > Enable Dev Mode MCP Server",
+      "capabilities": [
+        "figma_get_file",
+        "figma_get_node",
+        "figma_get_styles",
+        "figma_get_components",
+        "figma_get_variables",
+        "figma_screenshot"
+      ]
+    },
+
+    "expo-mcp": {
+      "description": "Expo MCP Server (remoto)",
+      "transport": "http",
+      "url": "https://mcp.expo.dev/mcp",
+      "requires": ["Expo account autenticado", "SDK 54+"],
+      "setupCommand": "claude mcp add --transport http expo-mcp https://mcp.expo.dev/mcp",
+      "capabilities": [
+        "learn",
+        "search_documentation",
+        "add_library",
+        "screenshot (local)",
+        "tap_automation (local)"
+      ]
+    },
+
+    "supabase": {
+      "description": "Supabase MCP (ja configurado)",
+      "status": "active",
+      "capabilities": [
+        "list_projects",
+        "get_tables",
+        "run_query",
+        "create_migration",
+        "get_advisors"
+      ]
+    },
+
+    "sequential-thinking": {
+      "description": "Raciocinio estruturado (ja ativo)",
+      "status": "active",
+      "permission": "mcp__sequential-thinking__sequentialthinking"
+    },
+
+    "context7": {
+      "description": "Documentacao atualizada de libs",
+      "status": "available",
+      "capabilities": [
+        "get_library_docs"
+      ],
+      "supportedLibraries": [
+        "react-navigation",
+        "expo-notifications",
+        "supabase-js",
+        "react-native-reanimated",
+        "nativewind"
+      ]
+    },
+
+    "playwright": {
+      "description": "Testes visuais web",
+      "status": "available",
+      "capabilities": [
+        "browser_navigate",
+        "browser_snapshot",
+        "browser_screenshot",
+        "browser_click",
+        "browser_type"
+      ]
+    }
+  },
+
+  "designTools": {
+    "primaryDesignSystem": "src/theme/design-system.ts",
+    "legacyColors": "src/utils/colors.ts",
+    "themeHook": "src/hooks/useTheme.ts",
+
+    "figmaFile": {
+      "name": "Nossa Maternidade Design System",
+      "fileKey": "CONFIGURE_SEU_FILE_KEY",
+      "lastSync": null
+    },
+
+    "tokens": {
+      "colors": "COLORS, COLORS_DARK",
+      "typography": "TYPOGRAPHY",
+      "spacing": "SPACING",
+      "radius": "RADIUS",
+      "shadows": "SHADOWS",
+      "gradients": "GRADIENTS"
+    }
+  },
+
+  "qualityGates": {
+    "hardcodedColors": {
+      "threshold": 0,
+      "command": "grep -rn '#[0-9A-Fa-f]{6}' src/ --include='*.tsx' | grep -v design-system | grep -v colors.ts | wc -l"
+    },
+    "smallTapTargets": {
+      "threshold": 0,
+      "minSize": 44
+    },
+    "darkModeSupport": {
+      "required": true,
+      "hook": "useTheme"
+    }
+  },
+
+  "slashCommands": {
+    "available": [
+      "/design-check - Verifica consistencia com design-system",
+      "/design-tokens - Mostra tokens disponiveis",
+      "/audit-colors - Audita cores hardcoded",
+      "/audit-a11y - Verifica acessibilidade WCAG",
+      "/component-gen - Gera componente do design-system",
+      "/design-quality - Quality gate completo",
+      "/figma-setup - Guia de configuracao do Figma MCP"
+    ]
+  }
+}

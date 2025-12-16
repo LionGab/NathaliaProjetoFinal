@@ -47,7 +47,8 @@
       "Bash(sudo gem install:*)",
       "Bash(gem install:*)",
       "Bash(bun start:*)",
-      "Bash(ruby --version:*)"
+      "Bash(ruby --version:*)",
+      "Bash(chmod:*)"
     ]
   }
 }

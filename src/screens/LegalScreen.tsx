@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useMemo } from "react";
 import { View, Text, ScrollView, Pressable, Linking } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { LinearGradient } from "expo-linear-gradient";
@@ -9,6 +9,8 @@ import { RootStackScreenProps } from "../types/navigation";
 import { shadowPresets } from "../utils/shadow";
 import * as Haptics from "expo-haptics";
 import { useToast } from "../context/ToastContext";
+import { useTheme } from "../hooks/useTheme";
+import { COLORS as DS_COLORS } from "../theme/design-system";
 
 // URLs dos documentos legais via expo-constants (definidos em app.json extra.legal)
 const legalConfig = Constants.expoConfig?.extra?.legal as {
@@ -38,7 +40,7 @@ const LEGAL_ITEMS: LegalItem[] = [
     title: "Política de Privacidade",
     description: "Como coletamos, usamos e protegemos seus dados",
     icon: "shield-checkmark-outline",
-    color: "#6366F1",
+    color: DS_COLORS.primary[500],
     url: LEGAL_URLS.privacy,
   },
   {
@@ -46,7 +48,7 @@ const LEGAL_ITEMS: LegalItem[] = [
     title: "Termos de Uso",
     description: "Regras e condições para usar o app",
     icon: "document-text-outline",
-    color: "#8B5CF6",
+    color: DS_COLORS.secondary[500],
     url: LEGAL_URLS.terms,
   },
   {
@@ -54,7 +56,7 @@ const LEGAL_ITEMS: LegalItem[] = [
     title: "Uso de Inteligência Artificial",
     description: "Informações sobre a NathIA e uso de IA no app",
     icon: "sparkles-outline",
-    color: "#EC4899",
+    color: DS_COLORS.legacyAccent.coral,
     url: LEGAL_URLS.aiDisclaimer,
   },
 ];
@@ -76,13 +78,46 @@ const INFO_ITEMS = [
     content:
       "Este aplicativo não substitui consultas médicas. A NathIA oferece apoio emocional e informações gerais, mas não é uma profissional de saúde. Em caso de emergência, procure atendimento médico imediato.",
     icon: "medkit-outline",
-    color: "#EF4444",
+    color: DS_COLORS.semantic.error,
   },
 ];
+
+/**
+ * Cores semânticas para LegalScreen com suporte a dark mode
+ */
+const getLegalColors = (isDark: boolean) => ({
+  // Backgrounds
+  cardBg: isDark ? DS_COLORS.background.secondary : DS_COLORS.text.inverse,
+  // Medical warning
+  medicalBg: isDark ? "rgba(239, 68, 68, 0.15)" : "#FEF2F2",
+  medicalBorder: isDark ? "rgba(239, 68, 68, 0.3)" : "#FECACA",
+  medicalIconBg: isDark ? "rgba(254, 226, 226, 0.2)" : "#FEE2E2",
+  medicalTitle: isDark ? DS_COLORS.semantic.error : "#B91C1C",
+  medicalText: isDark ? "#FCA5A5" : "#DC2626",
+  // LGPD
+  lgpdCheckBg: isDark ? "rgba(99, 102, 241, 0.2)" : "#E0E7FF",
+  lgpdCheck: DS_COLORS.primary[500],
+  lgpdContactBg: isDark ? "rgba(245, 243, 255, 0.1)" : "#F5F3FF",
+  lgpdContactText: DS_COLORS.primary[500],
+  // AI section
+  aiBg: isDark ? "rgba(168, 85, 247, 0.1)" : "#FDF4FF",
+  aiBorder: isDark ? "rgba(245, 208, 254, 0.2)" : "#F5D0FE",
+  aiIconBg: isDark ? "rgba(250, 232, 255, 0.15)" : "#FAE8FF",
+  aiTitle: isDark ? DS_COLORS.secondary[300] : "#6B21A8",
+  aiText: isDark ? DS_COLORS.secondary[400] : "#7C3AED",
+  aiInfo: isDark ? DS_COLORS.secondary[400] : "#9333EA",
+  aiInfoText: isDark ? DS_COLORS.secondary[300] : "#7C3AED",
+  // Gradient for header
+  headerGradient: isDark
+    ? [DS_COLORS.background.primary, DS_COLORS.background.secondary, DS_COLORS.background.tertiary] as const
+    : ["#F5F3FF", "#FDF4FF", "#FFFCF9"] as const,
+});
 
 export default function LegalScreen({ navigation }: RootStackScreenProps<"Legal">) {
   const insets = useSafeAreaInsets();
   const { showError, showInfo } = useToast();
+  const { colors, isDark } = useTheme();
+  const legalColors = useMemo(() => getLegalColors(isDark), [isDark]);
 
   const handleOpenLink = async (url: string, title: string) => {
     await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
@@ -118,9 +153,9 @@ export default function LegalScreen({ navigation }: RootStackScreenProps<"Legal"
   };
 
   return (
-    <View className="flex-1 bg-cream-50">
+    <View style={{ flex: 1, backgroundColor: colors.background.primary }}>
       <LinearGradient
-        colors={["#F5F3FF", "#FDF4FF", "#FFFCF9"]}
+        colors={legalColors.headerGradient as unknown as [string, string, ...string[]]}
         locations={[0, 0.4, 1]}
         style={{ position: "absolute", top: 0, left: 0, right: 0, height: 350 }}
       />
@@ -134,15 +169,15 @@ export default function LegalScreen({ navigation }: RootStackScreenProps<"Legal"
         <Pressable
           onPress={handleBack}
           className="p-2 mr-3"
-          style={[{ backgroundColor: "#FFFFFF", borderRadius: 12 }, shadowPresets.sm]}
+          style={[{ backgroundColor: legalColors.cardBg, borderRadius: 12 }, shadowPresets.sm]}
           accessibilityRole="button"
           accessibilityLabel="Voltar"
           accessibilityHint="Retorna para a tela anterior"
         >
-          <Ionicons name="arrow-back" size={24} color="#78716C" />
+          <Ionicons name="arrow-back" size={24} color={colors.neutral[500]} />
         </Pressable>
         <Text
-          className="text-warmGray-800 text-2xl font-serif flex-1"
+          style={{ color: colors.text.primary, fontSize: 24, fontFamily: "DMSerifDisplay_400Regular", flex: 1 }}
           accessibilityRole="header"
         >
           Legal e Privacidade
@@ -158,12 +193,12 @@ export default function LegalScreen({ navigation }: RootStackScreenProps<"Legal"
           entering={FadeInUp.delay(100).duration(500).springify()}
           className="px-4 mb-6"
         >
-          <Text className="text-warmGray-600 text-sm font-medium mb-3 ml-1">
+          <Text style={{ color: colors.text.secondary, fontSize: 12, fontWeight: "500", marginBottom: 12, marginLeft: 4 }}>
             DOCUMENTOS
           </Text>
           <View
             style={[
-              { backgroundColor: "#FFFFFF", borderRadius: 20, overflow: "hidden" },
+              { backgroundColor: legalColors.cardBg, borderRadius: 20, overflow: "hidden" },
               shadowPresets.md,
             ]}
           >
@@ -171,28 +206,40 @@ export default function LegalScreen({ navigation }: RootStackScreenProps<"Legal"
               <Pressable
                 key={item.id}
                 onPress={() => handleOpenLink(item.url, item.title)}
-                className={`flex-row items-center px-4 py-4 ${
-                  index < LEGAL_ITEMS.length - 1 ? "border-b border-warmGray-100" : ""
-                }`}
+                style={{
+                  flexDirection: "row",
+                  alignItems: "center",
+                  paddingHorizontal: 16,
+                  paddingVertical: 16,
+                  borderBottomWidth: index < LEGAL_ITEMS.length - 1 ? 1 : 0,
+                  borderBottomColor: colors.neutral[200],
+                }}
                 accessibilityRole="link"
                 accessibilityLabel={item.title}
                 accessibilityHint={`Abre ${item.title} no navegador`}
               >
                 <View
-                  className="w-11 h-11 rounded-full items-center justify-center mr-3"
-                  style={{ backgroundColor: `${item.color}15` }}
+                  style={{
+                    width: 44,
+                    height: 44,
+                    borderRadius: 22,
+                    alignItems: "center",
+                    justifyContent: "center",
+                    marginRight: 12,
+                    backgroundColor: `${item.color}15`,
+                  }}
                 >
                   <Ionicons name={item.icon} size={22} color={item.color} />
                 </View>
-                <View className="flex-1">
-                  <Text className="text-warmGray-800 text-base font-semibold">
+                <View style={{ flex: 1 }}>
+                  <Text style={{ color: colors.text.primary, fontSize: 16, fontWeight: "600" }}>
                     {item.title}
                   </Text>
-                  <Text className="text-warmGray-500 text-sm mt-0.5">
+                  <Text style={{ color: colors.text.secondary, fontSize: 14, marginTop: 2 }}>
                     {item.description}
                   </Text>
                 </View>
-                <Ionicons name="open-outline" size={20} color="#A8A29E" />
+                <Ionicons name="open-outline" size={20} color={colors.neutral[400]} />
               </Pressable>
             ))}
           </View>
@@ -204,29 +251,34 @@ export default function LegalScreen({ navigation }: RootStackScreenProps<"Legal"
           className="px-4 mb-6"
         >
           <View
-            style={[
-              {
-                backgroundColor: "#FEF2F2",
-                borderRadius: 20,
-                padding: 16,
-                borderWidth: 1,
-                borderColor: "#FECACA",
-              },
-            ]}
+            style={{
+              backgroundColor: legalColors.medicalBg,
+              borderRadius: 20,
+              padding: 16,
+              borderWidth: 1,
+              borderColor: legalColors.medicalBorder,
+            }}
             accessibilityRole="alert"
           >
-            <View className="flex-row items-center mb-3">
+            <View style={{ flexDirection: "row", alignItems: "center", marginBottom: 12 }}>
               <View
-                className="w-10 h-10 rounded-full items-center justify-center mr-3"
-                style={{ backgroundColor: "#FEE2E2" }}
+                style={{
+                  width: 40,
+                  height: 40,
+                  borderRadius: 20,
+                  alignItems: "center",
+                  justifyContent: "center",
+                  marginRight: 12,
+                  backgroundColor: legalColors.medicalIconBg,
+                }}
               >
-                <Ionicons name="medkit-outline" size={20} color="#EF4444" />
+                <Ionicons name="medkit-outline" size={20} color={DS_COLORS.semantic.error} />
               </View>
-              <Text className="text-red-700 text-base font-bold flex-1">
+              <Text style={{ color: legalColors.medicalTitle, fontSize: 16, fontWeight: "700", flex: 1 }}>
                 Aviso Médico Importante
               </Text>
             </View>
-            <Text className="text-red-600 text-sm leading-5">
+            <Text style={{ color: legalColors.medicalText, fontSize: 14, lineHeight: 20 }}>
               Este aplicativo não substitui consultas médicas. A NathIA oferece
               apoio emocional e informações gerais, mas não é uma profissional de
               saúde. Em caso de emergência, procure atendimento médico imediato.
@@ -239,39 +291,54 @@ export default function LegalScreen({ navigation }: RootStackScreenProps<"Legal"
           entering={FadeInUp.delay(300).duration(500).springify()}
           className="px-4 mb-6"
         >
-          <Text className="text-warmGray-600 text-sm font-medium mb-3 ml-1">
+          <Text style={{ color: colors.text.secondary, fontSize: 12, fontWeight: "500", marginBottom: 12, marginLeft: 4 }}>
             SEUS DIREITOS (LGPD)
           </Text>
           <View
             style={[
-              { backgroundColor: "#FFFFFF", borderRadius: 20, padding: 16 },
+              { backgroundColor: legalColors.cardBg, borderRadius: 20, padding: 16 },
               shadowPresets.md,
             ]}
           >
-            <Text className="text-warmGray-700 text-sm mb-4">
+            <Text style={{ color: colors.text.secondary, fontSize: 14, marginBottom: 16 }}>
               De acordo com a Lei Geral de Proteção de Dados (LGPD), você tem direito a:
             </Text>
             {INFO_ITEMS[0].items?.map((item, index) => (
-              <View key={index} className="flex-row items-start mb-3">
+              <View key={index} style={{ flexDirection: "row", alignItems: "flex-start", marginBottom: 12 }}>
                 <View
-                  className="w-6 h-6 rounded-full items-center justify-center mr-3 mt-0.5"
-                  style={{ backgroundColor: "#E0E7FF" }}
+                  style={{
+                    width: 24,
+                    height: 24,
+                    borderRadius: 12,
+                    alignItems: "center",
+                    justifyContent: "center",
+                    marginRight: 12,
+                    marginTop: 2,
+                    backgroundColor: legalColors.lgpdCheckBg,
+                  }}
                 >
-                  <Ionicons name="checkmark" size={14} color="#6366F1" />
+                  <Ionicons name="checkmark" size={14} color={legalColors.lgpdCheck} />
                 </View>
-                <Text className="text-warmGray-700 text-sm flex-1">{item}</Text>
+                <Text style={{ color: colors.text.secondary, fontSize: 14, flex: 1 }}>{item}</Text>
               </View>
             ))}
             <Pressable
               onPress={handleContactDPO}
-              className="flex-row items-center justify-center mt-4 py-3 rounded-xl"
-              style={{ backgroundColor: "#F5F3FF" }}
+              style={{
+                flexDirection: "row",
+                alignItems: "center",
+                justifyContent: "center",
+                marginTop: 16,
+                paddingVertical: 12,
+                borderRadius: 12,
+                backgroundColor: legalColors.lgpdContactBg,
+              }}
               accessibilityRole="button"
               accessibilityLabel="Entrar em contato com o DPO"
               accessibilityHint="Abre o email para contato sobre privacidade"
             >
-              <Ionicons name="mail-outline" size={18} color="#6366F1" />
-              <Text className="text-indigo-600 text-sm font-semibold ml-2">
+              <Ionicons name="mail-outline" size={18} color={legalColors.lgpdContactText} />
+              <Text style={{ color: legalColors.lgpdContactText, fontSize: 14, fontWeight: "600", marginLeft: 8 }}>
                 Entrar em contato sobre seus dados
               </Text>
             </Pressable>
@@ -283,44 +350,49 @@ export default function LegalScreen({ navigation }: RootStackScreenProps<"Legal"
           entering={FadeInUp.delay(400).duration(500).springify()}
           className="px-4 mb-6"
         >
-          <Text className="text-warmGray-600 text-sm font-medium mb-3 ml-1">
+          <Text style={{ color: colors.text.secondary, fontSize: 12, fontWeight: "500", marginBottom: 12, marginLeft: 4 }}>
             SOBRE A INTELIGÊNCIA ARTIFICIAL
           </Text>
           <View
-            style={[
-              {
-                backgroundColor: "#FDF4FF",
-                borderRadius: 20,
-                padding: 16,
-                borderWidth: 1,
-                borderColor: "#F5D0FE",
-              },
-            ]}
+            style={{
+              backgroundColor: legalColors.aiBg,
+              borderRadius: 20,
+              padding: 16,
+              borderWidth: 1,
+              borderColor: legalColors.aiBorder,
+            }}
           >
-            <View className="flex-row items-center mb-3">
+            <View style={{ flexDirection: "row", alignItems: "center", marginBottom: 12 }}>
               <View
-                className="w-10 h-10 rounded-full items-center justify-center mr-3"
-                style={{ backgroundColor: "#FAE8FF" }}
+                style={{
+                  width: 40,
+                  height: 40,
+                  borderRadius: 20,
+                  alignItems: "center",
+                  justifyContent: "center",
+                  marginRight: 12,
+                  backgroundColor: legalColors.aiIconBg,
+                }}
               >
-                <Ionicons name="sparkles" size={20} color="#A855F7" />
+                <Ionicons name="sparkles" size={20} color={DS_COLORS.secondary[500]} />
               </View>
-              <Text className="text-purple-800 text-base font-bold flex-1">
+              <Text style={{ color: legalColors.aiTitle, fontSize: 16, fontWeight: "700", flex: 1 }}>
                 NathIA - Sua Assistente
               </Text>
             </View>
-            <Text className="text-purple-700 text-sm leading-5 mb-3">
+            <Text style={{ color: legalColors.aiText, fontSize: 14, lineHeight: 20, marginBottom: 12 }}>
               A NathIA utiliza inteligência artificial para oferecer apoio
               emocional e informações sobre maternidade. Suas conversas são
               processadas por provedores de IA (OpenAI/Google) para gerar respostas.
             </Text>
-            <View className="flex-row items-start">
+            <View style={{ flexDirection: "row", alignItems: "flex-start" }}>
               <Ionicons
                 name="information-circle-outline"
                 size={16}
-                color="#9333EA"
+                color={legalColors.aiInfo}
                 style={{ marginTop: 2, marginRight: 6 }}
               />
-              <Text className="text-purple-600 text-xs flex-1">
+              <Text style={{ color: legalColors.aiInfoText, fontSize: 12, flex: 1 }}>
                 Não compartilhamos suas conversas com terceiros para fins de marketing.
               </Text>
             </View>
@@ -330,10 +402,10 @@ export default function LegalScreen({ navigation }: RootStackScreenProps<"Legal"
         {/* Versão e Copyright */}
         <Animated.View
           entering={FadeInUp.delay(500).duration(500).springify()}
-          className="items-center mt-4"
+          style={{ alignItems: "center", marginTop: 16 }}
         >
-          <Text className="text-warmGray-400 text-sm">Nossa Maternidade v1.0.0</Text>
-          <Text className="text-warmGray-300 text-xs mt-1">
+          <Text style={{ color: colors.neutral[400], fontSize: 14 }}>Nossa Maternidade v1.0.0</Text>
+          <Text style={{ color: colors.neutral[300], fontSize: 12, marginTop: 4 }}>
             © 2025 Nathália Valente. Todos os direitos reservados.
           </Text>
         </Animated.View>

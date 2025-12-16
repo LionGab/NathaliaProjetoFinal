@@ -53,43 +53,45 @@ import {
 import { logger } from "../utils/logger";
 import { VoiceMessagePlayer } from "../components/VoiceMessagePlayer";
 import { useVoicePremiumGate } from "../hooks/useVoice";
-import { SHADOWS } from "../theme/design-system";
+import { SHADOWS, COLORS as DS_COLORS, COLORS_DARK } from "../theme/design-system";
 import { useTheme } from "../hooks/useTheme";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const { width: SCREEN_WIDTH } = Dimensions.get("window");
 
 // ============================================
-// DESIGN TOKENS - Azul Pastel Maternidade
-// Função para retornar tokens baseados no tema
+// DESIGN TOKENS - Usando design-system.ts
 // ============================================
-const getThemeColors = (isDark: boolean) => ({
-  // Primary colors (Azul Pastel #7DB9D5)
-  primary: isDark ? "#8BC5DD" : "#7DB9D5",
-  primaryLight: isDark ? "#1A2027" : "#E8F3F9",
-  primaryLighter: isDark ? "#0F1419" : "#F7FBFD",
-  primaryDark: isDark ? "#7DB9D5" : "#5BA3C7",
+const getThemeColors = (isDark: boolean) => {
+  const palette = isDark ? COLORS_DARK : DS_COLORS;
+  return {
+    // Primary colors (Azul Pastel)
+    primary: palette.primary[500],
+    primaryLight: palette.primary[100],
+    primaryLighter: palette.primary[50],
+    primaryDark: palette.primary[600],
 
-  // Backgrounds
-  bgPrimary: isDark ? "#0F1419" : "#F7FBFD",
-  bgSecondary: isDark ? "#1A2027" : "#FFFFFF",
-  bgTertiary: isDark ? "#242D36" : "#EDF4F8",
-  bgSidebar: isDark ? "#1A2027" : "#FFFFFF",
+    // Backgrounds
+    bgPrimary: palette.background.primary,
+    bgSecondary: palette.background.secondary,
+    bgTertiary: palette.background.tertiary,
+    bgSidebar: palette.background.secondary,
 
-  // Text
-  textPrimary: isDark ? "#F3F5F7" : "#1F2937",
-  textSecondary: isDark ? "#9DA8B4" : "#6B7280",
-  textTertiary: isDark ? "#7D8B99" : "#9CA3AF",
-  textMuted: isDark ? "#5C6B7A" : "#D1D5DB",
+    // Text
+    textPrimary: palette.text.primary,
+    textSecondary: palette.text.secondary,
+    textTertiary: palette.text.tertiary,
+    textMuted: palette.text.muted,
 
-  // Borders
-  border: isDark ? "#2F3B46" : "#DCE9F1",
-  borderLight: isDark ? "#242D36" : "#E8F3F9",
+    // Borders
+    border: palette.primary[200],
+    borderLight: palette.primary[100],
 
-  // Message bubbles
-  userBubble: isDark ? "#5BA3C7" : "#7DB9D5",
-  aiBubble: isDark ? "#1A2027" : "#FFFFFF",
-});
+    // Message bubbles
+    userBubble: palette.primary[500],
+    aiBubble: palette.background.secondary,
+  };
+};
 
 // Default para StyleSheet estático (light mode)
 const THEME_LIGHT = getThemeColors(false);
@@ -587,7 +589,7 @@ export default function AssistantScreen({ navigation }: MainTabScreenProps<"Assi
 
           {/* Disclaimer */}
           <View style={styles.consentDisclaimer}>
-            <Ionicons name="medkit-outline" size={16} color="#B45309" style={{ marginTop: 2 }} />
+            <Ionicons name="medkit-outline" size={16} color={DS_COLORS.semantic.warning} style={{ marginTop: 2 }} />
             <Text style={styles.disclaimerText}>
               A NathIA não substitui atendimento médico. Em caso de emergência, procure ajuda profissional.
             </Text>
@@ -943,7 +945,7 @@ const styles = StyleSheet.create({
     lineHeight: 22,
   },
   textUser: {
-    color: "#FFFFFF",
+    color: DS_COLORS.text.inverse,
   },
   textAI: {
     color: THEME_LIGHT.textPrimary,
@@ -1194,7 +1196,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   consentDisclaimer: {
-    backgroundColor: "#FEF3C7",
+    backgroundColor: DS_COLORS.semantic.warningLight,
     borderRadius: 12,
     padding: 12,
     marginBottom: 20,
@@ -1203,7 +1205,7 @@ const styles = StyleSheet.create({
   },
   disclaimerText: {
     fontSize: 12,
-    color: "#92400E",
+    color: DS_COLORS.neutral[700],
     marginLeft: 8,
     flex: 1,
     lineHeight: 18,
@@ -1216,7 +1218,7 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   consentButtonPrimaryText: {
-    color: "#FFFFFF",
+    color: DS_COLORS.text.inverse,
     fontSize: 16,
     fontWeight: "600",
   },
@@ -1276,7 +1278,7 @@ const styles = StyleSheet.create({
     borderRadius: 12,
   },
   newChatText: {
-    color: "#FFFFFF",
+    color: DS_COLORS.text.inverse,
     fontSize: 15,
     fontWeight: "600",
     marginLeft: 8,

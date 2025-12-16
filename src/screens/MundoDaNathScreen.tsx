@@ -154,7 +154,7 @@ const StoryItem: React.FC<{
   return (
     <Animated.View
       entering={FadeInRight.delay(index * 60).duration(400)}
-      style={[{ marginRight: SPACING.md }, animatedStyle]}
+      style={[{ marginRight: SPACING.sm }, animatedStyle]}
     >
       <Pressable
         onPress={onPress}
@@ -163,32 +163,32 @@ const StoryItem: React.FC<{
       >
         <View
           style={{
-            width: 72,
-            height: 72,
-            borderRadius: 36,
-            padding: 3,
+            width: 56,
+            height: 56,
+            borderRadius: 28,
+            padding: 2,
             backgroundColor: story.isNew ? COLORS.primary[500] : COLORS.neutral[300],
           }}
         >
           <View
             style={{
               flex: 1,
-              borderRadius: 33,
+              borderRadius: 26,
               backgroundColor: story.thumbnailColor,
               alignItems: "center",
               justifyContent: "center",
             }}
           >
-            <Text style={{ fontSize: 28 }}>{story.emoji}</Text>
+            <Text style={{ fontSize: 22 }}>{story.emoji}</Text>
           </View>
         </View>
         <Text
           style={{
-            fontSize: 12,
+            fontSize: 10,
             fontWeight: "500",
             color: COLORS.text.secondary,
             textAlign: "center",
-            marginTop: SPACING.xs,
+            marginTop: 2,
           }}
           numberOfLines={1}
         >
@@ -246,16 +246,16 @@ const PostCard: React.FC<{
       style={[
         {
           backgroundColor: bgCard,
-          borderRadius: RADIUS["2xl"],
-          marginBottom: SPACING.lg,
+          borderRadius: RADIUS.xl,
+          marginBottom: SPACING.md,
           overflow: "hidden",
           borderWidth: post.isPinned ? 2 : 1,
           borderColor: post.isPinned ? COLORS.primary[400] : borderColor,
           shadowColor: COLORS.neutral[900],
-          shadowOffset: { width: 0, height: 4 },
-          shadowOpacity: 0.08,
-          shadowRadius: 12,
-          elevation: 4,
+          shadowOffset: { width: 0, height: 2 },
+          shadowOpacity: 0.06,
+          shadowRadius: 8,
+          elevation: 3,
         },
         animatedStyle,
       ]}
@@ -270,49 +270,49 @@ const PostCard: React.FC<{
             flexDirection: "row",
             alignItems: "center",
             justifyContent: "center",
-            paddingVertical: SPACING.sm,
+            paddingVertical: SPACING.xs,
           }}
         >
-          <Ionicons name="pin" size={14} color="#FFFFFF" />
-          <Text style={{ color: "#FFFFFF", fontSize: 12, fontWeight: "600", marginLeft: SPACING.xs }}>
+          <Ionicons name="pin" size={12} color="#FFFFFF" />
+          <Text style={{ color: "#FFFFFF", fontSize: 10, fontWeight: "600", marginLeft: SPACING.xs }}>
             Fixado
           </Text>
         </LinearGradient>
       )}
 
       {/* Header */}
-      <View style={{ padding: SPACING.lg }}>
-        <View style={{ flexDirection: "row", alignItems: "center", marginBottom: SPACING.md }}>
+      <View style={{ padding: SPACING.md }}>
+        <View style={{ flexDirection: "row", alignItems: "center", marginBottom: SPACING.sm }}>
           {/* Avatar da Nath */}
           <LinearGradient
             colors={GRADIENTS.primary as unknown as readonly [string, string]}
             style={{
-              width: 48,
-              height: 48,
-              borderRadius: 24,
+              width: 36,
+              height: 36,
+              borderRadius: 18,
               alignItems: "center",
               justifyContent: "center",
-              marginRight: SPACING.md,
+              marginRight: SPACING.sm,
             }}
           >
-            <Text style={{ fontSize: 20, color: "#FFFFFF", fontWeight: "700" }}>N</Text>
+            <Text style={{ fontSize: 16, color: "#FFFFFF", fontWeight: "700" }}>N</Text>
           </LinearGradient>
 
           <View style={{ flex: 1 }}>
             <View style={{ flexDirection: "row", alignItems: "center" }}>
-              <Text style={{ fontSize: 16, fontWeight: "700", color: textPrimary }}>
+              <Text style={{ fontSize: 14, fontWeight: "700", color: textPrimary }}>
                 Nathalia Valente
               </Text>
               <View
                 style={{
                   backgroundColor: COLORS.primary[100],
                   borderRadius: RADIUS.full,
-                  paddingHorizontal: SPACING.sm,
-                  paddingVertical: 2,
-                  marginLeft: SPACING.sm,
+                  paddingHorizontal: SPACING.xs,
+                  paddingVertical: 1,
+                  marginLeft: SPACING.xs,
                 }}
               >
-                <Text style={{ fontSize: 10, fontWeight: "600", color: COLORS.primary[600] }}>
+                <Text style={{ fontSize: 8, fontWeight: "600", color: COLORS.primary[600] }}>
                   ✓ Criadora
                 </Text>
               </View>
@@ -328,13 +328,13 @@ const PostCard: React.FC<{
             style={{
               flexDirection: "row",
               alignItems: "center",
-              paddingHorizontal: SPACING.md,
-              paddingVertical: SPACING.xs,
+              paddingHorizontal: SPACING.sm,
+              paddingVertical: 2,
               borderRadius: RADIUS.full,
             }}
           >
-            <Text style={{ fontSize: 12, marginRight: 4 }}>{config.emoji}</Text>
-            <Text style={{ fontSize: 11, fontWeight: "600", color: "#FFFFFF" }}>
+            <Text style={{ fontSize: 10, marginRight: 2 }}>{config.emoji}</Text>
+            <Text style={{ fontSize: 9, fontWeight: "600", color: "#FFFFFF" }}>
               {config.label}
             </Text>
           </LinearGradient>
@@ -343,10 +343,10 @@ const PostCard: React.FC<{
         {/* Content */}
         <Text
           style={{
-            fontSize: 15,
-            lineHeight: 24,
+            fontSize: 13,
+            lineHeight: 20,
             color: textPrimary,
-            marginBottom: post.imageUrl ? SPACING.md : 0,
+            marginBottom: post.imageUrl ? SPACING.sm : 0,
           }}
         >
           {post.content}
@@ -359,7 +359,7 @@ const PostCard: React.FC<{
           source={{ uri: post.imageUrl }}
           style={{
             width: "100%",
-            height: 280,
+            height: 180,
             backgroundColor: COLORS.neutral[200],
           }}
           resizeMode="cover"
@@ -371,25 +371,25 @@ const PostCard: React.FC<{
         style={{
           flexDirection: "row",
           alignItems: "center",
-          padding: SPACING.lg,
+          padding: SPACING.md,
           borderTopWidth: 1,
           borderTopColor: borderColor,
         }}
       >
         <Pressable
           onPress={handleLikePress}
-          style={{ flexDirection: "row", alignItems: "center", marginRight: SPACING["2xl"] }}
+          style={{ flexDirection: "row", alignItems: "center", marginRight: SPACING.xl }}
         >
           <Ionicons
             name={post.isLiked ? "heart" : "heart-outline"}
-            size={22}
+            size={18}
             color={post.isLiked ? COLORS.accent[500] : textSecondary}
           />
           <Text
             style={{
-              fontSize: 14,
+              fontSize: 12,
               fontWeight: "600",
-              marginLeft: SPACING.sm,
+              marginLeft: SPACING.xs,
               color: post.isLiked ? COLORS.accent[500] : textSecondary,
             }}
           >
@@ -399,10 +399,10 @@ const PostCard: React.FC<{
 
         <Pressable
           onPress={() => onComment(post.id)}
-          style={{ flexDirection: "row", alignItems: "center", marginRight: SPACING["2xl"] }}
+          style={{ flexDirection: "row", alignItems: "center", marginRight: SPACING.xl }}
         >
-          <Ionicons name="chatbubble-outline" size={20} color={textSecondary} />
-          <Text style={{ fontSize: 14, fontWeight: "500", marginLeft: SPACING.sm, color: textSecondary }}>
+          <Ionicons name="chatbubble-outline" size={16} color={textSecondary} />
+          <Text style={{ fontSize: 12, fontWeight: "500", marginLeft: SPACING.xs, color: textSecondary }}>
             {post.commentsCount}
           </Text>
         </Pressable>
@@ -411,7 +411,7 @@ const PostCard: React.FC<{
           onPress={() => onShare(post.id)}
           style={{ marginLeft: "auto" }}
         >
-          <Ionicons name="share-outline" size={20} color={textSecondary} />
+          <Ionicons name="share-outline" size={16} color={textSecondary} />
         </Pressable>
       </View>
     </Animated.View>
@@ -716,27 +716,27 @@ export default function MundoDaNathScreen({ navigation }: Props) {
         start={{ x: 0, y: 0 }}
         end={{ x: 1, y: 1 }}
         style={{
-          paddingTop: insets.top + SPACING.lg,
-          paddingHorizontal: SPACING["2xl"],
-          paddingBottom: SPACING["3xl"],
-          borderBottomLeftRadius: RADIUS["3xl"],
-          borderBottomRightRadius: RADIUS["3xl"],
+          paddingTop: insets.top + SPACING.sm,
+          paddingHorizontal: SPACING.lg,
+          paddingBottom: SPACING.xl,
+          borderBottomLeftRadius: RADIUS["2xl"],
+          borderBottomRightRadius: RADIUS["2xl"],
         }}
       >
         {/* Back Button */}
         <Pressable
           onPress={() => navigation.goBack()}
           style={{
-            width: 40,
-            height: 40,
-            borderRadius: 20,
+            width: 36,
+            height: 36,
+            borderRadius: 18,
             backgroundColor: "rgba(255,255,255,0.2)",
             alignItems: "center",
             justifyContent: "center",
-            marginBottom: SPACING.lg,
+            marginBottom: SPACING.md,
           }}
         >
-          <Ionicons name="arrow-back" size={24} color="#FFFFFF" />
+          <Ionicons name="arrow-back" size={20} color="#FFFFFF" />
         </Pressable>
 
         {/* Profile Section */}
@@ -746,28 +746,28 @@ export default function MundoDaNathScreen({ navigation }: Props) {
         >
           <View
             style={{
-              width: 100,
-              height: 100,
-              borderRadius: 50,
+              width: 72,
+              height: 72,
+              borderRadius: 36,
               backgroundColor: "#FFFFFF",
               alignItems: "center",
               justifyContent: "center",
-              marginBottom: SPACING.lg,
+              marginBottom: SPACING.md,
               shadowColor: "#000",
               shadowOffset: { width: 0, height: 4 },
               shadowOpacity: 0.2,
               shadowRadius: 8,
             }}
           >
-            <Text style={{ fontSize: 48, fontWeight: "700", color: COLORS.primary[500] }}>N</Text>
+            <Text style={{ fontSize: 36, fontWeight: "700", color: COLORS.primary[500] }}>N</Text>
           </View>
 
           <Text
             style={{
-              fontSize: 28,
+              fontSize: 22,
               fontWeight: "800",
               color: "#FFFFFF",
-              marginBottom: SPACING.xs,
+              marginBottom: 2,
               fontFamily: "DMSerifDisplay-Regular",
             }}
           >
@@ -775,10 +775,10 @@ export default function MundoDaNathScreen({ navigation }: Props) {
           </Text>
           <Text
             style={{
-              fontSize: 15,
+              fontSize: 13,
               color: "rgba(255,255,255,0.9)",
               textAlign: "center",
-              maxWidth: 280,
+              maxWidth: 260,
             }}
           >
             Conteúdos exclusivos da Nathalia Valente 💕
@@ -788,28 +788,28 @@ export default function MundoDaNathScreen({ navigation }: Props) {
           <View
             style={{
               flexDirection: "row",
-              marginTop: SPACING.xl,
+              marginTop: SPACING.lg,
               backgroundColor: "rgba(255,255,255,0.15)",
-              borderRadius: RADIUS.xl,
-              paddingHorizontal: SPACING.xl,
-              paddingVertical: SPACING.md,
+              borderRadius: RADIUS.lg,
+              paddingHorizontal: SPACING.lg,
+              paddingVertical: SPACING.sm,
             }}
           >
-            <View style={{ alignItems: "center", marginRight: SPACING["3xl"] }}>
-              <Text style={{ fontSize: 20, fontWeight: "700", color: "#FFFFFF" }}>
+            <View style={{ alignItems: "center", marginRight: SPACING["2xl"] }}>
+              <Text style={{ fontSize: 16, fontWeight: "700", color: "#FFFFFF" }}>
                 {posts.length}
               </Text>
-              <Text style={{ fontSize: 12, color: "rgba(255,255,255,0.8)" }}>Posts</Text>
+              <Text style={{ fontSize: 11, color: "rgba(255,255,255,0.8)" }}>Posts</Text>
             </View>
-            <View style={{ alignItems: "center", marginRight: SPACING["3xl"] }}>
-              <Text style={{ fontSize: 20, fontWeight: "700", color: "#FFFFFF" }}>12.5K</Text>
-              <Text style={{ fontSize: 12, color: "rgba(255,255,255,0.8)" }}>Seguidores</Text>
+            <View style={{ alignItems: "center", marginRight: SPACING["2xl"] }}>
+              <Text style={{ fontSize: 16, fontWeight: "700", color: "#FFFFFF" }}>12.5K</Text>
+              <Text style={{ fontSize: 11, color: "rgba(255,255,255,0.8)" }}>Seguidores</Text>
             </View>
             <View style={{ alignItems: "center" }}>
-              <Text style={{ fontSize: 20, fontWeight: "700", color: "#FFFFFF" }}>
+              <Text style={{ fontSize: 16, fontWeight: "700", color: "#FFFFFF" }}>
                 {posts.reduce((acc, p) => acc + p.likesCount, 0).toLocaleString()}
               </Text>
-              <Text style={{ fontSize: 12, color: "rgba(255,255,255,0.8)" }}>Curtidas</Text>
+              <Text style={{ fontSize: 11, color: "rgba(255,255,255,0.8)" }}>Curtidas</Text>
             </View>
           </View>
         </Animated.View>
@@ -818,15 +818,15 @@ export default function MundoDaNathScreen({ navigation }: Props) {
       {/* Stories Section */}
       <Animated.View
         entering={FadeInDown.delay(200).duration(500)}
-        style={{ marginTop: SPACING.xl }}
+        style={{ marginTop: SPACING.lg }}
       >
         <Text
           style={{
-            fontSize: 18,
+            fontSize: 15,
             fontWeight: "700",
             color: textPrimary,
-            marginBottom: SPACING.md,
-            marginLeft: SPACING["2xl"],
+            marginBottom: SPACING.sm,
+            marginLeft: SPACING.lg,
           }}
         >
           Destaques ✨
@@ -834,7 +834,7 @@ export default function MundoDaNathScreen({ navigation }: Props) {
         <ScrollView
           horizontal
           showsHorizontalScrollIndicator={false}
-          contentContainerStyle={{ paddingHorizontal: SPACING["2xl"] }}
+          contentContainerStyle={{ paddingHorizontal: SPACING.lg }}
         >
           {MOCK_STORIES.map((story, index) => (
             <StoryItem
@@ -853,22 +853,22 @@ export default function MundoDaNathScreen({ navigation }: Props) {
           flexDirection: "row",
           alignItems: "center",
           justifyContent: "space-between",
-          marginTop: SPACING["2xl"],
-          marginBottom: SPACING.lg,
-          paddingHorizontal: SPACING["2xl"],
+          marginTop: SPACING.lg,
+          marginBottom: SPACING.md,
+          paddingHorizontal: SPACING.lg,
         }}
       >
-        <Text style={{ fontSize: 18, fontWeight: "700", color: textPrimary }}>
+        <Text style={{ fontSize: 15, fontWeight: "700", color: textPrimary }}>
           Publicações
         </Text>
-        <Text style={{ fontSize: 14, color: textSecondary }}>
+        <Text style={{ fontSize: 12, color: textSecondary }}>
           {posts.length} posts
         </Text>
       </View>
 
       {/* Pinned Posts */}
       {pinnedPosts.map((post, index) => (
-        <View key={post.id} style={{ paddingHorizontal: SPACING["2xl"] }}>
+        <View key={post.id} style={{ paddingHorizontal: SPACING.lg }}>
           <PostCard
             post={post}
             index={index}
@@ -888,7 +888,7 @@ export default function MundoDaNathScreen({ navigation }: Props) {
         data={regularPosts}
         keyExtractor={(item) => item.id}
         renderItem={({ item, index }) => (
-          <View style={{ paddingHorizontal: SPACING["2xl"] }}>
+          <View style={{ paddingHorizontal: SPACING.lg }}>
             <PostCard
               post={item}
               index={index + pinnedPosts.length}
@@ -900,7 +900,7 @@ export default function MundoDaNathScreen({ navigation }: Props) {
           </View>
         )}
         ListHeaderComponent={renderHeader}
-        ListFooterComponent={<View style={{ height: 100 }} />}
+        ListFooterComponent={<View style={{ height: 80 }} />}
         showsVerticalScrollIndicator={false}
       />
 
@@ -910,16 +910,16 @@ export default function MundoDaNathScreen({ navigation }: Props) {
           entering={FadeInUp.delay(500).duration(400)}
           style={{
             position: "absolute",
-            bottom: insets.bottom + SPACING.xl,
-            right: SPACING["2xl"],
+            bottom: insets.bottom + SPACING.lg,
+            right: SPACING.lg,
           }}
         >
           <Pressable
             onPress={() => setIsNewPostModalVisible(true)}
             style={{
-              width: 60,
-              height: 60,
-              borderRadius: 30,
+              width: 52,
+              height: 52,
+              borderRadius: 26,
               shadowColor: COLORS.primary[500],
               shadowOffset: { width: 0, height: 4 },
               shadowOpacity: 0.3,
@@ -931,12 +931,12 @@ export default function MundoDaNathScreen({ navigation }: Props) {
               colors={GRADIENTS.primary as unknown as readonly [string, string]}
               style={{
                 flex: 1,
-                borderRadius: 30,
+                borderRadius: 26,
                 alignItems: "center",
                 justifyContent: "center",
               }}
             >
-              <Ionicons name="add" size={32} color="#FFFFFF" />
+              <Ionicons name="add" size={26} color="#FFFFFF" />
             </LinearGradient>
           </Pressable>
         </Animated.View>

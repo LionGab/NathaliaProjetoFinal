@@ -256,13 +256,13 @@ export default function HomeScreen({ navigation }: MainTabScreenProps<"Home">): 
             <Pressable
               onPress={handleMundoDaNath}
               style={{
-                borderRadius: RADIUS["2xl"],
+                borderRadius: RADIUS.xl,
                 overflow: "hidden",
                 shadowColor: COLORS.primary[500],
-                shadowOffset: { width: 0, height: 4 },
-                shadowOpacity: 0.15,
-                shadowRadius: 12,
-                elevation: 6,
+                shadowOffset: { width: 0, height: 2 },
+                shadowOpacity: 0.12,
+                shadowRadius: 8,
+                elevation: 4,
               }}
             >
               <LinearGradient
@@ -270,7 +270,7 @@ export default function HomeScreen({ navigation }: MainTabScreenProps<"Home">): 
                 start={{ x: 0, y: 0 }}
                 end={{ x: 1, y: 1 }}
                 style={{
-                  padding: SPACING.xl,
+                  padding: SPACING.md,
                   flexDirection: "row",
                   alignItems: "center",
                 }}
@@ -278,31 +278,31 @@ export default function HomeScreen({ navigation }: MainTabScreenProps<"Home">): 
                 {/* Avatar Nath */}
                 <View
                   style={{
-                    width: 56,
-                    height: 56,
-                    borderRadius: 28,
+                    width: 44,
+                    height: 44,
+                    borderRadius: 22,
                     backgroundColor: "rgba(255,255,255,0.95)",
                     alignItems: "center",
                     justifyContent: "center",
-                    marginRight: SPACING.lg,
+                    marginRight: SPACING.md,
                     shadowColor: "#000",
                     shadowOffset: { width: 0, height: 2 },
                     shadowOpacity: 0.1,
                     shadowRadius: 4,
                   }}
                 >
-                  <Text style={{ fontSize: 28, fontWeight: "700", color: COLORS.primary[500] }}>N</Text>
+                  <Text style={{ fontSize: 22, fontWeight: "700", color: COLORS.primary[500] }}>N</Text>
                 </View>
 
                 {/* Content */}
                 <View style={{ flex: 1 }}>
-                  <View style={{ flexDirection: "row", alignItems: "center", marginBottom: 4 }}>
+                  <View style={{ flexDirection: "row", alignItems: "center", marginBottom: 2 }}>
                     <Text
                       style={{
-                        fontSize: 17,
+                        fontSize: 14,
                         fontWeight: "700",
                         color: "#FFFFFF",
-                        marginRight: SPACING.sm,
+                        marginRight: SPACING.xs,
                       }}
                     >
                       Mundo da Nath
@@ -310,19 +310,19 @@ export default function HomeScreen({ navigation }: MainTabScreenProps<"Home">): 
                     <View
                       style={{
                         backgroundColor: "rgba(255,255,255,0.25)",
-                        paddingHorizontal: SPACING.sm,
-                        paddingVertical: 2,
+                        paddingHorizontal: SPACING.xs,
+                        paddingVertical: 1,
                         borderRadius: RADIUS.full,
                       }}
                     >
-                      <Text style={{ fontSize: 10, fontWeight: "600", color: "#FFFFFF" }}>NOVO</Text>
+                      <Text style={{ fontSize: 8, fontWeight: "600", color: "#FFFFFF" }}>NOVO</Text>
                     </View>
                   </View>
                   <Text
                     style={{
-                      fontSize: 13,
+                      fontSize: 12,
                       color: "rgba(255,255,255,0.9)",
-                      lineHeight: 18,
+                      lineHeight: 16,
                     }}
                   >
                     Conteúdos exclusivos da Nath para você 💕
@@ -330,7 +330,7 @@ export default function HomeScreen({ navigation }: MainTabScreenProps<"Home">): 
                 </View>
 
                 {/* Arrow */}
-                <Ionicons name="chevron-forward" size={22} color="rgba(255,255,255,0.8)" />
+                <Ionicons name="chevron-forward" size={18} color="rgba(255,255,255,0.8)" />
               </LinearGradient>
             </Pressable>
           </Animated.View>
