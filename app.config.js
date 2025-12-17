@@ -30,7 +30,7 @@ const COLORS = {
 module.exports = {
   expo: {
     name: "Nossa Maternidade",
-    slug: "nossa-maternidade",
+    slug: "nossamaternidade",
     version: "1.0.0",
     orientation: "portrait",
     icon: "./assets/icon.png",
@@ -170,7 +170,7 @@ module.exports = {
       enableAnalytics: process.env.EXPO_PUBLIC_ENABLE_ANALYTICS === "true" || false,
       // EAS Project ID
       eas: {
-        projectId: "ceee9479-e404-47b8-bc37-4f913c18f270",
+        projectId: "d22475be-2b7c-41a1-90e5-bfe531524f41",
       },
       backendUrl: process.env.EXPO_PUBLIC_BACKEND_URL || "",
     },

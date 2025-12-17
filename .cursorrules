@@ -1,46 +1,115 @@
-# Cursor Rules - Nossa Maternidade
+# Nossa Maternidade — Cursor Rules
+
 # Otimizado para MacBook M1 8GB RAM
 
-## Regras Globais do Usuário (Lion Mode)
+## Fonte da Verdade
 
-- Sempre responda em português do Brasil.
-- Siga o estilo de comunicação: assertivo, direto, sem floreio.
-- Preferir síntese sobre verbosidade.
-- Nunca gerar código com `any`. TypeScript sempre em strict mode.
-- Nunca usar `@ts-ignore` ou `@ts-expect-error` sem justificativa explícita.
-- Se detectar riscos de breaking change, sugerir um plano incremental.
-- Quando modificar código, aplicar atomic commits e explicar o racional técnico.
-- Evitar sugestões que envolvam dependências desnecessárias.
-- Preferir padrões de arquitetura limpa, services + hooks + components.
-- Respeitar e manter o Design System do projeto (Tokens, Theme, Dark Mode).
-- Usar logger centralizado (`logger.*`) e nunca `console.log`.
-- Garantir WCAG AAA por padrão (contraste, size, touch targets).
-- Ao modificar UI, não quebrar acessibilidade ou layout responsivo.
-- Presumir que o projeto usa Expo + React Native 0.81+ + TypeScript 5.7+.
+- **Siga SEMPRE**: `CLAUDE.md` (regras críticas + comandos + arquitetura) como referência principal
+- **Design System**: `src/theme/tokens.ts` é a fonte única de verdade para cores/tokens
+- **Preset**: `src/theme/presets/calmFemtech.ts` (Calm FemTech - Azul + Rosa híbrido)
 
-## Padrões Técnicos Obrigatórios
+## Não-Negociáveis (Repo Contract)
 
-1. **NUNCA usar cores hardcoded** (#xxx, rgba) - usar ColorTokens ou useThemeColors()
-2. **Overlays**: ColorTokens.overlay.light/medium/dark/heavy/backdrop
-3. **Shadows**: usar ColorTokens.neutral[900] como shadowColor
-4. **Imports não utilizados**: prefixar com _ (ex: AgentContext as _AgentContext)
-5. **Design System**: APENAS src/theme/tokens.ts (NÃO usar src/design-system/)
-6. **Validação**: npm run validate:design deve retornar 0 violations
-7. **TypeScript**: strict mode, zero any
-8. **Logging**: usar logger (não console.log)
-9. **Acessibilidade**: accessibilityLabel, accessibilityRole, minHeight 44pt
-10. **Script de validação**: atualizado com ALLOWED_PATTERNS e ALLOWED_FILES
+### TypeScript
+
+- TypeScript strict mode, **zero `any`** (use `unknown` + type guards)
+- Proibido `@ts-ignore`/`@ts-expect-error` (só com justificativa explícita no PR)
+
+### Logging
+
+- **Usar `logger.*`** de `src/utils/logger.ts` (import: `import { logger } from '../utils/logger'`)
+- **Proibido `console.log/error/warn`** (exceto no próprio logger.ts)
+- Padrão: `logger.info('mensagem', 'contexto', metadata?)`
+
+### UI e Design System
+
+- **Cores**: usar `useThemeColors()` hook OU `Tokens.*` de `src/theme/tokens.ts`
+- **Proibido cores hardcoded**: `#xxx`, `rgba()`, `'white'`, `'black'` (exceto em casos documentados)
+- **Overlays**: usar `Tokens.overlay.light/medium/dark/heavy/backdrop`
+- **Shadows**: usar `Tokens.neutral[900]` como `shadowColor`
+- **Design System**: APENAS `src/theme/tokens.ts` (NÃO usar `src/design-system/` diretamente)
+- **Preset**: usar `useTheme().preset` para tokens do Calm FemTech
+
+### Acessibilidade
+
+- **WCAG AAA** por padrão (contraste 7:1, touch targets 44pt+)
+- Sempre `accessibilityLabel` e `accessibilityRole`
+- `minHeight: 44pt` para elementos interativos
+
+### Performance
+
+- **Listas**: usar `FlatList` ou `FlashList` (NUNCA `ScrollView + map()`)
+- **Memoização**: usar `memo()` quando render repetitivo
+- **Lazy loading**: componentes grandes devem ser lazy-loaded
+
+### Services e API
+
+- **Padrão de retorno**: `{ data, error }` (sem try/catch espalhado)
+- **Supabase**: nunca desabilitar RLS (Row Level Security)
+- **IA**: seguir padrões em `src/api/chat-service.ts` (OpenAI/Grok)
+
+### Arquitetura
+
+- **Imports não utilizados**: prefixar com `_` (ex: `AgentContext as _AgentContext`)
+- **Zustand selectors**: usar selectores individuais (evitar objeto que cria nova ref)
+
+  ```typescript
+  // ✅ BOM: selector individual
+  const user = useAppStore((s) => s.user);
+
+  // ❌ RUIM: objeto cria nova ref
+  const { user } = useAppStore((s) => ({ user: s.user }));
+  ```
+
+## Processo de Mudança (Qualidade e Risco)
+
+### Escopo
+
+- **Menor diff possível**: não mudar arquivos fora do escopo necessário
+- **Arquivos > 250 LOC**: refatorar (extrair hooks/components/services)
+
+### Breaking Changes
+
+- Se houver risco de breaking change: propor plano incremental
+- Estratégia: compatibilidade + migração + remoção do legado (na mesma PR quando possível)
+
+### Dependências
+
+- Não adicionar dependências sem esgotar o que já existe no projeto
+- Verificar `package.json` antes de sugerir nova lib
+
+### Segurança
+
+- **Nunca tocar `.env*`** ou arquivos de configuração sensíveis
+- Se precisar variável nova: informar nome + onde é lida + pedir confirmação
+
+## Check Obrigatório Antes de Finalizar
+
+Sempre executar na ordem:
+
+1. **`npm run lint`** (ou `bun run lint`) - ESLint
+2. **`npm run typecheck`** (ou `bun run typecheck`) - TypeScript (`tsc --noEmit`)
+3. **`npm test`** (se houver testes) - Testes unitários
+4. **Se mudou UI**: verificar manualmente Design System (cores, tokens, acessibilidade)
+5. **Antes de build/deploy**: `npm run diagnose:production` (ou `bun run diagnose:production`)
+
+### Quality Gate Completo
+
+Para PRs e builds, usar: `npm run quality-gate` (ou `bun run quality-gate`)
+
+- Executa: typecheck + lint + check-build-ready + verificação de console.log
 
 ## Stack Tecnológica
 
-- Expo SDK 54+ (managed workflow)
-- React Native 0.81+
-- TypeScript 5.7+ strict
-- NativeWind 4+
-- React Navigation 7
-- TanStack Query
-- Supabase (auth/DB/storage)
-- Gemini 2.5 Flash (IA principal com fallback GPT-4o/Claude)
+- **Expo SDK 54+** (managed workflow)
+- **React Native 0.81+**
+- **TypeScript 5.7+** strict
+- **NativeWind 4+** (Tailwind para React Native)
+- **React Navigation 7**
+- **TanStack Query** (se usado)
+- **Supabase** (auth/DB/storage)
+- **Zustand** (state management)
+- **Gemini 2.5 Flash** (IA principal, fallback GPT-4o/Claude via `src/api/chat-service.ts`)
 
 ## Otimizações para MacBook M1 8GB RAM
 
@@ -50,3 +119,18 @@
 - Otimizar imports (tree-shaking)
 - Preferir hooks nativos do React Native quando disponível
 
+## Comunicação (Lion Mode)
+
+- Sempre responder em **português do Brasil**
+- Estilo: **assertivo, direto, sem floreio**
+- Preferir **síntese** sobre verbosidade
+- Quando modificar código: aplicar **atomic commits** e explicar racional técnico
+
+## Referências Rápidas
+
+- **CLAUDE.md**: arquitetura completa, comandos, padrões de código
+- **src/theme/tokens.ts**: Design Tokens (fonte única de verdade)
+- **src/hooks/useTheme.ts**: Hook para tema (light/dark) + tokens
+- **src/utils/logger.ts**: Sistema de logging centralizado
+- **src/state/store.ts**: Todos os stores Zustand
+- **docs/**: Documentação técnica completa
