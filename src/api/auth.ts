@@ -203,3 +203,110 @@ export function onAuthStateChange(callback: (user: AuthUser | null) => void) {
 
   return subscription;
 }
+
+// =======================
+// ACCOUNT DELETION (LGPD)
+// =======================
+
+export interface DeleteAccountResult {
+  success: boolean;
+  message?: string;
+  deletedTables?: string[];
+  error?: string;
+}
+
+/**
+ * Permanently delete user account and all associated data
+ * Calls the delete-account Edge Function
+ *
+ * @param reason - Optional reason for deletion (for analytics)
+ * @returns Result object with success status
+ *
+ * @example
+ * const result = await deleteAccount("Não uso mais o app");
+ * if (result.success) {
+ *   // Redirect to login
+ * }
+ */
+export async function deleteAccount(reason?: string): Promise<DeleteAccountResult> {
+  try {
+    const client = checkSupabase();
+
+    // Get current session for auth token
+    const {
+      data: { session },
+      error: sessionError,
+    } = await client.auth.getSession();
+
+    if (sessionError || !session) {
+      return {
+        success: false,
+        error: "Você precisa estar logado para deletar sua conta",
+      };
+    }
+
+    // Get Supabase URL from env
+    const supabaseUrl = process.env.EXPO_PUBLIC_SUPABASE_URL;
+    if (!supabaseUrl) {
+      return {
+        success: false,
+        error: "Supabase não está configurado",
+      };
+    }
+
+    // Call Edge Function
+    const response = await fetch(
+      `${supabaseUrl}/functions/v1/delete-account`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${session.access_token}`,
+        },
+        body: JSON.stringify({
+          confirmation: "DELETE",
+          reason,
+        }),
+      }
+    );
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      logger.error("Delete account failed", "Auth", new Error(data.error || "Unknown error"));
+      return {
+        success: false,
+        error: data.error || "Falha ao deletar conta",
+      };
+    }
+
+    // Logout from RevenueCat (with Expo Go fallback)
+    try {
+      const purchases = await import("../services/purchases");
+      await purchases.logoutUser();
+    } catch (err) {
+      logger.warn("RevenueCat indisponível. Ignorando logout.", "Auth", {
+        error: err instanceof Error ? err.message : String(err),
+      });
+    }
+
+    // Clear local session
+    await client.auth.signOut();
+
+    logger.info("Account deleted successfully", "Auth", {
+      deletedTables: data.deletedTables,
+    });
+
+    return {
+      success: true,
+      message: data.message,
+      deletedTables: data.deletedTables,
+    };
+  } catch (error) {
+    logger.error("Delete account error", "Auth", error as Error);
+    return {
+      success: false,
+      error: error instanceof Error ? error.message : "Erro desconhecido",
+    };
+  }
+}

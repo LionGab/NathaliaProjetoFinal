@@ -33,7 +33,13 @@
       "Bash(bun start:*)",
       "Bash(ruby --version:*)",
       "Bash(chmod:*)",
-      "Bash(sort:*)"
+      "Bash(sort:*)",
+      "Bash(claude mcp add:*)",
+      "Bash(claude mcp remove:*)",
+      "Bash(eas login:*)",
+      "Bash(npx eas-cli login)",
+      "Bash(bunx tsc:*)",
+      "Bash(deno check:*)"
     ]
   }
 }

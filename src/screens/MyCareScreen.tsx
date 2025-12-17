@@ -226,7 +226,11 @@ export default function MyCareScreen({ navigation }: MainTabScreenProps<"MyCare"
         {/* Header - Suave e acolhedor */}
         <View style={{ paddingTop: insets.top }}>
           <LinearGradient
-            colors={[colors.primary[50], colors.secondary[50], colors.background.secondary]}
+            colors={
+              isDark
+                ? [colors.background.primary, colors.background.secondary, colors.background.tertiary]
+                : [colors.primary[50], colors.secondary[50], colors.background.secondary]
+            }
             locations={[0, 0.5, 1]}
             style={{ paddingHorizontal: 24, paddingTop: 24, paddingBottom: 20 }}
           >

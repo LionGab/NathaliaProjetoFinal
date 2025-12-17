@@ -68,7 +68,7 @@
     "@supabase/supabase-js": "^2.87.0",
     "clsx": "^2.1.1",
     "date-fns": "^4.1.0",
-    "expo": "~54.0.0",
+    "expo": "~54.0.29",
     "expo-application": "~7.0.8",
     "expo-asset": "~12.0.11",
     "expo-auth-session": "~7.0.10",

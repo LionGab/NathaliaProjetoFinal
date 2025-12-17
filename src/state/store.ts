@@ -177,6 +177,8 @@ export const useAppStore = create<AppState>()(
         authUserId: state.authUserId,
         isAuthenticated: state.isAuthenticated,
         isOnboardingComplete: state.isOnboardingComplete,
+        theme: state.theme,
+        isDarkMode: state.isDarkMode,
       }),
     }
   )

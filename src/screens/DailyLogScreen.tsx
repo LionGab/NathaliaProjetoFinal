@@ -34,8 +34,13 @@ const MOODS = [
 
 export default function DailyLogScreen({ navigation, route }: RootStackScreenProps<"DailyLog">) {
   const insets = useSafeAreaInsets();
-  const { colors } = useTheme();
+  const { colors, isDark } = useTheme();
   const addDailyLog = useCycleStore((s) => s.addDailyLog);
+
+  // Cores dinâmicas do tema
+  const textMain = isDark ? colors.neutral[100] : colors.neutral[900];
+  const textMuted = isDark ? colors.neutral[400] : colors.neutral[500];
+  const textSecondary = isDark ? colors.neutral[300] : colors.neutral[600];
 
   const today = useMemo(() => {
     if (route.params?.date) {
@@ -155,42 +160,56 @@ export default function DailyLogScreen({ navigation, route }: RootStackScreenPro
       {/* Header */}
       <View style={{ paddingTop: insets.top }}>
         <LinearGradient
-          colors={[colors.primary[50], colors.secondary[50], colors.background.secondary]}
+          colors={
+            isDark
+              ? [colors.background.primary, colors.background.secondary, colors.background.tertiary]
+              : [colors.primary[50], colors.secondary[50], colors.background.secondary]
+          }
           locations={[0, 0.5, 1]}
           style={{ paddingHorizontal: 24, paddingTop: 16, paddingBottom: 20 }}
         >
-          <View className="flex-row items-center justify-between">
+          <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
             <Pressable
               onPress={() => navigation.goBack()}
-              className="w-10 h-10 rounded-full items-center justify-center"
-              style={{ backgroundColor: colors.background.card }}
+              style={{
+                width: 40,
+                height: 40,
+                borderRadius: 20,
+                alignItems: "center",
+                justifyContent: "center",
+                backgroundColor: colors.background.card,
+              }}
             >
-              <Ionicons name="arrow-back" size={22} color={colors.neutral[500]} />
+              <Ionicons name="arrow-back" size={22} color={textMuted} />
             </Pressable>
             <Animated.View entering={FadeInDown.duration(400)}>
-              <Text className="text-warmGray-900 text-xl font-semibold">
+              <Text style={{ color: textMain, fontSize: 20, fontWeight: "600" }}>
                 {formatDate(today)}
               </Text>
             </Animated.View>
             <Pressable
               onPress={handleSave}
-              className="px-4 py-2 rounded-full"
-              style={{ backgroundColor: colors.primary[500] }}
+              style={{
+                paddingHorizontal: 16,
+                paddingVertical: 8,
+                borderRadius: 20,
+                backgroundColor: colors.primary[500],
+              }}
             >
-              <Text className="text-white font-semibold">Salvar</Text>
+              <Text style={{ color: colors.neutral[0], fontWeight: "600" }}>Salvar</Text>
             </Pressable>
           </View>
         </LinearGradient>
       </View>
 
       {/* Content */}
-      <View className="flex-1 items-center justify-center px-6">
+      <View style={{ flex: 1, alignItems: "center", justifyContent: "center", paddingHorizontal: 24 }}>
         {!selectedMood ? (
-          <Animated.View entering={FadeInUp.duration(600)} className="items-center w-full">
-            <Text className="text-warmGray-900 text-2xl font-semibold text-center mb-3">
+          <Animated.View entering={FadeInUp.duration(600)} style={{ alignItems: "center", width: "100%" }}>
+            <Text style={{ color: textMain, fontSize: 24, fontWeight: "600", textAlign: "center", marginBottom: 12 }}>
               Como você está hoje?
             </Text>
-            <Text className="text-warmGray-500 text-base text-center mb-12">
+            <Text style={{ color: textMuted, fontSize: 16, textAlign: "center", marginBottom: 48 }}>
               Toque em um emoji para registrar
             </Text>
 
@@ -214,7 +233,7 @@ export default function DailyLogScreen({ navigation, route }: RootStackScreenPro
                     >
                       <Text style={{ fontSize: 32 }}>{mood.emoji}</Text>
                     </View>
-                    <Text className="text-warmGray-600 text-xs text-center">{mood.label}</Text>
+                    <Text style={{ color: textSecondary, fontSize: 12, textAlign: "center" }}>{mood.label}</Text>
                   </Pressable>
                 </Animated.View>
               ))}
@@ -236,12 +255,12 @@ export default function DailyLogScreen({ navigation, route }: RootStackScreenPro
               <Text style={{ fontSize: 72 }}>{selectedMoodData?.emoji}</Text>
             </View>
 
-            <Text className="text-warmGray-900 text-2xl font-semibold mb-2">
+            <Text style={{ color: textMain, fontSize: 24, fontWeight: "600", marginBottom: 8 }}>
               {selectedMoodData?.label}
             </Text>
 
             <Pressable onPress={() => setSelectedMood(null)}>
-              <Text className="text-warmGray-400 text-sm mb-12">Toque para mudar</Text>
+              <Text style={{ color: textMuted, fontSize: 14, marginBottom: 48 }}>Toque para mudar</Text>
             </Pressable>
 
             {/* Intensity Slider */}

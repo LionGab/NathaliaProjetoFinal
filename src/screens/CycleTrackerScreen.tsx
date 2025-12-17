@@ -33,7 +33,11 @@ interface DayInfo {
 
 export default function CycleTrackerScreen() {
   const insets = useSafeAreaInsets();
-  const { colors } = useTheme();
+  const { colors, isDark } = useTheme();
+
+  // Cores dinâmicas do tema
+  const textMain = isDark ? colors.neutral[100] : colors.neutral[900];
+  const textMuted = isDark ? colors.neutral[400] : colors.neutral[500];
   const [currentMonth, setCurrentMonth] = useState(new Date());
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
 
@@ -280,15 +284,19 @@ export default function CycleTrackerScreen() {
         {/* Header */}
         <View style={{ paddingTop: insets.top }}>
           <LinearGradient
-            colors={[colors.primary[50], colors.secondary[50], colors.background.secondary]}
+            colors={
+              isDark
+                ? [colors.background.primary, colors.background.secondary, colors.background.tertiary]
+                : [colors.primary[50], colors.secondary[50], colors.background.secondary]
+            }
             locations={[0, 0.5, 1]}
             style={{ paddingHorizontal: 24, paddingTop: 20, paddingBottom: 24 }}
           >
             <Animated.View entering={FadeInDown.duration(600).springify()}>
-              <Text className="text-warmGray-900 text-3xl font-serif mb-2">
+              <Text style={{ color: textMain, fontSize: 30, fontFamily: "DMSerifDisplay_400Regular", marginBottom: 8 }}>
                 Ciclo Menstrual
               </Text>
-              <Text className="text-warmGray-500 text-base">
+              <Text style={{ color: textMuted, fontSize: 16 }}>
                 Acompanhe seu ciclo e fertilidade
               </Text>
             </Animated.View>
@@ -393,7 +401,7 @@ export default function CycleTrackerScreen() {
               >
                 <Ionicons name="chevron-back" size={20} color={colors.primary[500]} />
               </Pressable>
-              <Text className="text-warmGray-900 text-lg font-semibold">
+              <Text style={{ color: textMain, fontSize: 18, fontWeight: "600" }}>
                 {MONTHS[currentMonth.getMonth()]} {currentMonth.getFullYear()}
               </Text>
               <Pressable

@@ -1,23 +1,210 @@
 /**
  * Nossa Maternidade - AI Edge Function (Production-Ready)
  *
- * Implementa Claude Sonnet 4.5 (principal) + Gemini 2.0 Flash (auxiliar)
- * com segurança, rate limiting e fallback robusto.
+ * NathIA: Parceira de bolso da mãe brasileira
+ *
+ * ARQUITETURA DE PROVIDERS (ordem de prioridade):
+ * 1. Gemini 2.5 Flash (DEFAULT) - Rápido, direto, persona estável
+ * 2. Claude Sonnet 4.5 (FALLBACK) - Quando Gemini falha
+ * 3. OpenAI GPT-4o (ÚLTIMO RECURSO) - Emergência
+ *
+ * CASOS ESPECIAIS:
+ * - Imagens/Ultrassons → Claude Vision (único default)
+ * - Perguntas médicas → Gemini + Google Search (grounding)
  *
  * Features:
  * - JWT validation (authenticated users only)
- * - Rate limiting (20 req/min por usuário)
+ * - Rate limiting via Upstash Redis (20 req/min por usuário)
+ * - Structured logging & monitoring
  * - Payload caps (prevent abuse)
- * - Fallback automático (Claude → OpenAI)
+ * - Fallback chain: Gemini → Claude → OpenAI
  * - Grounding com Google Search (Gemini)
- * - Suporte a imagens (Claude vision)
+ * - Suporte a imagens (Claude Vision)
  * - Citations extraídas corretamente
  * - CORS restrito
+ *
+ * @version 2.0.0 - Gemini como default (2025-01)
  */
 
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 import { Anthropic } from "https://esm.sh/@anthropic-ai/sdk@0.28.0";
 import OpenAI from "https://esm.sh/openai@4.89.0";
+import { Redis } from "https://esm.sh/@upstash/redis@1.28.0";
+
+// =======================
+// STRUCTURED LOGGING
+// =======================
+
+type LogLevel = "info" | "warn" | "error" | "debug";
+
+interface LogEntry {
+  timestamp: string;
+  level: LogLevel;
+  event: string;
+  requestId?: string;
+  userId?: string; // Hashed for privacy
+  data?: Record<string, unknown>;
+  error?: {
+    message: string;
+    stack?: string;
+    code?: string;
+  };
+}
+
+interface RequestMetrics {
+  requestId: string;
+  userId: string;
+  provider: string;
+  model?: string;
+  messageCount: number;
+  estimatedInputTokens: number;
+  actualInputTokens?: number;
+  outputTokens?: number;
+  totalTokens?: number;
+  latencyMs: number;
+  success: boolean;
+  fallback: boolean;
+  rateLimitSource: "redis" | "memory";
+  hasImage: boolean;
+  hasGrounding: boolean;
+}
+
+/**
+ * Hash userId for privacy in logs
+ * Uses simple hash - sufficient for log anonymization
+ */
+function hashUserId(userId: string): string {
+  let hash = 0;
+  for (let i = 0; i < userId.length; i++) {
+    const char = userId.charCodeAt(i);
+    hash = ((hash << 5) - hash) + char;
+    hash = hash & hash; // Convert to 32bit integer
+  }
+  return `user_${Math.abs(hash).toString(16).substring(0, 8)}`;
+}
+
+/**
+ * Generate unique request ID
+ */
+function generateRequestId(): string {
+  return `req_${Date.now().toString(36)}_${Math.random().toString(36).substring(2, 8)}`;
+}
+
+/**
+ * Structured logger - outputs JSON for Supabase Logs / external ingestion
+ */
+const logger = {
+  _log(level: LogLevel, event: string, data?: Record<string, unknown>, error?: Error) {
+    const entry: LogEntry = {
+      timestamp: new Date().toISOString(),
+      level,
+      event,
+      ...(data && { data }),
+      ...(error && {
+        error: {
+          message: error.message,
+          stack: error.stack,
+          code: (error as NodeJS.ErrnoException).code,
+        },
+      }),
+    };
+
+    // Output as JSON for structured logging
+    const output = JSON.stringify(entry);
+
+    switch (level) {
+      case "error":
+        console.error(output);
+        break;
+      case "warn":
+        console.warn(output);
+        break;
+      case "debug":
+        console.debug(output);
+        break;
+      default:
+        console.log(output);
+    }
+  },
+
+  info(event: string, data?: Record<string, unknown>) {
+    this._log("info", event, data);
+  },
+
+  warn(event: string, data?: Record<string, unknown>) {
+    this._log("warn", event, data);
+  },
+
+  error(event: string, error: Error, data?: Record<string, unknown>) {
+    this._log("error", event, data, error);
+  },
+
+  debug(event: string, data?: Record<string, unknown>) {
+    this._log("debug", event, data);
+  },
+
+  /**
+   * Log request metrics (called at end of each request)
+   */
+  metrics(metrics: RequestMetrics) {
+    this._log("info", "request_metrics", {
+      requestId: metrics.requestId,
+      userId: hashUserId(metrics.userId),
+      provider: metrics.provider,
+      model: metrics.model,
+      messageCount: metrics.messageCount,
+      tokens: {
+        estimatedInput: metrics.estimatedInputTokens,
+        actualInput: metrics.actualInputTokens,
+        output: metrics.outputTokens,
+        total: metrics.totalTokens,
+      },
+      latencyMs: metrics.latencyMs,
+      success: metrics.success,
+      fallback: metrics.fallback,
+      rateLimitSource: metrics.rateLimitSource,
+      features: {
+        hasImage: metrics.hasImage,
+        hasGrounding: metrics.hasGrounding,
+      },
+    });
+  },
+
+  /**
+   * Log rate limit event
+   */
+  rateLimit(userId: string, type: "requests" | "tokens", current: number, max: number, source: "redis" | "memory") {
+    this._log("warn", "rate_limit_exceeded", {
+      userId: hashUserId(userId),
+      type,
+      current,
+      max,
+      source,
+    });
+  },
+
+  /**
+   * Log provider fallback
+   */
+  fallback(requestId: string, fromProvider: string, toProvider: string, reason: string) {
+    this._log("warn", "provider_fallback", {
+      requestId,
+      fromProvider,
+      toProvider,
+      reason,
+    });
+  },
+
+  /**
+   * Log authentication event
+   */
+  auth(event: "success" | "failure", userId?: string, reason?: string) {
+    this._log(event === "success" ? "info" : "warn", `auth_${event}`, {
+      ...(userId && { userId: hashUserId(userId) }),
+      ...(reason && { reason }),
+    });
+  },
+};
 
 // =======================
 // ENV & CLIENTS
@@ -28,6 +215,10 @@ const SUPABASE_SERVICE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
 const ANTHROPIC_KEY = Deno.env.get("ANTHROPIC_API_KEY")!;
 const GEMINI_KEY = Deno.env.get("GEMINI_API_KEY")!;
 const OPENAI_KEY = Deno.env.get("OPENAI_API_KEY")!;
+
+// Upstash Redis (opcional - fallback para in-memory se não configurado)
+const UPSTASH_REDIS_URL = Deno.env.get("UPSTASH_REDIS_REST_URL");
+const UPSTASH_REDIS_TOKEN = Deno.env.get("UPSTASH_REDIS_REST_TOKEN");
 
 // Domínios permitidos (CORS)
 const ALLOWED_ORIGINS = [
@@ -40,53 +231,191 @@ const ALLOWED_ORIGINS = [
 const anthropic = new Anthropic({ apiKey: ANTHROPIC_KEY });
 const openai = new OpenAI({ apiKey: OPENAI_KEY });
 
+// Initialize Redis client (if configured)
+let redis: Redis | null = null;
+if (UPSTASH_REDIS_URL && UPSTASH_REDIS_TOKEN) {
+  try {
+    redis = new Redis({
+      url: UPSTASH_REDIS_URL,
+      token: UPSTASH_REDIS_TOKEN,
+    });
+    console.log("✅ Upstash Redis initialized");
+  } catch (err) {
+    console.error("⚠️ Failed to initialize Redis, using in-memory fallback:", err);
+  }
+}
+
 // =======================
-// RATE LIMITING
+// RATE LIMITING (Redis + Fallback)
 // =======================
 
-/**
- * In-memory rate limiting (⚠️ não prod-ready para múltiplas instâncias)
- * TODO: Migrar para Redis/Upstash ou Postgres
- */
-const rateLimits = new Map<
+const RATE_LIMIT = {
+  maxRequests: 20, // 20 requests por minuto
+  windowMs: 60_000, // 1 minuto (60 segundos)
+  windowSec: 60, // Para TTL do Redis
+  maxTokensPerMin: 50_000, // Cap de tokens por minuto
+};
+
+// In-memory fallback (para quando Redis não está disponível)
+const rateLimitsMemory = new Map<
   string,
   { count: number; resetAt: number; tokens: number }
 >();
 
-const RATE_LIMIT = {
-  maxRequests: 20, // 20 requests por minuto
-  windowMs: 60_000, // 1 minuto
-  maxTokensPerMin: 50_000, // Cap de tokens por minuto
-};
+interface RateLimitResult {
+  allowed: boolean;
+  remaining: number;
+  resetIn: number; // segundos até reset
+  source: "redis" | "memory";
+}
 
-function checkRateLimit(userId: string, estimatedTokens: number): boolean {
+/**
+ * Check rate limit using Upstash Redis (production-ready)
+ * Falls back to in-memory if Redis is unavailable
+ */
+async function checkRateLimitRedis(
+  userId: string,
+  estimatedTokens: number
+): Promise<RateLimitResult> {
+  const requestKey = `ratelimit:requests:${userId}`;
+  const tokenKey = `ratelimit:tokens:${userId}`;
+
+  // Try Redis first
+  if (redis) {
+    try {
+      // Use Redis pipeline for atomic operations
+      const pipeline = redis.pipeline();
+
+      // Get current values
+      pipeline.get(requestKey);
+      pipeline.get(tokenKey);
+      pipeline.ttl(requestKey);
+
+      const results = await pipeline.exec();
+      const currentRequests = (results[0] as number) || 0;
+      const currentTokens = (results[1] as number) || 0;
+      const ttl = (results[2] as number) || -1;
+
+      // Check if over limit
+      if (currentRequests >= RATE_LIMIT.maxRequests) {
+        console.log(`🚫 Rate limit HIT (requests): user=${userId}, requests=${currentRequests}/${RATE_LIMIT.maxRequests}`);
+        return {
+          allowed: false,
+          remaining: 0,
+          resetIn: ttl > 0 ? ttl : RATE_LIMIT.windowSec,
+          source: "redis",
+        };
+      }
+
+      if (currentTokens + estimatedTokens > RATE_LIMIT.maxTokensPerMin) {
+        console.log(`🚫 Rate limit HIT (tokens): user=${userId}, tokens=${currentTokens}+${estimatedTokens}/${RATE_LIMIT.maxTokensPerMin}`);
+        return {
+          allowed: false,
+          remaining: 0,
+          resetIn: ttl > 0 ? ttl : RATE_LIMIT.windowSec,
+          source: "redis",
+        };
+      }
+
+      // Increment counters atomically
+      const incrPipeline = redis.pipeline();
+
+      if (currentRequests === 0) {
+        // First request in window - set with expiry
+        incrPipeline.setex(requestKey, RATE_LIMIT.windowSec, 1);
+        incrPipeline.setex(tokenKey, RATE_LIMIT.windowSec, estimatedTokens);
+      } else {
+        // Increment existing counters
+        incrPipeline.incr(requestKey);
+        incrPipeline.incrby(tokenKey, estimatedTokens);
+      }
+
+      await incrPipeline.exec();
+
+      const remaining = RATE_LIMIT.maxRequests - currentRequests - 1;
+      console.log(`✅ Rate limit OK: user=${userId}, requests=${currentRequests + 1}/${RATE_LIMIT.maxRequests}, remaining=${remaining}`);
+
+      return {
+        allowed: true,
+        remaining,
+        resetIn: ttl > 0 ? ttl : RATE_LIMIT.windowSec,
+        source: "redis",
+      };
+    } catch (redisError) {
+      console.error("⚠️ Redis error, falling back to in-memory:", redisError);
+      // Fall through to in-memory
+    }
+  }
+
+  // In-memory fallback
+  return checkRateLimitMemory(userId, estimatedTokens);
+}
+
+/**
+ * In-memory rate limiting fallback
+ */
+function checkRateLimitMemory(
+  userId: string,
+  estimatedTokens: number
+): RateLimitResult {
   const now = Date.now();
-  const limit = rateLimits.get(userId);
+  const limit = rateLimitsMemory.get(userId);
 
   // Resetar janela se expirou
   if (!limit || limit.resetAt < now) {
-    rateLimits.set(userId, {
+    rateLimitsMemory.set(userId, {
       count: 1,
       resetAt: now + RATE_LIMIT.windowMs,
       tokens: estimatedTokens,
     });
-    return true;
+    return {
+      allowed: true,
+      remaining: RATE_LIMIT.maxRequests - 1,
+      resetIn: RATE_LIMIT.windowSec,
+      source: "memory",
+    };
   }
 
   // Verificar request count
   if (limit.count >= RATE_LIMIT.maxRequests) {
-    return false;
+    console.log(`🚫 Rate limit HIT (memory): user=${userId}, requests=${limit.count}/${RATE_LIMIT.maxRequests}`);
+    return {
+      allowed: false,
+      remaining: 0,
+      resetIn: Math.ceil((limit.resetAt - now) / 1000),
+      source: "memory",
+    };
   }
 
   // Verificar token cap
   if (limit.tokens + estimatedTokens > RATE_LIMIT.maxTokensPerMin) {
-    return false;
+    console.log(`🚫 Rate limit HIT (memory/tokens): user=${userId}, tokens=${limit.tokens}+${estimatedTokens}/${RATE_LIMIT.maxTokensPerMin}`);
+    return {
+      allowed: false,
+      remaining: 0,
+      resetIn: Math.ceil((limit.resetAt - now) / 1000),
+      source: "memory",
+    };
   }
 
   // Incrementar
   limit.count++;
   limit.tokens += estimatedTokens;
-  return true;
+
+  return {
+    allowed: true,
+    remaining: RATE_LIMIT.maxRequests - limit.count,
+    resetIn: Math.ceil((limit.resetAt - now) / 1000),
+    source: "memory",
+  };
+}
+
+/**
+ * Legacy sync function for backward compatibility
+ * @deprecated Use checkRateLimitRedis instead
+ */
+function checkRateLimit(userId: string, estimatedTokens: number): boolean {
+  return checkRateLimitMemory(userId, estimatedTokens).allowed;
 }
 
 // =======================
@@ -141,6 +470,8 @@ function validatePayload(messages: any[]): { valid: boolean; error?: string } {
 // =======================
 
 Deno.serve(async (req) => {
+  const requestId = generateRequestId();
+  const requestStartTime = Date.now();
   const origin = req.headers.get("origin") || "";
 
   // CORS preflight
@@ -163,10 +494,22 @@ Deno.serve(async (req) => {
     ? origin
     : ALLOWED_ORIGINS[0];
 
+  // Track metrics for this request
+  let userId = "";
+  let providerUsed = "";
+  let messageCount = 0;
+  let estimatedTokens = 0;
+  let actualUsage = { promptTokens: 0, completionTokens: 0, totalTokens: 0 };
+  let wasFallback = false;
+  let rateLimitSource: "redis" | "memory" = "memory";
+  let hasImage = false;
+  let hasGrounding = false;
+
   try {
     // 1. JWT Validation
     const authHeader = req.headers.get("Authorization");
     if (!authHeader) {
+      logger.auth("failure", undefined, "Missing authorization header");
       return jsonResponse({ error: "Missing authorization header" }, 401, allowOrigin);
     }
 
@@ -177,82 +520,190 @@ Deno.serve(async (req) => {
     } = await supabase.auth.getUser(authHeader.replace("Bearer ", ""));
 
     if (authError || !user) {
+      logger.auth("failure", undefined, authError?.message || "Invalid token");
       return jsonResponse({ error: "Invalid or expired token" }, 401, allowOrigin);
     }
+
+    userId = user.id;
+    logger.auth("success", userId);
 
     // 2. Parse request
     const body = await req.json();
     const { messages, provider, systemPrompt, grounding, imageData } = body;
 
     if (!Array.isArray(messages) || messages.length === 0) {
+      logger.warn("invalid_request", { requestId, reason: "Invalid messages array" });
       return jsonResponse({ error: "Invalid messages array" }, 400, allowOrigin);
     }
+
+    messageCount = messages.length;
+    hasImage = !!imageData;
+    hasGrounding = !!grounding;
 
     // 3. Validate payload caps
     const validation = validatePayload(messages);
     if (!validation.valid) {
+      logger.warn("payload_validation_failed", {
+        requestId,
+        userId: hashUserId(userId),
+        reason: validation.error,
+        messageCount,
+      });
       return jsonResponse({ error: validation.error }, 400, allowOrigin);
     }
 
-    // 4. Rate limiting
-    const estimatedTokens = Math.ceil(
-      messages.reduce((sum, m) => sum + m.content.length, 0) / 4
+    // 4. Rate limiting (Redis with in-memory fallback)
+    estimatedTokens = Math.ceil(
+      messages.reduce((sum: number, m: { content: string }) => sum + m.content.length, 0) / 4
     );
 
-    if (!checkRateLimit(user.id, estimatedTokens)) {
+    const rateLimitResult = await checkRateLimitRedis(user.id, estimatedTokens);
+    rateLimitSource = rateLimitResult.source;
+
+    if (!rateLimitResult.allowed) {
+      logger.rateLimit(userId, "requests", RATE_LIMIT.maxRequests, RATE_LIMIT.maxRequests, rateLimitSource);
       return jsonResponse(
         {
           error: "Rate limit exceeded. Try again in a minute.",
-          retryAfter: 60,
+          retryAfter: rateLimitResult.resetIn,
+          remaining: rateLimitResult.remaining,
+          source: rateLimitResult.source,
         },
         429,
         allowOrigin
       );
     }
 
-    // 5. Call AI provider with fallback
+    // Log request start
+    logger.info("request_started", {
+      requestId,
+      userId: hashUserId(userId),
+      provider: provider || "claude",
+      messageCount,
+      estimatedTokens,
+      features: { hasImage, hasGrounding },
+    });
+
+    // 5. Call AI provider with fallback chain
+    // ORDEM: Gemini 2.5 Flash (default) → Claude (fallback) → OpenAI (último recurso)
     let response;
-    const startTime = Date.now();
+    const aiStartTime = Date.now();
+    const requestedProvider = provider || "gemini"; // ← Gemini é o default
 
     try {
-      if (provider === "gemini" && grounding) {
+      if (grounding) {
+        // Grounding sempre usa Gemini + Google Search
         response = await callGeminiWithGrounding(messages, systemPrompt);
-      } else if (provider === "gemini") {
-        response = await callGemini(messages, systemPrompt);
+        providerUsed = "gemini-grounding";
       } else if (imageData) {
-        // Claude com imagem (vision)
+        // Imagens usam Claude Vision (único caso onde Claude é default)
         response = await callClaudeVision(messages, systemPrompt, imageData);
-      } else {
-        // Claude padrão (texto)
+        providerUsed = "claude-vision";
+      } else if (provider === "claude") {
+        // Claude só se explicitamente solicitado
         response = await callClaude(messages, systemPrompt);
+        providerUsed = "claude";
+      } else {
+        // DEFAULT: Gemini 2.5 Flash - rápido, direto, persona estável
+        response = await callGemini(messages, systemPrompt);
+        providerUsed = "gemini";
       }
-    } catch (claudeError) {
-      console.error("Primary provider failed, fallback to OpenAI:", claudeError);
+    } catch (primaryError) {
+      const errorMessage = primaryError instanceof Error ? primaryError.message : "Unknown error";
+      logger.fallback(requestId, requestedProvider, "claude", errorMessage);
+      logger.error("provider_error", primaryError as Error, {
+        requestId,
+        provider: requestedProvider,
+      });
 
-      // Fallback para OpenAI
-      response = await callOpenAI(messages, systemPrompt);
-      response.fallback = true;
+      // FALLBACK CHAIN: Gemini falhou → tenta Claude → depois OpenAI
+      try {
+        logger.info("fallback_attempt", { requestId, from: requestedProvider, to: "claude" });
+        response = await callClaude(messages, systemPrompt);
+        response.fallback = true;
+        wasFallback = true;
+        providerUsed = "claude-fallback";
+      } catch (claudeError) {
+        const claudeErrorMsg = claudeError instanceof Error ? claudeError.message : "Unknown error";
+        logger.fallback(requestId, "claude", "openai", claudeErrorMsg);
+        logger.info("fallback_attempt", { requestId, from: "claude", to: "openai" });
+
+        // Último recurso: OpenAI
+        response = await callOpenAI(messages, systemPrompt);
+        response.fallback = true;
+        wasFallback = true;
+        providerUsed = "openai-fallback";
+      }
     }
 
-    const latency = Date.now() - startTime;
+    const latency = Date.now() - aiStartTime;
+    actualUsage = response.usage;
 
-    // 6. Log analytics
-    await supabase.from("ai_requests").insert({
+    // 6. Log analytics to database (non-blocking)
+    supabase.from("ai_requests").insert({
       user_id: user.id,
       provider: response.provider,
       tokens: response.usage.totalTokens,
       latency_ms: latency,
       fallback: response.fallback || false,
       created_at: new Date().toISOString(),
+    }).then(({ error }) => {
+      if (error) {
+        logger.warn("analytics_insert_failed", { requestId, error: error.message });
+      }
     });
 
-    return jsonResponse({ ...response, latency }, 200, allowOrigin);
+    // 7. Log request metrics
+    logger.metrics({
+      requestId,
+      userId,
+      provider: providerUsed,
+      messageCount,
+      estimatedInputTokens: estimatedTokens,
+      actualInputTokens: actualUsage.promptTokens,
+      outputTokens: actualUsage.completionTokens,
+      totalTokens: actualUsage.totalTokens,
+      latencyMs: latency,
+      success: true,
+      fallback: wasFallback,
+      rateLimitSource,
+      hasImage,
+      hasGrounding,
+    });
+
+    return jsonResponse({ ...response, latency, requestId }, 200, allowOrigin);
   } catch (error) {
-    console.error("AI function error:", error);
+    const totalLatency = Date.now() - requestStartTime;
+    const err = error instanceof Error ? error : new Error(String(error));
+
+    logger.error("request_failed", err, {
+      requestId,
+      userId: userId ? hashUserId(userId) : undefined,
+      latencyMs: totalLatency,
+    });
+
+    // Log failed metrics
+    if (userId) {
+      logger.metrics({
+        requestId,
+        userId,
+        provider: providerUsed || "unknown",
+        messageCount,
+        estimatedInputTokens: estimatedTokens,
+        latencyMs: totalLatency,
+        success: false,
+        fallback: wasFallback,
+        rateLimitSource,
+        hasImage,
+        hasGrounding,
+      });
+    }
+
     return jsonResponse(
       {
         error: "Internal server error",
-        details: error.message,
+        details: err.message,
+        requestId,
       },
       500,
       allowOrigin
@@ -265,7 +716,8 @@ Deno.serve(async (req) => {
 // =======================
 
 /**
- * Claude Sonnet 4.5 (principal) - Texto apenas
+ * Claude Sonnet 4.5 (FALLBACK) - Texto apenas
+ * Usado quando Gemini falha ou para casos especiais (vision)
  */
 async function callClaude(messages: any[], systemPrompt?: string) {
   const response = await anthropic.messages.create({
@@ -351,10 +803,11 @@ async function callClaudeVision(
 }
 
 /**
- * Gemini 2.0 Flash (estável) - Texto apenas
+ * Gemini 2.5 Flash (DEFAULT) - NathIA principal
+ * Rápido, direto, persona estável
  */
 async function callGemini(messages: any[], systemPrompt?: string) {
-  const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${GEMINI_KEY}`;
+  const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${GEMINI_KEY}`;
 
   // Converter para formato Gemini
   const contents = messages.map((msg) => ({
@@ -402,10 +855,11 @@ async function callGemini(messages: any[], systemPrompt?: string) {
 }
 
 /**
- * Gemini com Grounding (Google Search) - Busca médica atualizada
+ * Gemini 2.5 Flash + Grounding (Google Search)
+ * Para perguntas médicas que precisam de fontes atualizadas
  */
 async function callGeminiWithGrounding(messages: any[], systemPrompt?: string) {
-  const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${GEMINI_KEY}`;
+  const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${GEMINI_KEY}`;
 
   const contents = messages.map((msg) => ({
     role: msg.role === "assistant" ? "model" : "user",
@@ -472,7 +926,8 @@ async function callGeminiWithGrounding(messages: any[], systemPrompt?: string) {
 }
 
 /**
- * OpenAI (fallback) - GPT-4o
+ * OpenAI GPT-4o (ÚLTIMO RECURSO)
+ * Só usado quando Gemini E Claude falharam
  */
 async function callOpenAI(messages: any[], systemPrompt?: string) {
   const openaiMessages = [

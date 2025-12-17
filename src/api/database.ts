@@ -1,20 +1,15 @@
-// @ts-nocheck - TypeScript disabled due to Supabase type inference issues
-// The manually defined Database type in supabase.ts doesn't match Supabase's expected generic structure
-// TODO: Generate types from actual Supabase schema using `supabase gen types typescript`
-// See: https://supabase.com/docs/guides/api/rest/generating-types
 import { SupabaseClient } from "@supabase/supabase-js";
-import { supabase, Database } from "./supabase";
+import {
+  supabase,
+  Database,
+  UserInsert,
+  UserUpdate,
+  PostInsert,
+  CommentInsert,
+  HabitInsert,
+  HabitUpdate,
+} from "./supabase";
 import { logger } from "../utils/logger";
-
-type UserInsert = Database["public"]["Tables"]["users"]["Insert"];
-type UserUpdate = Database["public"]["Tables"]["users"]["Update"];
-
-type PostInsert = Database["public"]["Tables"]["posts"]["Insert"];
-
-type CommentInsert = Database["public"]["Tables"]["comments"]["Insert"];
-
-type HabitInsert = Database["public"]["Tables"]["habits"]["Insert"];
-type HabitUpdate = Database["public"]["Tables"]["habits"]["Update"];
 
 /**
  * Type guard to ensure Supabase client is configured
