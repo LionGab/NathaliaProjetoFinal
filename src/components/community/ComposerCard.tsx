@@ -143,7 +143,7 @@ export const ComposerCard: React.FC<ComposerCardProps> = React.memo(({ onPress }
                     },
                   ]}
                 >
-                  <Ionicons name={topic.icon} size={14} color={color} />
+                  <Ionicons name={topic.icon} size={16} color={color} />
                   <Text style={[styles.topicText, { color }]}>{topic.label}</Text>
                 </Pressable>
               );
@@ -249,19 +249,20 @@ const styles = StyleSheet.create({
   topicsGrid: {
     flexDirection: "row",
     flexWrap: "wrap",
-    gap: SPACING.sm, // 8pt entre chips
+    gap: SPACING.md, // 12pt entre chips (era 8pt)
+    rowGap: SPACING.md, // 12pt entre linhas
   },
   topicChip: {
     flexDirection: "row",
     alignItems: "center",
-    paddingHorizontal: SPACING.md, // 12pt horizontal
-    paddingVertical: SPACING.sm,   // 8pt vertical
+    paddingHorizontal: SPACING.lg, // 16pt horizontal (era 12pt)
+    paddingVertical: SPACING.sm + 2, // 10pt vertical (era 8pt)
     borderRadius: RADIUS.full,
     borderWidth: 1,
-    gap: SPACING.xs, // 4pt entre ícone e texto
+    gap: SPACING.sm, // 8pt entre ícone e texto (era 4pt)
   },
   topicText: {
-    fontSize: 13,
+    fontSize: 14, // (era 13)
     fontWeight: "600",
     fontFamily: "Manrope_600SemiBold",
   },

@@ -18,7 +18,9 @@
       "Bash(git commit:*)",
       "Bash(git push:*)",
       "Bash(git checkout:*)",
-      "Bash(git restore:*)"
+      "Bash(git restore:*)",
+      "Bash(bash -c 'if grep -rn \"\"sk-\"\" src/ --include=\"\"*.ts\"\" --include=\"\"*.tsx\"\" 2>/dev/null | grep -v \"\"// sk-\"\" | head -1; then echo \"\"FOUND\"\"; else echo \"\"NOT FOUND\"\"; fi')",
+      "Bash(cat:*)"
     ]
   }
 }
