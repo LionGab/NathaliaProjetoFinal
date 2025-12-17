@@ -20,8 +20,10 @@ fi
 
 # 4. Security check - no exposed API keys
 echo "[4/4] Security check..."
-if grep -rn "sk-" src/ --include="*.ts" --include="*.tsx" 2>/dev/null | grep -v "// sk-" | head -1; then
+EXPOSED_KEYS=$(grep -rn "sk-[a-zA-Z0-9]\{20,\}" src/ --include="*.ts" --include="*.tsx" 2>/dev/null | grep -v "// sk-" | wc -l | tr -d ' ')
+if [ "$EXPOSED_KEYS" -gt "0" ]; then
   echo "ERROR: Possible API key exposure detected!"
+  grep -rn "sk-[a-zA-Z0-9]\{20,\}" src/ --include="*.ts" --include="*.tsx" 2>/dev/null | grep -v "// sk-" | head -3
   exit 1
 fi
 
