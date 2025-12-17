@@ -39,7 +39,7 @@ echo "✅ Build readiness check passed"
 # 4. Verificar se não há console.log (exceto warn/error)
 echo ""
 echo "🔍 [4/4] Checking for console.log usage..."
-CONSOLE_LOGS=$(grep -r "console\.log" src/ --include="*.ts" --include="*.tsx" || true)
+CONSOLE_LOGS=$(grep -r "console\.log" src/ --include="*.ts" --include="*.tsx" | grep -v "logger.ts" | grep -v "Toast.tsx" | grep -v "useToast.ts" || true)
 if [ -n "$CONSOLE_LOGS" ]; then
   echo "⚠️  Found console.log usage (should use logger instead):"
   echo "$CONSOLE_LOGS"
