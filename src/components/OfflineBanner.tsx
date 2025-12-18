@@ -4,6 +4,8 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
 import Animated, { FadeIn, FadeOut, SlideInUp, SlideOutUp } from "react-native-reanimated";
 import * as Haptics from "expo-haptics";
+import { useTheme } from "../hooks/useTheme";
+import { COLORS, COLORS_DARK } from "../theme/design-system";
 
 interface OfflineBannerProps {
   /** Called when user taps retry button */
@@ -15,6 +17,7 @@ interface OfflineBannerProps {
 /**
  * Banner que aparece no topo da tela quando não há conexão
  * Mostra mensagem amigável e botão para tentar novamente
+ * Suporta dark mode
  *
  * @example
  * const { isOffline, retry, isChecking } = useNetworkStatus();
@@ -28,6 +31,30 @@ interface OfflineBannerProps {
  */
 export function OfflineBanner({ onRetry, isRetrying = false }: OfflineBannerProps) {
   const insets = useSafeAreaInsets();
+  const { isDark } = useTheme();
+
+  // Cores warning adaptadas para dark mode
+  const warningColors = isDark
+    ? {
+        bg: "rgba(245, 158, 11, 0.15)", // warning com transparência
+        border: "rgba(245, 158, 11, 0.3)",
+        iconBg: "rgba(245, 158, 11, 0.25)",
+        iconColor: COLORS_DARK.semantic.warning,
+        titleColor: COLORS_DARK.semantic.warning,
+        textColor: "rgba(251, 191, 36, 0.9)", // amber-400
+        buttonBg: "rgba(245, 158, 11, 0.2)",
+        buttonBorder: "rgba(245, 158, 11, 0.4)",
+      }
+    : {
+        bg: COLORS.semantic.warningLight,
+        border: "#FDE68A", // amber-200
+        iconBg: "#FDE68A",
+        iconColor: "#B45309", // amber-700
+        titleColor: "#92400E", // amber-800
+        textColor: "#B45309", // amber-700
+        buttonBg: "#FFFBEB", // amber-50
+        buttonBorder: "#FCD34D", // amber-300
+      };
 
   const handleRetry = async () => {
     await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
@@ -47,9 +74,9 @@ export function OfflineBanner({ onRetry, isRetrying = false }: OfflineBannerProp
         paddingTop: insets.top + 8,
         paddingBottom: 12,
         paddingHorizontal: 16,
-        backgroundColor: "#FEF3C7", // amber-100
+        backgroundColor: warningColors.bg,
         borderBottomWidth: 1,
-        borderBottomColor: "#FDE68A", // amber-200
+        borderBottomColor: warningColors.border,
       }}
       accessibilityRole="alert"
       accessibilityLiveRegion="polite"
@@ -69,18 +96,18 @@ export function OfflineBanner({ onRetry, isRetrying = false }: OfflineBannerProp
               width: 32,
               height: 32,
               borderRadius: 16,
-              backgroundColor: "#FDE68A",
+              backgroundColor: warningColors.iconBg,
               alignItems: "center",
               justifyContent: "center",
               marginRight: 10,
             }}
           >
-            <Ionicons name="cloud-offline-outline" size={18} color="#B45309" />
+            <Ionicons name="cloud-offline-outline" size={18} color={warningColors.iconColor} />
           </View>
           <View style={{ flex: 1 }}>
             <Text
               style={{
-                color: "#92400E",
+                color: warningColors.titleColor,
                 fontSize: 14,
                 fontWeight: "600",
               }}
@@ -89,7 +116,7 @@ export function OfflineBanner({ onRetry, isRetrying = false }: OfflineBannerProp
             </Text>
             <Text
               style={{
-                color: "#B45309",
+                color: warningColors.textColor,
                 fontSize: 12,
                 marginTop: 2,
               }}
@@ -105,12 +132,12 @@ export function OfflineBanner({ onRetry, isRetrying = false }: OfflineBannerProp
           style={{
             flexDirection: "row",
             alignItems: "center",
-            backgroundColor: "#FFFBEB",
+            backgroundColor: warningColors.buttonBg,
             paddingHorizontal: 12,
             paddingVertical: 8,
             borderRadius: 8,
             borderWidth: 1,
-            borderColor: "#FCD34D",
+            borderColor: warningColors.buttonBorder,
             opacity: isRetrying ? 0.7 : 1,
           }}
           accessibilityRole="button"
@@ -119,13 +146,13 @@ export function OfflineBanner({ onRetry, isRetrying = false }: OfflineBannerProp
           accessibilityState={{ disabled: isRetrying }}
         >
           {isRetrying ? (
-            <ActivityIndicator size="small" color="#B45309" />
+            <ActivityIndicator size="small" color={warningColors.iconColor} />
           ) : (
             <>
-              <Ionicons name="refresh-outline" size={16} color="#B45309" />
+              <Ionicons name="refresh-outline" size={16} color={warningColors.iconColor} />
               <Text
                 style={{
-                  color: "#B45309",
+                  color: warningColors.iconColor,
                   fontSize: 13,
                   fontWeight: "600",
                   marginLeft: 4,

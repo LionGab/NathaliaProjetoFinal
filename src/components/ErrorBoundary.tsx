@@ -1,7 +1,8 @@
-import React, { Component, ReactNode } from 'react';
-import { View, Text, Pressable, ScrollView } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
-import { logger } from '../utils/logger';
+import React, { Component, ReactNode } from "react";
+import { View, Text, Pressable, ScrollView, useColorScheme } from "react-native";
+import { Ionicons } from "@expo/vector-icons";
+import { logger } from "../utils/logger";
+import { COLORS, COLORS_DARK } from "../theme/design-system";
 
 interface Props {
   children: ReactNode;
@@ -12,6 +13,123 @@ interface State {
   hasError: boolean;
   error: Error | null;
   errorInfo: React.ErrorInfo | null;
+}
+
+/**
+ * Componente interno funcional que renderiza a UI de erro
+ * Permite usar hooks (useColorScheme) para dark mode
+ */
+function ErrorFallbackUI({
+  error,
+  errorInfo,
+  onReset,
+}: {
+  error: Error | null;
+  errorInfo: React.ErrorInfo | null;
+  onReset: () => void;
+}) {
+  const colorScheme = useColorScheme();
+  const isDark = colorScheme === "dark";
+
+  // Cores adaptadas para o tema
+  const colors = isDark ? COLORS_DARK : COLORS;
+  const bgColor = colors.background.primary;
+  const titleColor = isDark ? colors.neutral[900] : colors.neutral[800];
+  const textColor = isDark ? colors.neutral[700] : colors.neutral[500];
+  const errorColor = colors.semantic.error;
+  const errorBg = colors.semantic.errorLight;
+
+  return (
+    <View
+      style={{
+        flex: 1,
+        backgroundColor: bgColor,
+        justifyContent: "center",
+        alignItems: "center",
+        padding: 24,
+      }}
+    >
+      <ScrollView contentContainerStyle={{ alignItems: "center", justifyContent: "center" }}>
+        <View style={{ marginBottom: 24 }}>
+          <Ionicons name="alert-circle" size={64} color={errorColor} />
+        </View>
+        <Text
+          style={{
+            fontSize: 24,
+            fontWeight: "bold",
+            color: titleColor,
+            marginBottom: 12,
+            textAlign: "center",
+          }}
+        >
+          Ops! Algo deu errado
+        </Text>
+        <Text
+          style={{
+            fontSize: 16,
+            color: textColor,
+            textAlign: "center",
+            marginBottom: 24,
+          }}
+        >
+          Encontramos um problema inesperado. Por favor, tente novamente.
+        </Text>
+        {__DEV__ && error && (
+          <View
+            style={{
+              backgroundColor: errorBg,
+              padding: 16,
+              borderRadius: 8,
+              marginBottom: 24,
+              width: "100%",
+            }}
+          >
+            <Text
+              style={{
+                fontSize: 12,
+                color: errorColor,
+                fontFamily: "monospace",
+              }}
+            >
+              {error.toString()}
+            </Text>
+            {errorInfo?.componentStack && (
+              <Text
+                style={{
+                  fontSize: 10,
+                  color: textColor,
+                  fontFamily: "monospace",
+                  marginTop: 8,
+                }}
+              >
+                {errorInfo.componentStack}
+              </Text>
+            )}
+          </View>
+        )}
+        <Pressable
+          onPress={onReset}
+          style={({ pressed }) => ({
+            backgroundColor: errorColor,
+            paddingHorizontal: 24,
+            paddingVertical: 12,
+            borderRadius: 12,
+            opacity: pressed ? 0.8 : 1,
+          })}
+        >
+          <Text
+            style={{
+              color: COLORS.text.inverse,
+              fontSize: 16,
+              fontWeight: "600",
+            }}
+          >
+            Tentar novamente
+          </Text>
+        </Pressable>
+      </ScrollView>
+    </View>
+  );
 }
 
 export class ErrorBoundary extends Component<Props, State> {
@@ -29,7 +147,7 @@ export class ErrorBoundary extends Component<Props, State> {
   }
 
   componentDidCatch(error: Error, errorInfo: React.ErrorInfo): void {
-    logger.error('ErrorBoundary caught an error', 'ErrorBoundary', error, {
+    logger.error("ErrorBoundary caught an error", "ErrorBoundary", error, {
       componentStack: errorInfo.componentStack,
       errorBoundary: true,
     });
@@ -55,46 +173,14 @@ export class ErrorBoundary extends Component<Props, State> {
       }
 
       return (
-        <View style={{ flex: 1, backgroundColor: '#FFFCF9', justifyContent: 'center', alignItems: 'center', padding: 24 }}>
-          <ScrollView contentContainerStyle={{ alignItems: 'center', justifyContent: 'center' }}>
-            <View style={{ marginBottom: 24 }}>
-              <Ionicons name="alert-circle" size={64} color="#E11D48" />
-            </View>
-            <Text style={{ fontSize: 24, fontWeight: 'bold', color: '#1F2937', marginBottom: 12, textAlign: 'center' }}>
-              Ops! Algo deu errado
-            </Text>
-            <Text style={{ fontSize: 16, color: '#6B7280', textAlign: 'center', marginBottom: 24 }}>
-              Encontramos um problema inesperado. Por favor, tente novamente.
-            </Text>
-            {__DEV__ && this.state.error && (
-              <View style={{ backgroundColor: '#F3F4F6', padding: 16, borderRadius: 8, marginBottom: 24, width: '100%' }}>
-                <Text style={{ fontSize: 12, color: '#EF4444', fontFamily: 'monospace' }}>
-                  {this.state.error.toString()}
-                </Text>
-                {this.state.errorInfo?.componentStack && (
-                  <Text style={{ fontSize: 10, color: '#6B7280', fontFamily: 'monospace', marginTop: 8 }}>
-                    {this.state.errorInfo.componentStack}
-                  </Text>
-                )}
-              </View>
-            )}
-            <Pressable
-              onPress={this.handleReset}
-              style={{
-                backgroundColor: '#E11D48',
-                paddingHorizontal: 24,
-                paddingVertical: 12,
-                borderRadius: 12,
-              }}
-            >
-              <Text style={{ color: '#FFFFFF', fontSize: 16, fontWeight: '600' }}>Tentar novamente</Text>
-            </Pressable>
-          </ScrollView>
-        </View>
+        <ErrorFallbackUI
+          error={this.state.error}
+          errorInfo={this.state.errorInfo}
+          onReset={this.handleReset}
+        />
       );
     }
 
     return this.props.children;
   }
 }
-

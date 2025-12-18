@@ -14,6 +14,9 @@ import { COLORS as DS_COLORS, SPACING, RADIUS } from "../theme/design-system";
 // Foto da Nathalia com o bebê Thales
 const NATHALIA_AVATAR_URL = "https://i.imgur.com/37dbPJE.jpg";
 
+// Logo Comunidade Mães Valente
+const MAES_VALENTE_LOGO_URL = "https://i.imgur.com/U5ttbqK.jpg";
+
 /**
  * Cores semânticas para tela de cuidados
  * Mapeadas para o design-system azul pastel
@@ -667,16 +670,20 @@ export default function MyCareScreen({ navigation }: MainTabScreenProps<"MyCare"
             <View style={{ flexDirection: "row", alignItems: "center", marginBottom: SPACING.sm }}>
               <View
                 style={{
-                  width: 40,
-                  height: 40,
-                  borderRadius: 20,
-                  backgroundColor: DS_COLORS.primary[50],
-                  alignItems: "center",
-                  justifyContent: "center",
+                  width: 44,
+                  height: 44,
+                  borderRadius: 22,
+                  overflow: "hidden",
                   marginRight: SPACING.sm,
                 }}
               >
-                <Ionicons name="people" size={20} color={DS_COLORS.primary[500]} />
+                <Image
+                  source={{ uri: MAES_VALENTE_LOGO_URL }}
+                  style={{
+                    width: 44,
+                    height: 44,
+                  }}
+                />
               </View>
               <Text
                 style={{

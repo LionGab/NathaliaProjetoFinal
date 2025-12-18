@@ -21,6 +21,7 @@
     "diagnose:production": "bun run validate && bun run check-build-ready",
     "quality-gate": "bash scripts/quality-gate.sh",
     "check-build-ready": "bash scripts/check-build-ready.sh",
+    "check-env": "node scripts/check-env.js",
     "setup-secrets": "bash scripts/setup-secrets.sh",
     "clean": "node scripts/clean-cache.js",
     "clean:all": "bun run clean && rm -rf node_modules bun.lock && bun install",

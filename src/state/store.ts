@@ -15,6 +15,7 @@ import {
 import { onAuthStateChange } from "../api/auth";
 import { getUserProfile } from "../api/database";
 import { logger } from "../utils/logger";
+import { COLORS } from "../theme/design-system";
 
 interface AppState {
   // User & Auth
@@ -461,7 +462,7 @@ const DEFAULT_HABITS: Habit[] = [
     title: "Água no corpo",
     description: "Hidratação sustenta tudo: pele, energia, disposição",
     icon: "water",
-    color: "#60A5FA",
+    color: COLORS.secondary[400],
     category: "health",
     completed: false,
     streak: 0,
@@ -473,7 +474,7 @@ const DEFAULT_HABITS: Habit[] = [
     title: "Comida de verdade",
     description: "Comer bem é nutrir, não restringir",
     icon: "restaurant",
-    color: "#F472B6",
+    color: COLORS.mood.sensitive,
     category: "health",
     completed: false,
     streak: 0,
@@ -485,7 +486,7 @@ const DEFAULT_HABITS: Habit[] = [
     title: "5 min só pra mim",
     description: "Skincare, banho, ou só fechar os olhos",
     icon: "sparkles",
-    color: "#F59E0B",
+    color: COLORS.mood.energetic,
     category: "self-care",
     completed: false,
     streak: 0,
@@ -497,7 +498,7 @@ const DEFAULT_HABITS: Habit[] = [
     title: "Um pouco de sol",
     description: "Luz natural acorda o corpo por dentro",
     icon: "sunny",
-    color: "#FBBF24",
+    color: COLORS.semantic.warning,
     category: "health",
     completed: false,
     streak: 0,
@@ -509,7 +510,7 @@ const DEFAULT_HABITS: Habit[] = [
     title: "Conversa adulta",
     description: "Falar com alguém que te ouve",
     icon: "chatbubbles",
-    color: "#EC4899",
+    color: COLORS.mood.sensitive,
     category: "connection",
     completed: false,
     streak: 0,
@@ -521,7 +522,7 @@ const DEFAULT_HABITS: Habit[] = [
     title: "3 respirações",
     description: "Quando apertar, inspira fundo",
     icon: "leaf",
-    color: "#6BAD78",
+    color: COLORS.semantic.success,
     category: "mindfulness",
     completed: false,
     streak: 0,
@@ -533,7 +534,7 @@ const DEFAULT_HABITS: Habit[] = [
     title: "Foto do momento",
     description: "Registrar presença, não perfeição",
     icon: "camera",
-    color: "#A78BFA",
+    color: COLORS.mood.tired,
     category: "connection",
     completed: false,
     streak: 0,
@@ -545,7 +546,7 @@ const DEFAULT_HABITS: Habit[] = [
     title: "Pedir ajuda",
     description: "Delegar é força, não fraqueza",
     icon: "hand-left",
-    color: "#14B8A6",
+    color: COLORS.accent[500],
     category: "self-care",
     completed: false,
     streak: 0,

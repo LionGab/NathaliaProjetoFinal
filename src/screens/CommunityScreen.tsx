@@ -12,6 +12,7 @@ import { Ionicons } from "@expo/vector-icons";
 import React from "react";
 import {
   FlatList,
+  Image,
   Pressable,
   StyleSheet,
   Text,
@@ -25,6 +26,9 @@ import { useCommunity } from "../hooks/useCommunity";
 import { useTheme } from "../hooks/useTheme";
 import { COLORS, RADIUS, SHADOWS, SPACING } from "../theme/design-system";
 import type { MainTabScreenProps } from "../types/navigation";
+
+// Logo Comunidade Mães Valente
+const MAES_VALENTE_LOGO_URL = "https://i.imgur.com/U5ttbqK.jpg";
 
 export default function CommunityScreen({ navigation }: MainTabScreenProps<"Community">) {
   const insets = useSafeAreaInsets();
@@ -50,7 +54,23 @@ export default function CommunityScreen({ navigation }: MainTabScreenProps<"Comm
         >
           <View style={styles.headerRow}>
             <View style={styles.headerTitle}>
-              <Text style={styles.headerEmoji}>💕</Text>
+              <View
+                style={{
+                  width: 32,
+                  height: 32,
+                  borderRadius: 16,
+                  overflow: "hidden",
+                  marginRight: 8,
+                }}
+              >
+                <Image
+                  source={{ uri: MAES_VALENTE_LOGO_URL }}
+                  style={{
+                    width: 32,
+                    height: 32,
+                  }}
+                />
+              </View>
               <Text style={[styles.title, { color: textMain }]}>Mães Valente</Text>
             </View>
 

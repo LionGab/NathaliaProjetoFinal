@@ -63,27 +63,7 @@ export const HealthInsightCard: React.FC = () => {
         navigation.navigate("Affirmations");
       } else if (screen === "Community") {
         navigation.navigate("MainTabs", { screen: "Community" });
-      } else if (screen === "ComingSoon") {
-        navigation.navigate("ComingSoon", {
-          title: "Telemedicina",
-          description: "Em breve você poderá agendar consultas com especialistas diretamente pelo app.",
-          emoji: "👩‍⚕️",
-        });
       }
-    }
-  }, [navigation, topInsight]);
-
-  const handleSecondaryAction = useCallback(async () => {
-    if (!topInsight) return;
-    await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-
-    const screen = topInsight.actions.secondary?.screen;
-    if (screen === "ComingSoon") {
-      navigation.navigate("ComingSoon", {
-        title: "Telemedicina",
-        description: "Em breve você poderá agendar consultas com obstetras, psicólogas e doulas diretamente pelo app.",
-        emoji: "👩‍⚕️",
-      });
     }
   }, [navigation, topInsight]);
 
@@ -174,27 +154,6 @@ export const HealthInsightCard: React.FC = () => {
                 <Ionicons name="arrow-forward" size={16} color="#FFFFFF" />
               </Pressable>
             </Animated.View>
-
-            {/* Secondary CTA (if exists) */}
-            {topInsight.actions.secondary && (
-              <Animated.View entering={FadeInRight.delay(300).duration(300)}>
-                <Pressable
-                  onPress={handleSecondaryAction}
-                  style={({ pressed }) => [
-                    styles.secondaryButton,
-                    {
-                      borderColor: gradient[1],
-                      opacity: pressed ? 0.7 : 1,
-                    },
-                  ]}
-                >
-                  <Ionicons name="medical" size={16} color={gradient[1]} />
-                  <Text style={[styles.secondaryButtonText, { color: gradient[1] }]}>
-                    {topInsight.actions.secondary.label}
-                  </Text>
-                </Pressable>
-              </Animated.View>
-            )}
           </View>
 
           {/* Stats footer (optional) */}

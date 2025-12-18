@@ -77,7 +77,7 @@ export default function HabitsEnhancedScreen() {
             onPress={() => navigation.goBack()}
             style={{ marginRight: SPACING.lg }}
           >
-            <Ionicons name="arrow-back" size={24} color="#FFF" />
+            <Ionicons name="arrow-back" size={24} color={COLORS.text.inverse} />
           </Pressable>
           <View style={{ flex: 1 }}>
             <Text
@@ -105,7 +105,7 @@ export default function HabitsEnhancedScreen() {
               Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
             }}
           >
-            <Ionicons name="add-circle" size={32} color="#FFF" />
+            <Ionicons name="add-circle" size={32} color={COLORS.text.inverse} />
           </Pressable>
         </View>
 
@@ -127,7 +127,7 @@ export default function HabitsEnhancedScreen() {
                 marginBottom: SPACING.sm,
               }}
             >
-              <Ionicons name="checkmark-circle" size={20} color="#FFF" />
+              <Ionicons name="checkmark-circle" size={20} color={COLORS.text.inverse} />
               <Text
                 style={{
                   color: "rgba(255, 255, 255, 0.8)",
@@ -172,7 +172,7 @@ export default function HabitsEnhancedScreen() {
                 marginBottom: SPACING.sm,
               }}
             >
-              <Ionicons name="flame" size={20} color="#FFF" />
+              <Ionicons name="flame" size={20} color={COLORS.text.inverse} />
               <Text
                 style={{
                   color: "rgba(255, 255, 255, 0.8)",
@@ -217,7 +217,7 @@ export default function HabitsEnhancedScreen() {
                 marginBottom: SPACING.sm,
               }}
             >
-              <Ionicons name="trophy" size={20} color="#FFF" />
+              <Ionicons name="trophy" size={20} color={COLORS.text.inverse} />
               <Text
                 style={{
                   color: "rgba(255, 255, 255, 0.8)",
@@ -550,7 +550,7 @@ function HabitCard({ habit, index, onToggle }: HabitCardProps) {
               }}
             >
               {habit.completed && (
-                <Ionicons name="checkmark" size={18} color="#FFF" />
+                <Ionicons name="checkmark" size={18} color={COLORS.text.inverse} />
               )}
             </View>
           </View>

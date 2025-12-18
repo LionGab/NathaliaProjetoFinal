@@ -733,7 +733,7 @@ export default function ProfileScreen({ navigation }: RootStackScreenProps<"Edit
                       alignItems: "center",
                     }}
                   >
-                    <Text style={{ color: "#FFF", fontSize: 16, fontWeight: "600" }}>Continuar</Text>
+                    <Text style={{ color: colors.text.inverse, fontSize: 16, fontWeight: "600" }}>Continuar</Text>
                   </Pressable>
                 </View>
               </>
@@ -820,7 +820,7 @@ export default function ProfileScreen({ navigation }: RootStackScreenProps<"Edit
                       opacity: confirmText.toUpperCase() === "DELETAR" ? 1 : 0.5,
                     }}
                   >
-                    <Text style={{ color: "#FFF", fontSize: 16, fontWeight: "600" }}>
+                    <Text style={{ color: colors.text.inverse, fontSize: 16, fontWeight: "600" }}>
                       {isDeleting ? "Deletando..." : "Deletar conta"}
                     </Text>
                   </Pressable>

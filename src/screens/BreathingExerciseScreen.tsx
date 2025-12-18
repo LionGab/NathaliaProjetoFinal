@@ -285,7 +285,7 @@ export default function BreathingExerciseScreen() {
                 </>
               ) : (
                 <>
-                  <Ionicons name="leaf" size={48} color="#FFF" />
+                  <Ionicons name="leaf" size={48} color={COLORS.text.inverse} />
                   <Text
                     style={{
                       color: COLORS.neutral[0],

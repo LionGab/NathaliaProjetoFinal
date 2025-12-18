@@ -9,7 +9,7 @@ import Animated, {
 } from "react-native-reanimated";
 import { useCycleStore } from "../state/store";
 import { useTheme } from "../hooks/useTheme";
-import { GRADIENTS } from "../theme/design-system";
+import { COLORS, GRADIENTS } from "../theme/design-system";
 
 const { width: SCREEN_WIDTH } = Dimensions.get("window");
 const DAY_SIZE = (SCREEN_WIDTH - 64) / 7;
@@ -474,7 +474,7 @@ export default function CycleTrackerScreen() {
             }}
           >
             <View className="flex-row items-center justify-center">
-              <Ionicons name="add-circle" size={24} color="#FFF" />
+              <Ionicons name="add-circle" size={24} color={COLORS.text.inverse} />
               <Text className="text-white text-base font-semibold ml-2">
                 {selectedDate ? "Marcar Periodo Neste Dia" : "Registrar Menstruacao"}
               </Text>

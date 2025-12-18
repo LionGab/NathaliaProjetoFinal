@@ -100,7 +100,7 @@ const SparkleIcon = () => {
           alignItems: "center",
         }}
       >
-        <Ionicons name="diamond" size={40} color="#fff" />
+        <Ionicons name="diamond" size={40} color={COLORS.text.inverse} />
       </LinearGradient>
     </Animated.View>
   );
@@ -619,7 +619,7 @@ export const PaywallScreen: React.FC<PaywallScreenProps> = ({ navigation, route 
             style={{ backgroundColor: PRIMARY_COLOR }}
           >
             {isPurchasing ? (
-              <ActivityIndicator color="#fff" />
+              <ActivityIndicator color={COLORS.text.inverse} />
             ) : (
               <Text className="text-white text-lg font-bold">
                 {pricing.trialDays > 0

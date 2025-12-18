@@ -30,7 +30,7 @@ export type InsightType =
 
 export type InsightPriority = "high" | "medium" | "low";
 
-export type InsightAction = "chat_nathia" | "schedule_specialist" | "try_breathing" | "log_mood" | "community";
+export type InsightAction = "chat_nathia" | "log_mood" | "community";
 
 export interface HealthInsight {
   id: string;
@@ -135,11 +135,6 @@ function generateMoodInsight(
           action: "chat_nathia",
           screen: "Assistant",
         },
-        secondary: {
-          label: "Falar com especialista",
-          action: "schedule_specialist",
-          screen: "ComingSoon",
-        },
       },
       data: { avgMood, daysAnalyzed, trend },
     };
@@ -183,11 +178,6 @@ function generateSleepInsight(avgSleep: number, daysAnalyzed: number): HealthIns
           label: "Dicas de sono com NathIA",
           action: "chat_nathia",
           screen: "Assistant",
-        },
-        secondary: {
-          label: "Exercício de respiração",
-          action: "try_breathing",
-          screen: "ComingSoon",
         },
       },
       data: { avgSleep, daysAnalyzed },
@@ -235,11 +225,6 @@ function generateEnergyInsight(avgEnergy: number, avgSleep: number, daysAnalyzed
           label: "Conversar com NathIA",
           action: "chat_nathia",
           screen: "Assistant",
-        },
-        secondary: {
-          label: "Falar com especialista",
-          action: "schedule_specialist",
-          screen: "ComingSoon",
         },
       },
       data: { avgEnergy, avgSleep, daysAnalyzed },

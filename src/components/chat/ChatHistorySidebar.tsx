@@ -10,7 +10,7 @@ import Animated, { SlideInLeft, SlideOutLeft } from "react-native-reanimated";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Conversation } from "../../state/store";
 import { Avatar } from "../ui";
-import { COLORS } from "../../theme/design-system";
+import { COLORS, COLORS_DARK, OVERLAY } from "../../theme/design-system";
 import { useTheme } from "../../hooks/useTheme";
 
 interface ChatHistorySidebarProps {
@@ -36,7 +36,7 @@ export const ChatHistorySidebar: React.FC<ChatHistorySidebarProps> = ({
 }) => {
   const insets = useSafeAreaInsets();
   const { isDark } = useTheme();
-  const palette = isDark ? COLORS : COLORS;
+  const palette = isDark ? COLORS_DARK : COLORS;
   const bgSidebar = palette.background.secondary;
   const textPrimary = palette.text.primary;
   const textMuted = palette.text.muted;
@@ -115,7 +115,7 @@ export const ChatHistorySidebar: React.FC<ChatHistorySidebarProps> = ({
                     <Pressable
                       onPress={() => onDeleteConversation(conv.id)}
                       style={styles.itemDelete}
-                      hitSlop={8}
+                      hitSlop={12}
                     >
                       <Ionicons name="trash-outline" size={14} color={textMuted} />
                     </Pressable>
@@ -144,7 +144,7 @@ const styles = StyleSheet.create({
   overlay: {
     flex: 1,
     flexDirection: "row",
-    backgroundColor: "rgba(0, 0, 0, 0.4)",
+    backgroundColor: OVERLAY.backdrop,
   },
   sidebar: {
     width: "82%",

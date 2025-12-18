@@ -808,6 +808,9 @@ export const GRADIENTS = {
   overlayWarm: ["rgba(247, 251, 253, 0.95)", "rgba(255, 255, 255, 0.9)"],
   overlayCool: ["rgba(232, 243, 249, 0.95)", "rgba(255, 255, 255, 0.9)"],
   overlayAccent: ["rgba(240, 253, 250, 0.95)", "rgba(255, 255, 255, 0.9)"],
+  // Dark mode overlays
+  overlayDark: ["rgba(26, 32, 39, 0.95)", "rgba(15, 20, 25, 0.9)"],
+  overlayDarkCool: ["rgba(36, 45, 54, 0.95)", "rgba(26, 32, 39, 0.9)"],
 
   // =========================================
   // UTILITY GRADIENTS
@@ -911,6 +914,41 @@ export const ELEVATION = {
   modal: 30,
   tooltip: 40,
   toast: 50,
+} as const;
+
+// ===========================================
+// OVERLAY (Fundos de modais e backdrops)
+// ===========================================
+
+/**
+ * Tokens para overlay/backdrop de modais e popovers
+ * - backdrop: fundo escuro semi-transparente
+ * - scrim: fundo mais escuro para foco
+ * - light: overlay claro para tooltips
+ */
+export const OVERLAY = {
+  // Backdrop padrão para modais (40% opacidade)
+  backdrop: "rgba(0, 0, 0, 0.4)",
+  // Backdrop mais forte (50% opacidade)
+  backdropStrong: "rgba(0, 0, 0, 0.5)",
+  // Backdrop leve (30% opacidade)
+  backdropLight: "rgba(0, 0, 0, 0.3)",
+  // Scrim escuro para foco máximo (60% opacidade)
+  scrim: "rgba(0, 0, 0, 0.6)",
+  // Overlay claro para tooltips
+  light: "rgba(255, 255, 255, 0.9)",
+  // Overlay azulado para theme consistency
+  blueLight: "rgba(247, 251, 253, 0.95)",
+  blueDark: "rgba(15, 20, 25, 0.95)",
+  // Hover states
+  hoverLight: "rgba(0, 0, 0, 0.04)",
+  hoverDark: "rgba(255, 255, 255, 0.08)",
+  // Press states
+  pressLight: "rgba(0, 0, 0, 0.08)",
+  pressDark: "rgba(255, 255, 255, 0.12)",
+  // Disabled states
+  disabled: "rgba(0, 0, 0, 0.12)",
+  disabledDark: "rgba(255, 255, 255, 0.12)",
 } as const;
 
 // ===========================================

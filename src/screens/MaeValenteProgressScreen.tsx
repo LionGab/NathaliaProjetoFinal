@@ -91,7 +91,7 @@ export default function MaeValenteProgressScreen() {
               padding: SPACING.md,
             }}
           >
-            <Ionicons name="trophy" size={28} color="#FFF" />
+            <Ionicons name="trophy" size={28} color={COLORS.text.inverse} />
           </View>
         </View>
 
@@ -709,7 +709,7 @@ function AchievementCard({
           <Ionicons
             name={icon}
             size={24}
-            color={unlocked ? "#FFF" : COLORS.neutral[400]}
+            color={unlocked ? COLORS.text.inverse : COLORS.neutral[400]}
           />
         </View>
         <View style={{ flex: 1 }}>

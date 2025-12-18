@@ -17,6 +17,7 @@ import { Platform } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import Constants from "expo-constants";
 import { supabase } from "../api/supabase";
+import { COLORS } from "../theme/design-system";
 
 // Configure notification handler
 Notifications.setNotificationHandler({
@@ -57,7 +58,7 @@ const PROJECT_ID =
   "ceee9479-e404-47b8-bc37-4f913c18f270";
 
 // Primary color from design system for Android notification light
-const NOTIFICATION_LIGHT_COLOR = "#F43F5E";
+const NOTIFICATION_LIGHT_COLOR = COLORS.primary[500];
 
 // Edge Function URL
 const NOTIFICATIONS_FUNCTION_URL = `${process.env.EXPO_PUBLIC_SUPABASE_URL}/functions/v1/notifications`;

@@ -28,6 +28,7 @@ import { useAppStore } from "@/state/store";
 import { supabase } from "@/api/supabase";
 import { logger } from "@/utils/logger";
 import { navigationRef } from "@/navigation/navigationRef";
+import { COLORS } from "@/theme/design-system";
 
 // =======================
 // TYPES
@@ -404,7 +405,7 @@ export function useNotifications(): UseNotificationsReturn {
           name: "Geral",
           importance: Notifications.AndroidImportance.HIGH,
           vibrationPattern: [0, 250, 250, 250],
-          lightColor: "#f4258c",
+          lightColor: COLORS.primary[500],
         },
         {
           id: "community",

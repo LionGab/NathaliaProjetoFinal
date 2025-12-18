@@ -2,6 +2,7 @@ import React from "react";
 import { View, Text, Pressable } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import * as Haptics from "expo-haptics";
+import { useTheme } from "../../hooks/useTheme";
 
 interface SectionHeaderProps {
   title: string;
@@ -14,12 +15,6 @@ interface SectionHeaderProps {
   emoji?: string;
 }
 
-const COLORS = {
-  text: "#4A4A4A",
-  textMuted: "#7A7A7A",
-  primary: "#E11D48",
-};
-
 export default function SectionHeader({
   title,
   subtitle,
@@ -27,6 +22,8 @@ export default function SectionHeader({
   icon,
   emoji,
 }: SectionHeaderProps) {
+  const { colors, isDark } = useTheme();
+
   const handleAction = async () => {
     if (action) {
       await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
@@ -51,14 +48,14 @@ export default function SectionHeader({
           <Ionicons
             name={icon}
             size={20}
-            color={COLORS.text}
+            color={isDark ? colors.neutral[300] : colors.neutral[600]}
             style={{ marginRight: 10 }}
           />
         )}
         <View style={{ flex: 1 }}>
           <Text
             style={{
-              color: COLORS.text,
+              color: isDark ? colors.neutral[100] : colors.neutral[800],
               fontSize: 18,
               fontWeight: "600",
             }}
@@ -68,7 +65,7 @@ export default function SectionHeader({
           {subtitle && (
             <Text
               style={{
-                color: COLORS.textMuted,
+                color: isDark ? colors.neutral[400] : colors.neutral[500],
                 fontSize: 13,
                 marginTop: 2,
               }}
@@ -90,7 +87,7 @@ export default function SectionHeader({
         >
           <Text
             style={{
-              color: COLORS.primary,
+              color: colors.primary[500],
               fontSize: 14,
               fontWeight: "500",
             }}
@@ -100,7 +97,7 @@ export default function SectionHeader({
           <Ionicons
             name="chevron-forward"
             size={16}
-            color={COLORS.primary}
+            color={colors.primary[500]}
             style={{ marginLeft: 2 }}
           />
         </Pressable>

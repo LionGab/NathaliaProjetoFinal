@@ -28,7 +28,7 @@ import {
   View,
 } from "react-native";
 import Animated, { FadeIn, FadeInUp } from "react-native-reanimated";
-import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context";
+import { SafeAreaView } from "react-native-safe-area-context";
 import { detectMedicalQuestion, estimateTokens, getNathIAResponse } from "../api/ai-service";
 import { AIConsentModal } from "../components/chat/AIConsentModal";
 import { ChatEmptyState } from "../components/chat/ChatEmptyState";
@@ -107,7 +107,6 @@ const MESSAGE_COUNT_KEY = "nathia_message_count";
 // MAIN COMPONENT
 // ============================================
 export default function AssistantScreen({ navigation, route }: MainTabScreenProps<"Assistant">) {
-  const insets = useSafeAreaInsets();
   const { isDark } = useTheme();
   const { width: screenWidth } = useWindowDimensions();
   const THEME = useMemo(() => getThemeColors(isDark), [isDark]);
@@ -497,8 +496,11 @@ export default function AssistantScreen({ navigation, route }: MainTabScreenProp
   // ============================================
   // MAIN RENDER
   // ============================================
+  // Tab bar height para calcular padding inferior
+  const TAB_BAR_HEIGHT = Platform.OS === "ios" ? 88 : 72;
+
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: THEME.bgPrimary }} edges={["top", "bottom"]}>
+    <SafeAreaView style={{ flex: 1, backgroundColor: THEME.bgPrimary }} edges={["top"]}>
       <View style={[styles.container, { flex: 1, backgroundColor: THEME.bgPrimary }]}>
         {/* Header - Clean, minimal */}
         <View
@@ -540,7 +542,7 @@ export default function AssistantScreen({ navigation, route }: MainTabScreenProp
         <KeyboardAvoidingView
           behavior={Platform.OS === "ios" ? "padding" : "height"}
           style={styles.messagesContainer}
-          keyboardVerticalOffset={Platform.OS === "ios" ? insets.top + 60 : 0}
+          keyboardVerticalOffset={Platform.OS === "ios" ? 60 : 0}
         >
           {currentMessages.length === 0 ? (
             <ScrollView
@@ -599,7 +601,7 @@ export default function AssistantScreen({ navigation, route }: MainTabScreenProp
             style={[
               styles.inputContainer,
               {
-                paddingBottom: Math.max(insets.bottom, Platform.OS === "ios" ? 8 : 16),
+                paddingBottom: TAB_BAR_HEIGHT + SPACING.sm,
                 paddingHorizontal: horizontalPadding,
                 paddingTop: SPACING.sm,
                 backgroundColor: THEME.bgPrimary,
