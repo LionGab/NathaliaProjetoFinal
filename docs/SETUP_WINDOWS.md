@@ -7,6 +7,7 @@
 ## 📋 PRÉ-REQUISITOS
 
 ### 1. Instalar Git para Windows
+
 ```powershell
 # Baixar e instalar:
 # https://git-scm.com/download/win
@@ -16,6 +17,7 @@ git --version
 ```
 
 ### 2. Instalar Node.js (LTS)
+
 ```powershell
 # Baixar e instalar:
 # https://nodejs.org/ (versão LTS)
@@ -26,6 +28,7 @@ npm --version
 ```
 
 ### 3. Instalar Bun (opcional, mas recomendado - mais rápido)
+
 ```powershell
 # PowerShell (como administrador):
 irm bun.sh/install.ps1 | iex
@@ -35,6 +38,7 @@ bun --version
 ```
 
 ### 4. Instalar Git Bash (para scripts .sh)
+
 - Vem junto com Git for Windows
 - Ou instalar separadamente: https://git-scm.com/download/win
 
@@ -43,6 +47,7 @@ bun --version
 ## 🔑 CONFIGURAR SSH KEY (se ainda não tiver)
 
 ### Opção 1: Usar a mesma SSH key do MacBook
+
 ```powershell
 # 1. Copiar a chave do MacBook para Windows
 #    No MacBook, copie: ~/.ssh/id_rsa e ~/.ssh/id_rsa.pub
@@ -57,6 +62,7 @@ ssh -T git@github.com
 ```
 
 ### Opção 2: Gerar nova SSH key no Windows
+
 ```powershell
 # Git Bash:
 ssh-keygen -t ed25519 -C "seu-email@exemplo.com"
@@ -75,6 +81,7 @@ cat ~/.ssh/id_ed25519.pub
 ## 📥 CLONAR REPOSITÓRIO
 
 ### Opção 1: Via SSH (recomendado)
+
 ```powershell
 # Git Bash ou PowerShell:
 cd C:\Users\SEU_USUARIO\Documents
@@ -83,6 +90,7 @@ cd NossaMaternidade
 ```
 
 ### Opção 2: Via HTTPS
+
 ```powershell
 git clone https://github.com/LionGab/NossaMaternidade.git
 cd NossaMaternidade
@@ -106,6 +114,7 @@ git config --list
 ## 📦 INSTALAR DEPENDÊNCIAS
 
 ### Opção 1: Com Bun (mais rápido)
+
 ```powershell
 # No diretório do projeto:
 cd C:\Users\SEU_USUARIO\Documents\NossaMaternidade
@@ -113,6 +122,7 @@ bun install
 ```
 
 ### Opção 2: Com npm
+
 ```powershell
 npm install
 ```
@@ -124,6 +134,7 @@ npm install
 ## 🔐 CONFIGURAR VARIÁVEIS DE AMBIENTE
 
 ### 1. Criar arquivo `.env.local`
+
 ```powershell
 # No diretório raiz do projeto:
 # Copie o conteúdo do .env.local do MacBook
@@ -137,6 +148,7 @@ notepad .env.local
 ```
 
 ### 2. Preencher variáveis necessárias:
+
 ```env
 # Supabase
 EXPO_PUBLIC_SUPABASE_URL=sua_url
@@ -164,18 +176,21 @@ EXPO_PUBLIC_ENABLE_ANALYTICS=true
 ## ✅ VALIDAR INSTALAÇÃO
 
 ### 1. Verificar TypeScript
+
 ```powershell
 npx tsc --noEmit
 # Deve retornar sem erros
 ```
 
 ### 2. Verificar ESLint
+
 ```powershell
 npm run lint
 # Deve retornar sem erros
 ```
 
 ### 3. Verificar Quality Gate
+
 ```powershell
 # Git Bash (scripts .sh precisam do Git Bash):
 git bash scripts/quality-gate.sh
@@ -185,6 +200,7 @@ npm run quality-gate
 ```
 
 ### 4. Verificar Build Readiness
+
 ```powershell
 npm run check-build-ready
 ```
@@ -194,6 +210,7 @@ npm run check-build-ready
 ## 🚀 COMANDOS ÚTEIS (Windows)
 
 ### Desenvolvimento
+
 ```powershell
 # Iniciar Expo dev server:
 npm start
@@ -211,6 +228,7 @@ npm run web
 ```
 
 ### Scripts importantes
+
 ```powershell
 # TypeScript check:
 npm run typecheck
@@ -228,6 +246,7 @@ npm run quality-gate
 ```
 
 ### Git (mesmos comandos)
+
 ```powershell
 # Status:
 git status
@@ -254,27 +273,35 @@ git push origin main
 ## 🛠️ TROUBLESHOOTING
 
 ### Problema: Scripts .sh não funcionam
+
 **Solução:** Use Git Bash ao invés de PowerShell/CMD
+
 ```powershell
 # Abrir Git Bash e executar:
 git bash scripts/quality-gate.sh
 ```
 
 ### Problema: LightningCSS erro no Windows
+
 **Solução:** O script `postinstall` deve corrigir automaticamente. Se não:
+
 ```powershell
 node scripts/fix-lightningcss.js
 ```
 
 ### Problema: Permissões SSH
+
 **Solução:** No Git Bash:
+
 ```bash
 chmod 600 ~/.ssh/id_rsa
 chmod 644 ~/.ssh/id_rsa.pub
 ```
 
 ### Problema: Node modules corrompidos
+
 **Solução:**
+
 ```powershell
 # Limpar e reinstalar:
 npm run clean:all
@@ -284,6 +311,7 @@ npm install
 ```
 
 ### Problema: Expo não encontra .env.local
+
 **Solução:** Verificar que o arquivo está na raiz do projeto e tem o nome exato `.env.local`
 
 ---
@@ -301,6 +329,7 @@ npm install
 ## 🔄 SINCRONIZAÇÃO ENTRE MACBOOK E WINDOWS
 
 ### Workflow recomendado:
+
 ```powershell
 # No Windows (antes de trabalhar):
 git pull origin main
@@ -334,4 +363,3 @@ git pull origin main
 ---
 
 **Pronto!** Agora você pode trabalhar no Windows e sincronizar com o MacBook via GitHub. 🎉
-
