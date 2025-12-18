@@ -35,7 +35,7 @@ import { detectMedicalQuestion, estimateTokens, getNathIAResponse, imageUriToBas
 import { AIConsentModal } from "../components/chat/AIConsentModal";
 import { ChatEmptyState } from "../components/chat/ChatEmptyState";
 import { ChatHistorySidebar } from "../components/chat/ChatHistorySidebar";
-import { Avatar } from "../components/ui";
+import { Avatar, LoadingDots } from "../components/ui";
 import { VoiceMessagePlayer } from "../components/VoiceMessagePlayer";
 import {
   containsSensitiveTopic,
@@ -682,20 +682,7 @@ export default function AssistantScreen({ navigation, route }: MainTabScreenProp
                   <Animated.View entering={FadeIn.duration(300)} style={styles.loadingContainer}>
                     <Avatar size={28} isNathIA={true} style={styles.messageAvatar} />
                     <View style={[styles.loadingBubble, { backgroundColor: THEME.aiBubble }]}>
-                      <View style={styles.loadingDots}>
-                        <Animated.View
-                          entering={FadeIn.delay(0).duration(400)}
-                          style={[styles.loadingDot, { backgroundColor: THEME.primary }]}
-                        />
-                        <Animated.View
-                          entering={FadeIn.delay(150).duration(400)}
-                          style={[styles.loadingDot, { backgroundColor: THEME.primaryLight }]}
-                        />
-                        <Animated.View
-                          entering={FadeIn.delay(300).duration(400)}
-                          style={[styles.loadingDot, { backgroundColor: THEME.border }]}
-                        />
-                      </View>
+                      <LoadingDots variant="primary" size="md" />
                     </View>
                   </Animated.View>
                 ) : null
@@ -962,16 +949,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     paddingVertical: 16,
     ...SHADOWS.sm,
-  },
-  loadingDots: {
-    flexDirection: "row",
-    alignItems: "center",
-  },
-  loadingDot: {
-    width: 8,
-    height: 8,
-    borderRadius: 4,
-    marginHorizontal: 2,
   },
 
   // Empty State

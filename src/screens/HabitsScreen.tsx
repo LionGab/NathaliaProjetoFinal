@@ -19,9 +19,10 @@ import Animated, {
 } from "react-native-reanimated";
 import { useHabitsStore, Habit } from "../state/store";
 import * as Haptics from "expo-haptics";
+import { Card } from "../components/ui";
 import { useTheme } from "../hooks/useTheme";
 import { IconName } from "../types/icons";
-import { COLORS, SPACING, RADIUS } from "../theme/design-system";
+import { COLORS, SPACING, RADIUS, ACCESSIBILITY } from "../theme/design-system";
 
 // Microtextos de validação após marcar cada cuidado
 const FEEDBACK_MESSAGES: Record<string, string> = {
@@ -149,12 +150,12 @@ export default function HabitsScreen() {
                 </Text>
               </View>
 
-              {/* Checkbox - 44pt min tap target (iOS HIG) */}
+              {/* Checkbox - Using ACCESSIBILITY.minTapTarget for iOS HIG compliance */}
               <View
                 style={{
-                  width: 44,
-                  height: 44,
-                  borderRadius: 22,
+                  width: ACCESSIBILITY.minTapTarget,
+                  height: ACCESSIBILITY.minTapTarget,
+                  borderRadius: ACCESSIBILITY.minTapTarget / 2,
                   alignItems: "center",
                   justifyContent: "center",
                   backgroundColor: habit.completed ? habit.color : "transparent",
@@ -244,7 +245,7 @@ export default function HabitsScreen() {
           </Animated.View>
         )}
 
-        {/* Validation Message */}
+        {/* Validation Message - Using Card component */}
         <Animated.View
           entering={FadeIn.delay(200).duration(500)}
           style={{
@@ -253,15 +254,7 @@ export default function HabitsScreen() {
             marginBottom: SPACING.lg,
           }}
         >
-          <View
-            style={{
-              backgroundColor: bgCard,
-              borderRadius: RADIUS.xl,
-              padding: SPACING.lg,
-              borderWidth: 1,
-              borderColor: borderColor,
-            }}
-          >
+          <Card variant="outlined" padding="lg" radius="xl">
             <View style={{ flexDirection: "row", alignItems: "center" }}>
               <Text style={{ fontSize: 20, marginRight: SPACING.sm }}>
                 {completedCount === 0 ? "🌙" : completedCount >= habits.length ? "🌟" : "💫"}
@@ -282,7 +275,7 @@ export default function HabitsScreen() {
                   : "Um cuidado já é movimento. Você está presente."}
               </Text>
             </View>
-          </View>
+          </Card>
         </Animated.View>
 
         {/* Habits List (flat, no categories) */}
@@ -290,7 +283,7 @@ export default function HabitsScreen() {
           {habits.map((habit, index) => renderHabitCard(habit, index))}
         </View>
 
-        {/* Fixed Footer Quote */}
+        {/* Fixed Footer Quote - Using Card component */}
         <Animated.View
           entering={FadeInUp.delay(500).duration(600).springify()}
           style={{
@@ -298,29 +291,22 @@ export default function HabitsScreen() {
             marginTop: SPACING.xl,
           }}
         >
-          <View
-            style={{
-              backgroundColor: isDark ? colors.neutral[800] : COLORS.primary[50],
-              borderRadius: RADIUS.xl,
-              padding: SPACING.xl,
-              alignItems: "center",
-              borderWidth: 1,
-              borderColor: isDark ? colors.neutral[700] : COLORS.primary[100],
-            }}
-          >
-            <Text style={{ fontSize: 24, marginBottom: SPACING.sm }}>💕</Text>
-            <Text
-              style={{
-                fontSize: 15,
-                color: textSecondary,
-                textAlign: "center",
-                lineHeight: 22,
-                fontFamily: "Manrope_500Medium",
-              }}
-            >
-              Cuidar de você não precisa ser perfeito.{"\n"}Precisa ser possível.
-            </Text>
-          </View>
+          <Card variant="soft" padding="lg" radius="xl">
+            <View style={{ alignItems: "center" }}>
+              <Text style={{ fontSize: 24, marginBottom: SPACING.sm }}>💕</Text>
+              <Text
+                style={{
+                  fontSize: 15,
+                  color: textSecondary,
+                  textAlign: "center",
+                  lineHeight: 22,
+                  fontFamily: "Manrope_500Medium",
+                }}
+              >
+                Cuidar de você não precisa ser perfeito.{"\n"}Precisa ser possível.
+              </Text>
+            </View>
+          </Card>
         </Animated.View>
       </ScrollView>
     </View>

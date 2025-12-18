@@ -5,7 +5,7 @@
  * Posts são enviados para revisão antes de serem publicados
  * Suporta: texto, imagem, vídeo
  *
- * Design: Calm FemTech
+ * Design: Calm FemTech - Design System 2025
  */
 
 import { Ionicons } from "@expo/vector-icons";
@@ -13,18 +13,18 @@ import React from "react";
 import {
   FlatList,
   Image,
-  Pressable,
   StyleSheet,
   Text,
   TextInput,
   View,
 } from "react-native";
-import Animated, { FadeIn, FadeInDown, FadeInUp } from "react-native-reanimated";
+import Animated, { FadeIn } from "react-native-reanimated";
 import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context";
 import { ComposerCard, NewPostModal, PostCard } from "../components/community";
+import { FAB, ScreenHeader } from "../components/ui";
 import { useCommunity } from "../hooks/useCommunity";
 import { useTheme } from "../hooks/useTheme";
-import { COLORS, RADIUS, SHADOWS, SPACING } from "../theme/design-system";
+import { COLORS, RADIUS, SPACING } from "../theme/design-system";
 import type { MainTabScreenProps } from "../types/navigation";
 
 // Logo Comunidade Mães Valente
@@ -32,7 +32,7 @@ const MAES_VALENTE_LOGO_URL = "https://i.imgur.com/U5ttbqK.jpg";
 
 export default function CommunityScreen({ navigation }: MainTabScreenProps<"Community">) {
   const insets = useSafeAreaInsets();
-  const { colors, isDark, spacing, brand } = useTheme();
+  const { colors, isDark, spacing } = useTheme();
 
   // Hook com toda a lógica
   const community = useCommunity(navigation);
@@ -47,81 +47,50 @@ export default function CommunityScreen({ navigation }: MainTabScreenProps<"Comm
   return (
     <SafeAreaView style={[styles.safeArea, { backgroundColor: bgPrimary }]} edges={["top"]}>
       <View style={[styles.container, { backgroundColor: bgPrimary }]}>
-        {/* Header */}
-        <Animated.View
-          entering={FadeInDown.duration(500).springify()}
-          style={[styles.header, { paddingHorizontal: spacing.xl }]}
-        >
-          <View style={styles.headerRow}>
-            <View style={styles.headerTitle}>
-              <View
-                style={{
-                  width: 32,
-                  height: 32,
-                  borderRadius: 16,
-                  overflow: "hidden",
-                  marginRight: 8,
-                }}
-              >
-                <Image
-                  source={{ uri: MAES_VALENTE_LOGO_URL }}
-                  style={{
-                    width: 32,
-                    height: 32,
-                  }}
-                />
-              </View>
-              <Text style={[styles.title, { color: textMain }]}>Mães Valente</Text>
-            </View>
+        {/* Header - Using ScreenHeader component */}
+        <ScreenHeader
+          title="Mães Valente"
+          subtitle="Comunidade de apoio e inspiração"
+          logo={
+            <Image
+              source={{ uri: MAES_VALENTE_LOGO_URL }}
+              style={{ width: 32, height: 32 }}
+            />
+          }
+          rightActions={[
+            {
+              icon: community.isSearchVisible ? "close" : "search",
+              onPress: community.handleSearchToggle,
+              label: community.isSearchVisible ? "Fechar busca" : "Buscar posts",
+            },
+          ]}
+        />
 
-            <Pressable
-              onPress={community.handleSearchToggle}
-              style={({ pressed }) => [
-                styles.searchButton,
-                {
-                  backgroundColor: isDark ? colors.neutral[800] : colors.primary[50],
-                  borderColor: isDark ? colors.neutral[700] : colors.primary[100],
-                  opacity: pressed ? 0.8 : 1,
-                  transform: [{ scale: pressed ? 0.95 : 1 }],
-                },
-              ]}
-            >
-              <Ionicons
-                name={community.isSearchVisible ? "close" : "search"}
-                size={20}
-                color={isDark ? colors.primary[300] : colors.primary[500]}
-              />
-            </Pressable>
-          </View>
-
-          <Text style={[styles.subtitle, { color: textMuted }]}>
-            Comunidade de apoio e inspiração
-          </Text>
-
-          {/* Search Input */}
-          {community.isSearchVisible && (
-            <Animated.View
-              entering={FadeIn.duration(200)}
-              style={[
-                styles.searchInput,
-                {
-                  backgroundColor: isDark ? colors.neutral[800] : COLORS.neutral[0],
-                  borderColor,
-                },
-              ]}
-            >
-              <Ionicons name="search" size={18} color={textSecondary} />
-              <TextInput
-                value={community.searchQuery}
-                onChangeText={community.setSearchQuery}
-                placeholder="Buscar posts..."
-                placeholderTextColor={textSecondary}
-                autoFocus
-                style={[styles.searchTextInput, { color: textMain }]}
-              />
-            </Animated.View>
-          )}
-        </Animated.View>
+        {/* Search Input */}
+        {community.isSearchVisible && (
+          <Animated.View
+            entering={FadeIn.duration(200)}
+            style={[
+              styles.searchInput,
+              {
+                backgroundColor: isDark ? colors.neutral[800] : COLORS.neutral[0],
+                borderColor,
+                marginHorizontal: spacing.xl,
+                marginBottom: SPACING.md,
+              },
+            ]}
+          >
+            <Ionicons name="search" size={18} color={textSecondary} />
+            <TextInput
+              value={community.searchQuery}
+              onChangeText={community.setSearchQuery}
+              placeholder="Buscar posts..."
+              placeholderTextColor={textSecondary}
+              autoFocus
+              style={[styles.searchTextInput, { color: textMain }]}
+            />
+          </Animated.View>
+        )}
 
         {/* Feed */}
         <FlatList
@@ -164,25 +133,16 @@ export default function CommunityScreen({ navigation }: MainTabScreenProps<"Comm
           removeClippedSubviews={true}
         />
 
-        {/* FAB */}
-        <Animated.View
-          entering={FadeInUp.delay(300).duration(400)}
-          style={[styles.fabContainer, { bottom: insets.bottom + SPACING.xl }]}
-        >
-          <Pressable
+        {/* FAB - Using FAB component */}
+        <View style={[styles.fabContainer, { bottom: insets.bottom + SPACING.xl }]}>
+          <FAB
+            icon="add"
             onPress={community.openNewPostModal}
-            style={({ pressed }) => [
-              styles.fab,
-              {
-                backgroundColor: isDark ? brand.accent[500] : brand.accent[400],
-                opacity: pressed ? 0.9 : 1,
-                transform: [{ scale: pressed ? 0.92 : 1 }],
-              },
-            ]}
-          >
-            <Ionicons name="add" size={28} color={colors.neutral[900]} />
-          </Pressable>
-        </Animated.View>
+            variant="accent"
+            size="md"
+            accessibilityLabel="Criar novo post"
+          />
+        </View>
 
         {/* Modal */}
         <NewPostModal
@@ -202,48 +162,12 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
-  header: {
-    paddingTop: SPACING.lg,
-    paddingBottom: SPACING.lg,
-  },
-  headerRow: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-  },
-  headerTitle: {
-    flexDirection: "row",
-    alignItems: "center",
-    marginBottom: 4,
-  },
-  headerEmoji: {
-    fontSize: 22,
-    marginRight: 8,
-  },
-  title: {
-    fontSize: 22,
-    fontWeight: "700",
-    fontFamily: "Manrope_700Bold",
-  },
-  subtitle: {
-    fontSize: 14,
-    fontFamily: "Manrope_500Medium",
-  },
-  searchButton: {
-    width: 44,
-    height: 44,
-    borderRadius: 22,
-    alignItems: "center",
-    justifyContent: "center",
-    borderWidth: 1,
-  },
   searchInput: {
     flexDirection: "row",
     alignItems: "center",
     borderRadius: RADIUS.lg,
     paddingHorizontal: SPACING.md,
     paddingVertical: SPACING.sm,
-    marginTop: SPACING.md,
     borderWidth: 1,
   },
   searchTextInput: {
@@ -275,13 +199,5 @@ const styles = StyleSheet.create({
   fabContainer: {
     position: "absolute",
     right: SPACING.xl,
-  },
-  fab: {
-    width: 58,
-    height: 58,
-    borderRadius: 29,
-    alignItems: "center",
-    justifyContent: "center",
-    ...SHADOWS.lg,
   },
 });

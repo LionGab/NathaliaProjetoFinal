@@ -35,7 +35,7 @@ import { MainTabScreenProps } from "../types/navigation";
 
 // Componentes da Home
 import { EmotionalCheckInPrimary, HealthInsightCard } from "../components/home";
-import { RowCard } from "../components/ui";
+import { Avatar, AVATAR_SIZES, RowCard } from "../components/ui";
 
 // Configuração de conteúdo da Nathalia
 
@@ -176,7 +176,7 @@ export default function HomeScreen({ navigation }: MainTabScreenProps<"Home">): 
             )}
           </View>
 
-          {/* Avatar */}
+          {/* Avatar - Using Avatar component with standardized sizes */}
           <Pressable
             onPress={handleAvatarPress}
             accessibilityLabel="Ir para perfil"
@@ -186,40 +186,19 @@ export default function HomeScreen({ navigation }: MainTabScreenProps<"Home">): 
           >
             <View
               style={{
-                height: getResponsiveValue(screenWidth, 44, 1),
-                width: getResponsiveValue(screenWidth, 44, 1),
                 borderRadius: 999,
                 borderWidth: 2,
                 borderColor: isDark ? colors.neutral[700] : colors.neutral[200],
-                overflow: "hidden",
                 ...shadows.sm,
               }}
             >
-              {userAvatar ? (
-                <Image
-                  source={{ uri: userAvatar }}
-                  style={{ height: "100%", width: "100%" }}
-                  contentFit="cover"
-                  transition={200}
-                  placeholder={{ blurhash: "LKO2?U%2Tw=w]~RBVZRi};RPxuwH" }}
-                />
-              ) : (
-                <View
-                  style={{
-                    height: "100%",
-                    width: "100%",
-                    backgroundColor: colors.primary[500],
-                    alignItems: "center",
-                    justifyContent: "center",
-                  }}
-                >
-                  <Ionicons
-                    name="person"
-                    size={22}
-                    color={colors.text.inverse || colors.neutral[0]}
-                  />
-                </View>
-              )}
+              <Avatar
+                size={AVATAR_SIZES.md}
+                source={userAvatar ? { uri: userAvatar } : null}
+                fallbackIcon="person"
+                fallbackBgColor={colors.primary[500]}
+                fallbackColor={colors.text.inverse || colors.neutral[0]}
+              />
             </View>
           </Pressable>
         </Animated.View>

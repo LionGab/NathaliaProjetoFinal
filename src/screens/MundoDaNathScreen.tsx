@@ -39,7 +39,7 @@ import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context"
 import { GESTACAO_POST, MAES_VALENTE_REEL, PARTO_REEL } from "../config/nath-content";
 import { useAdmin } from "../hooks/useAdmin";
 import { useTheme } from "../hooks/useTheme";
-import { COLORS, GRADIENTS, RADIUS, SPACING } from "../theme/design-system";
+import { COLORS, GRADIENTS, OVERLAY, RADIUS, SHADOWS, SPACING } from "../theme/design-system";
 import { RootStackScreenProps } from "../types/navigation";
 
 // URL da foto da Nathalia Valente
@@ -453,7 +453,7 @@ const PostCard: React.FC<{
                   bottom: 0,
                   alignItems: "center",
                   justifyContent: "center",
-                  backgroundColor: "rgba(0,0,0,0.2)",
+                  backgroundColor: OVERLAY.backdropLight,
                 }}
               >
                 <View
@@ -461,14 +461,10 @@ const PostCard: React.FC<{
                     width: 56,
                     height: 56,
                     borderRadius: 28,
-                    backgroundColor: "rgba(255,255,255,0.95)",
+                    backgroundColor: OVERLAY.light,
                     alignItems: "center",
                     justifyContent: "center",
-                    shadowColor: "#000",
-                    shadowOffset: { width: 0, height: 4 },
-                    shadowOpacity: 0.3,
-                    shadowRadius: 8,
-                    elevation: 8,
+                    ...SHADOWS.lg,
                   }}
                 >
                   <Ionicons
@@ -489,7 +485,7 @@ const PostCard: React.FC<{
                   right: SPACING.sm,
                   flexDirection: "row",
                   alignItems: "center",
-                  backgroundColor: "rgba(0,0,0,0.7)",
+                  backgroundColor: OVERLAY.scrim,
                   paddingHorizontal: SPACING.sm,
                   paddingVertical: 4,
                   borderRadius: RADIUS.full,
@@ -761,7 +757,7 @@ const NewPostModal: React.FC<{
                   position: "absolute",
                   top: SPACING.sm,
                   right: SPACING.sm,
-                  backgroundColor: "rgba(0,0,0,0.6)",
+                  backgroundColor: OVERLAY.scrim,
                   borderRadius: RADIUS.full,
                   padding: SPACING.sm,
                 }}
