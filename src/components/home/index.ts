@@ -7,3 +7,4 @@ export { EmotionalCheckInPrimary } from "./EmotionalCheckInPrimary";
 export { NathiaAdviceCard } from "./NathiaAdviceCard";
 export { QuickActionsBar } from "./QuickActionsBar";
 export { BelongingCard } from "./BelongingCard";
+export { HealthInsightCard } from "./HealthInsightCard";

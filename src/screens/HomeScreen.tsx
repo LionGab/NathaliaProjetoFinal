@@ -33,7 +33,7 @@ import { useAppStore } from "../state/store";
 import { MainTabScreenProps } from "../types/navigation";
 
 // Componentes da Home
-import { EmotionalCheckInPrimary } from "../components/home";
+import { EmotionalCheckInPrimary, HealthInsightCard } from "../components/home";
 import { RowCard } from "../components/ui";
 
 // Foto da Nathalia - balanço com bebê (maternal, calma, luz natural)
@@ -329,6 +329,9 @@ export default function HomeScreen({ navigation }: MainTabScreenProps<"Home">): 
           <Animated.View entering={FadeInUp.delay(100).duration(500).springify()}>
             <EmotionalCheckInPrimary />
           </Animated.View>
+
+          {/* HEALTH INSIGHTS - Smart alerts baseados em dados */}
+          <HealthInsightCard />
 
           {/* CTA Rosa - Premium (accent[400], texto navy, sombra mínima) */}
           <Animated.View entering={FadeInUp.delay(150).duration(500).springify()}>
