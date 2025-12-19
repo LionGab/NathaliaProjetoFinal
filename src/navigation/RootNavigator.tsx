@@ -1,10 +1,11 @@
 /**
  * Nossa Maternidade - Root Navigator
- * 4-stage authentication flow:
+ * 5-stage authentication flow:
  * 1. !isAuthenticated → LoginScreen
  * 2. !notificationSetup → NotificationPermissionScreen
- * 3. !nathIAOnboardingComplete → NathIAOnboardingScreen
- * 4. Authenticated → MainTabs + Modal Screens
+ * 3. !isOnboardingComplete → OnboardingScreen (name, stage, interests)
+ * 4. !nathIAOnboardingComplete → NathIAOnboardingScreen (AI personalization)
+ * 5. Authenticated → MainTabs + Modal Screens
  */
 
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
@@ -17,6 +18,7 @@ import { RootStackParamList } from "../types/navigation";
 
 // Auth & Onboarding Screens
 import LoginScreen from "../screens/LoginScreen";
+import OnboardingScreen from "../screens/OnboardingScreen";
 import NathIAOnboardingScreen from "../screens/NathIAOnboardingScreen";
 import NotificationPermissionScreen from "../screens/NotificationPermissionScreen";
 
@@ -48,7 +50,6 @@ export default function RootNavigator() {
   // App state
   const isAuthenticated = useAppStore((s) => s.isAuthenticated);
   const isOnboardingComplete = useAppStore((s) => s.isOnboardingComplete);
-  void isOnboardingComplete;
 
   // NathIA onboarding state
   const isNathIAOnboardingComplete = useNathIAOnboardingStore((s) => s.isComplete);
@@ -78,12 +79,15 @@ export default function RootNavigator() {
   }
 
   // Determine which screen to show based on auth state
-  // Flow: Login → NotificationPermission → NathIAOnboarding → MainApp
+  // Flow: Login → NotificationPermission → Onboarding → NathIAOnboarding → MainApp
   const shouldShowLogin = !isAuthenticated;
   const shouldShowNotificationPermission = isAuthenticated && !notificationSetupDone;
+  const shouldShowOnboarding =
+    isAuthenticated && notificationSetupDone && !isOnboardingComplete;
   const shouldShowNathIAOnboarding =
-    isAuthenticated && notificationSetupDone && !isNathIAOnboardingComplete;
-  const shouldShowMainApp = isAuthenticated && notificationSetupDone && isNathIAOnboardingComplete;
+    isAuthenticated && notificationSetupDone && isOnboardingComplete && !isNathIAOnboardingComplete;
+  const shouldShowMainApp =
+    isAuthenticated && notificationSetupDone && isOnboardingComplete && isNathIAOnboardingComplete;
 
   return (
     <Stack.Navigator
@@ -107,7 +111,16 @@ export default function RootNavigator() {
         />
       )}
 
-      {/* Stage 3: NathIA Onboarding */}
+      {/* Stage 3: Main Onboarding (name, stage, interests) */}
+      {shouldShowOnboarding && (
+        <Stack.Screen
+          name="Onboarding"
+          component={OnboardingScreen}
+          options={{ animation: "fade" }}
+        />
+      )}
+
+      {/* Stage 4: NathIA Onboarding (AI personalization) */}
       {shouldShowNathIAOnboarding && (
         <Stack.Screen
           name="NathIAOnboarding"
@@ -116,7 +129,7 @@ export default function RootNavigator() {
         />
       )}
 
-      {/* Stage 4: Main App */}
+      {/* Stage 5: Main App */}
       {shouldShowMainApp && (
         <>
           <Stack.Screen name="MainTabs" component={MainTabNavigator} />

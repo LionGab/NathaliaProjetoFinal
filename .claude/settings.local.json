@@ -1,6 +1,5 @@
 {
   "permissions": {
-    "defaultMode": "bypassPermissions",
     "allow": [
       "Bash",
       "Read",
@@ -13,8 +12,10 @@
       "Task",
       "TodoWrite",
       "NotebookEdit",
-      "mcp__*"
+      "mcp__*",
+      "mcp__github__get_issue"
     ],
-    "deny": []
+    "deny": [],
+    "defaultMode": "bypassPermissions"
   }
 }

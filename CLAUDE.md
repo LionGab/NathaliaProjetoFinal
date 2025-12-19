@@ -40,9 +40,12 @@ npm run check-build-ready  # Verify app is ready for build
 ### Navigation Structure
 
 ```
-RootNavigator (Native Stack)
-├── OnboardingScreen (9 steps, shown if !onboardingComplete)
-└── MainTabs (Bottom Tab Navigator)
+RootNavigator (Native Stack) - 5-stage auth flow:
+├── 1. LoginScreen (if !isAuthenticated)
+├── 2. NotificationPermissionScreen (if !notificationSetupDone)
+├── 3. OnboardingScreen (6 steps: welcome, name, stage, date, interests, complete)
+├── 4. NathIAOnboardingScreen (5 steps: AI personalization)
+└── 5. MainTabs (Bottom Tab Navigator)
     ├── Home         → HomeScreen
     ├── Ciclo        → CycleTrackerScreen
     ├── NathIA       → AssistantScreen (AI chat)
