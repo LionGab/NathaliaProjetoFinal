@@ -36,6 +36,13 @@ import { useAppStore } from "../state/store";
 import * as Haptics from "expo-haptics";
 import { signIn, signUp, getSession, resetPassword } from "../api/auth";
 import {
+  signInWithGoogle,
+  signInWithApple,
+  signInWithFacebook,
+  isAppleSignInAvailable,
+  type SocialProvider,
+} from "../api/social-auth";
+import {
   UserProfile,
   PregnancyStage,
   Interest,
@@ -114,68 +121,6 @@ const LogoCircle = () => {
           accessibilityLabel="Logo Nossa Maternidade"
         />
       </View>
-    </Animated.View>
-  );
-};
-
-// Componente de Botão Social Login
-const SocialLoginButton = ({
-  platform,
-  onPress,
-  icon,
-  iconColor,
-  bgColor,
-}: {
-  platform: "apple" | "google" | "facebook";
-  onPress: () => void;
-  icon: keyof typeof Ionicons.glyphMap;
-  iconColor?: string;
-  bgColor?: string;
-}) => {
-  const scale = useSharedValue(1);
-
-  const animatedStyle = useAnimatedStyle(() => ({
-    transform: [{ scale: scale.value }],
-  }));
-
-  const handlePress = () => {
-    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-    scale.value = withSpring(0.95);
-    setTimeout(() => {
-      scale.value = withSpring(1);
-    }, 100);
-    onPress();
-  };
-
-  const platformLabels = {
-    google: "Google",
-    facebook: "Facebook",
-    apple: "Apple",
-  };
-
-  return (
-    <Animated.View style={animatedStyle}>
-      <Pressable
-        onPress={handlePress}
-        style={{
-          width: 56,
-          height: 56,
-          borderRadius: 16,
-          borderWidth: 1,
-          borderColor: MOCKUP_COLORS.inputBorder,
-          alignItems: "center",
-          justifyContent: "center",
-          backgroundColor: bgColor || "#FFFFFF",
-        }}
-        accessibilityLabel={`Login com ${platformLabels[platform]}`}
-        accessibilityRole="button"
-      >
-        <Ionicons
-          name={icon}
-          size={24}
-          color={iconColor || COLORS.neutral[600]}
-        />
-      </Pressable>
     </Animated.View>
   );
 };
@@ -445,6 +390,8 @@ export default function LoginScreen({ navigation }: Props) {
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [biometricAvailable, setBiometricAvailable] = useState(false);
+  const [appleSignInAvailable, setAppleSignInAvailable] = useState(true);
+  const [socialLoading, setSocialLoading] = useState<SocialProvider | null>(null);
   const [errors, setErrors] = useState({ email: "", password: "", name: "", confirmPassword: "" });
   const [alertConfig, setAlertConfig] = useState({
     visible: false,
@@ -455,7 +402,7 @@ export default function LoginScreen({ navigation }: Props) {
   const setAuthenticated = useAppStore((s) => s.setAuthenticated);
   const setUser = useAppStore((s) => s.setUser);
 
-  // Verificar disponibilidade de biometric
+  // Verificar disponibilidade de biometric e Apple Sign In
   useEffect(() => {
     const checkBiometric = async () => {
       try {
@@ -466,7 +413,14 @@ export default function LoginScreen({ navigation }: Props) {
         setBiometricAvailable(false);
       }
     };
+
+    const checkAppleSignIn = async () => {
+      const available = await isAppleSignInAvailable();
+      setAppleSignInAvailable(available);
+    };
+
     checkBiometric();
+    checkAppleSignIn();
   }, []);
 
   // Validações
@@ -559,18 +513,67 @@ export default function LoginScreen({ navigation }: Props) {
     }
   };
 
-  // Social Login
-  const handleSocialLogin = async (provider: "apple" | "google" | "facebook") => {
+  // Social Login - Integração real com Google, Apple e Facebook
+  const handleSocialLogin = async (provider: SocialProvider) => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-    const providerNames = {
-      apple: "Apple",
-      google: "Google",
-      facebook: "Facebook",
-    };
-    showAlert(
-      "Em breve",
-      `Login com ${providerNames[provider]} estará disponível em breve. Por enquanto, use email e senha.`
-    );
+
+    // Evitar múltiplos cliques
+    if (socialLoading || isLoading) return;
+
+    setSocialLoading(provider);
+
+    try {
+      let result;
+
+      switch (provider) {
+        case "google":
+          result = await signInWithGoogle();
+          break;
+        case "apple":
+          result = await signInWithApple();
+          break;
+        case "facebook":
+          result = await signInWithFacebook();
+          break;
+      }
+
+      if (result.success && result.user) {
+        // Criar perfil do usuário
+        const userProfile: UserProfile = {
+          id: result.user.id,
+          name: result.user.name || "Usuária",
+          email: result.user.email,
+          avatarUrl: result.user.avatarUrl || "",
+          stage: "pregnant" as PregnancyStage,
+          dueDate: undefined,
+          interests: [] as Interest[],
+          createdAt: new Date().toISOString(),
+          hasCompletedOnboarding: false,
+        };
+
+        setUser(userProfile);
+        setAuthenticated(true);
+        Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+      } else if (result.error) {
+        // Não mostrar alert se foi cancelamento do usuário
+        if (result.error !== "Login cancelado") {
+          const providerNames = {
+            apple: "Apple",
+            google: "Google",
+            facebook: "Facebook",
+          };
+          showAlert(
+            `Erro no login com ${providerNames[provider]}`,
+            result.error
+          );
+        }
+      }
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : "Erro desconhecido";
+      showAlert("Erro", errorMessage);
+    } finally {
+      setSocialLoading(null);
+    }
   };
 
   const buttonScale = useSharedValue(1);
@@ -928,56 +931,121 @@ export default function LoginScreen({ navigation }: Props) {
                 <View style={{ flex: 1, height: 1, backgroundColor: MOCKUP_COLORS.inputBorder }} />
               </View>
 
-              {/* Social Login - Google, Facebook, Apple */}
-              <View
-                style={{
-                  flexDirection: "row",
-                  justifyContent: "center",
-                  gap: SPACING.lg,
-                  marginBottom: SPACING.xl,
-                }}
-              >
-                {/* Google - com imagem personalizada */}
-                <Animated.View>
+              {/* Social Login - Design inspirado em Flo, Clue, Ovia */}
+              {/* Botões completos com texto para melhor UX */}
+              <View style={{ gap: SPACING.md, marginBottom: SPACING.xl }}>
+                {/* Apple - Primeira opção no iOS (Apple HIG) */}
+                {appleSignInAvailable && (
+                  <Animated.View entering={FadeInDown.duration(400).delay(100)}>
+                    <Pressable
+                      onPress={() => handleSocialLogin("apple")}
+                      disabled={socialLoading !== null || isLoading}
+                      style={({ pressed }) => ({
+                        flexDirection: "row",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        backgroundColor: pressed ? "#1a1a1a" : "#000000",
+                        borderRadius: RADIUS.xl,
+                        height: 52,
+                        gap: SPACING.sm,
+                        opacity: socialLoading === "apple" ? 0.7 : 1,
+                      })}
+                      accessibilityLabel="Continuar com Apple"
+                      accessibilityRole="button"
+                    >
+                      {socialLoading === "apple" ? (
+                        <Ionicons name="sync-outline" size={20} color="#FFFFFF" />
+                      ) : (
+                        <Ionicons name="logo-apple" size={20} color="#FFFFFF" />
+                      )}
+                      <Text
+                        style={{
+                          color: "#FFFFFF",
+                          fontSize: 16,
+                          fontWeight: "600",
+                        }}
+                      >
+                        {socialLoading === "apple" ? "Conectando..." : "Continuar com Apple"}
+                      </Text>
+                    </Pressable>
+                  </Animated.View>
+                )}
+
+                {/* Google - Segunda opção, popular em Android */}
+                <Animated.View entering={FadeInDown.duration(400).delay(200)}>
                   <Pressable
                     onPress={() => handleSocialLogin("google")}
-                    style={{
-                      width: 56,
-                      height: 56,
-                      borderRadius: 16,
-                      borderWidth: 1,
-                      borderColor: MOCKUP_COLORS.inputBorder,
+                    disabled={socialLoading !== null || isLoading}
+                    style={({ pressed }) => ({
+                      flexDirection: "row",
                       alignItems: "center",
                       justifyContent: "center",
-                      backgroundColor: "#FFFFFF",
-                      overflow: "hidden",
-                    }}
-                    accessibilityLabel="Login com Google"
+                      backgroundColor: pressed ? "#f5f5f5" : "#FFFFFF",
+                      borderRadius: RADIUS.xl,
+                      height: 52,
+                      gap: SPACING.sm,
+                      borderWidth: 1,
+                      borderColor: MOCKUP_COLORS.inputBorder,
+                      opacity: socialLoading === "google" ? 0.7 : 1,
+                    })}
+                    accessibilityLabel="Continuar com Google"
                     accessibilityRole="button"
                   >
-                    <Image
-                      source={GOOGLE_LOGO}
+                    {socialLoading === "google" ? (
+                      <Ionicons name="sync-outline" size={20} color={MOCKUP_COLORS.text} />
+                    ) : (
+                      <Image
+                        source={GOOGLE_LOGO}
+                        style={{ width: 20, height: 20 }}
+                        resizeMode="contain"
+                      />
+                    )}
+                    <Text
                       style={{
-                        width: 28,
-                        height: 28,
+                        color: MOCKUP_COLORS.text,
+                        fontSize: 16,
+                        fontWeight: "600",
                       }}
-                      resizeMode="contain"
-                    />
+                    >
+                      {socialLoading === "google" ? "Conectando..." : "Continuar com Google"}
+                    </Text>
                   </Pressable>
                 </Animated.View>
 
-                <SocialLoginButton
-                  platform="facebook"
-                  icon="logo-facebook"
-                  iconColor="#1877F2"
-                  onPress={() => handleSocialLogin("facebook")}
-                />
-                <SocialLoginButton
-                  platform="apple"
-                  icon="logo-apple"
-                  iconColor="#000000"
-                  onPress={() => handleSocialLogin("apple")}
-                />
+                {/* Facebook - Terceira opção */}
+                <Animated.View entering={FadeInDown.duration(400).delay(300)}>
+                  <Pressable
+                    onPress={() => handleSocialLogin("facebook")}
+                    disabled={socialLoading !== null || isLoading}
+                    style={({ pressed }) => ({
+                      flexDirection: "row",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      backgroundColor: pressed ? "#166FE5" : "#1877F2",
+                      borderRadius: RADIUS.xl,
+                      height: 52,
+                      gap: SPACING.sm,
+                      opacity: socialLoading === "facebook" ? 0.7 : 1,
+                    })}
+                    accessibilityLabel="Continuar com Facebook"
+                    accessibilityRole="button"
+                  >
+                    {socialLoading === "facebook" ? (
+                      <Ionicons name="sync-outline" size={20} color="#FFFFFF" />
+                    ) : (
+                      <Ionicons name="logo-facebook" size={20} color="#FFFFFF" />
+                    )}
+                    <Text
+                      style={{
+                        color: "#FFFFFF",
+                        fontSize: 16,
+                        fontWeight: "600",
+                      }}
+                    >
+                      {socialLoading === "facebook" ? "Conectando..." : "Continuar com Facebook"}
+                    </Text>
+                  </Pressable>
+                </Animated.View>
               </View>
 
               {/* Biometric Login */}

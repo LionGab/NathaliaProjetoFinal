@@ -28,6 +28,7 @@
       "buildNumber": "1",
       "icon": "./assets/icon.png",
       "requireFullScreen": false,
+      "usesAppleSignIn": true,
       "infoPlist": {
         "NSMicrophoneUsageDescription": "Precisamos acessar o microfone para você poder gravar mensagens de áudio para a IA e participar de videochamadas.",
         "NSCameraUsageDescription": "Precisamos acessar a câmera para você tirar fotos e compartilhar momentos especiais.",
@@ -113,6 +114,7 @@
       "expo-secure-store",
       "expo-font",
       "expo-localization",
+      "expo-apple-authentication",
       [
         "expo-image-picker",
         {

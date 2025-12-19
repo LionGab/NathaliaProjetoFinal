@@ -56,13 +56,20 @@ export default function RootNavigator() {
   // Notification permission state
   const [notificationSetupDone, setNotificationSetupDone] = useState<boolean | null>(null);
 
-  // Check notification permission status on mount
+  // Check notification permission status on mount and poll for changes
   useEffect(() => {
     const checkNotificationSetup = async () => {
       const hasAsked = await hasAskedNotificationPermission();
       setNotificationSetupDone(hasAsked);
     };
+
+    // Initial check
     checkNotificationSetup();
+
+    // Poll every 500ms to detect changes (workaround for web)
+    const interval = setInterval(checkNotificationSetup, 500);
+
+    return () => clearInterval(interval);
   }, []);
 
   // Loading state while checking notification permission
