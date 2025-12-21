@@ -176,11 +176,12 @@ const { user, setUser } = useAppStore((s) => ({ user: s.user, setUser: s.setUser
 
 #### Design System
 - **Current system**: Design System 2025 (Apple HIG + Material Design 3)
-- **Primary colors**:
-  - Primary: `#f4258c` (vibrant pink)
-  - Secondary: `#A855F7` (lilac/purple)
-  - Background: `#f8f5f7` (soft pink-white)
-  - Text Dark: `#1C1917` (warm gray 900)
+- **Color philosophy**: Clean FemTech with blue as primary identity color
+- **Use design tokens**: Always import from `src/theme/design-system.ts`
+  - Primary: `COLORS.primary` (blue #7DB9D5 - calmness and maternal care)
+  - Accent: `COLORS.accent` (pink #F4258C - CTAs only, restricted use)
+  - Background: `COLORS.background.primary` (neutral cool #F7FBFD)
+  - Text: `COLORS.text.primary`, `COLORS.text.secondary`, `COLORS.text.muted`
 
 #### Color System Migration (Important!)
 - **PREFER**: `src/theme/design-system.ts` for all new code
@@ -199,9 +200,9 @@ const { user, setUser } = useAppStore((s) => ({ user: s.user, setUser: s.setUser
 - **Use zeego** for context/dropdown menus
 
 ### Animations & Gestures
-- **Use `react-native-reanimated` v3** - NOT `Animated` from react-native
+- **Use `react-native-reanimated` v4** - NOT `Animated` from react-native
 - **Use `react-native-gesture-handler`** for gestures
-- **Always WebSearch docs** before implementing - training data may be outdated
+- **Check official documentation** for latest API changes - libraries update frequently
 
 ### Safe Area Implementation
 - Tab navigator → no bottom insets needed
@@ -394,8 +395,9 @@ npm run fix:ios      # Fix iOS pods if needed
 - ✅ DO use `logger.*` and custom modals
 
 ### Colors
-- ❌ DON'T hardcode hex colors like `#f4258c`
-- ✅ DO use `COLORS.primary` from `design-system.ts`
+- ❌ DON'T hardcode hex colors like `#7DB9D5` or `#F4258C`
+- ✅ DO use `COLORS.primary[500]` or `COLORS.accent[500]` from `design-system.ts`
+- ✅ DO use semantic tokens like `COLORS.background.primary`, `COLORS.text.primary`
 
 ### State Selectors
 - ❌ DON'T use object destructuring in Zustand selectors
