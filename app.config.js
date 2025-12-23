@@ -154,9 +154,9 @@ module.exports = {
       supabaseUrl: process.env.EXPO_PUBLIC_SUPABASE_URL || "",
       supabaseAnonKey: process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY || "",
       supabaseFunctionsUrl: process.env.EXPO_PUBLIC_SUPABASE_FUNCTIONS_URL || "",
-      geminiApiKey: process.env.EXPO_PUBLIC_GEMINI_API_KEY || "",
-      openaiApiKey: process.env.EXPO_PUBLIC_OPENAI_API_KEY || "",
-      grokApiKey: process.env.EXPO_PUBLIC_GROK_API_KEY || "",
+      // ⚠️ SECURITY: AI API keys (Gemini, OpenAI, Claude, Grok) are NEVER exposed to client
+      // These keys live ONLY in Supabase Edge Functions secrets (configured via supabase secrets set)
+      // Client calls Edge Function /ai which handles provider routing securely
       imgurClientId: process.env.EXPO_PUBLIC_IMGUR_CLIENT_ID || "",
       stripePublishableKey: process.env.EXPO_PUBLIC_STRIPE_PUBLISHABLE_KEY || "",
       oneSignalAppId: process.env.EXPO_PUBLIC_ONESIGNAL_APP_ID || "",
@@ -174,9 +174,9 @@ module.exports = {
       enableAIFeatures: process.env.EXPO_PUBLIC_ENABLE_AI_FEATURES === "true" || false,
       enableGamification: process.env.EXPO_PUBLIC_ENABLE_GAMIFICATION === "true" || false,
       enableAnalytics: process.env.EXPO_PUBLIC_ENABLE_ANALYTICS === "true" || false,
-      // EAS Project ID
+      // EAS Project ID (must match app.json and DEPLOY_STORES.md)
       eas: {
-        projectId: "d22475be-2b7c-41a1-90e5-bfe531524f41",
+        projectId: "ceee9479-e404-47b8-bc37-4f913c18f270",
       },
       backendUrl: process.env.EXPO_PUBLIC_BACKEND_URL || "",
     },
