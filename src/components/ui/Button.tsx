@@ -156,6 +156,7 @@ export function Button({
         bgDisabled: secondary.backgroundDisabled,
         textDisabled: secondary.textDisabled,
         shadow: undefined,
+        borderWidth: 1.5,  // Thicker border for visibility
       },
       // Outline customizável
       outline: {
@@ -166,6 +167,7 @@ export function Button({
         bgDisabled: "transparent",
         textDisabled: neutral[400],
         shadow: undefined,
+        borderWidth: 1.5,  // Thicker border for visibility
       },
       // Sem fundo - Terciário
       ghost: {
@@ -214,7 +216,9 @@ export function Button({
           : pressed
             ? currentVariant.bgPressed
             : currentVariant.bg,
-        borderWidth: currentVariant.border !== "transparent" ? 1.5 : 0,
+        borderWidth: currentVariant.border !== "transparent" 
+          ? (currentVariant.borderWidth || 1.5) 
+          : 0,
         borderColor: currentVariant.border,
         borderRadius: 14,
         paddingVertical: currentSize.paddingVertical,
