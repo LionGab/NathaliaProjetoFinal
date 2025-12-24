@@ -1,0 +1,52 @@
+# Cursor Index Ignore - Otimização de Memória
+# Evita indexação de arquivos/pastas pesados que consomem muita RAM
+
+# Dependencies
+node_modules/
+
+# Build artifacts
+ios/build/
+ios/Pods/
+android/build/
+android/app/build/
+.expo/
+dist/
+web-build/
+
+# Assets pesados (vídeos grandes)
+assets/onboarding/videos/*.mp4
+assets/onboarding/videos/*.part
+
+# Cache e temporários
+.expo/
+.metro-health-check*
+*.log
+*.tmp
+*.bak
+
+# Arquivos de sistema
+.DS_Store
+Thumbs.db
+
+# Arquivos grandes de imagem temporários
+*.jpg_files/
+*_files/
+
+# Screenshots temporários
+assets/*.png
+!assets/icon.png
+!assets/splash.png
+!assets/adaptive-icon.png
+!assets/favicon.png
+!assets/notification-icon.png
+!assets/logo*.png
+
+# Arquivos de backup
+*.backup
+*.orig.*
+
+# Lock files (já versionados, não precisam indexar)
+package-lock.json
+yarn.lock
+bun.lock
+

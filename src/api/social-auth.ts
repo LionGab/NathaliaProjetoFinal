@@ -51,7 +51,7 @@ function getRedirectUri(): string {
   // Log para debug
   const finalUri = uri || "nossamaternidade://auth-callback";
   logger.info("Redirect URI gerado", "SocialAuth", { uri: finalUri, platform: Platform.OS });
-  
+
   return finalUri;
 }
 
@@ -72,16 +72,16 @@ function checkSupabase() {
 /**
  * Cria sessão a partir da URL de redirect do OAuth
  * Suporta tanto PKCE (code) quanto implicit flow (access_token/refresh_token)
- * 
+ *
  * Baseado no padrão oficial do Supabase para Expo:
  * https://supabase.com/docs/guides/auth/social-login/auth-google#expo
  */
 async function createSessionFromRedirect(url: string) {
   const client = checkSupabase();
-  
+
   try {
     const { params, errorCode } = QueryParams.getQueryParams(url);
-    
+
     if (errorCode) {
       throw new Error(`OAuth error: ${errorCode}`);
     }
@@ -90,12 +90,12 @@ async function createSessionFromRedirect(url: string) {
     if (params?.code) {
       logger.info("Processando PKCE flow (code)", "SocialAuth");
       const { data, error } = await client.auth.exchangeCodeForSession(params.code as string);
-      
+
       if (error) {
         logger.error("Erro ao trocar code por sessão", "SocialAuth", error);
         throw error;
       }
-      
+
       return data.session;
     }
 
@@ -121,7 +121,11 @@ async function createSessionFromRedirect(url: string) {
 
     return data.session;
   } catch (error) {
-    logger.error("Erro ao criar sessão do redirect", "SocialAuth", error instanceof Error ? error : new Error(String(error)));
+    logger.error(
+      "Erro ao criar sessão do redirect",
+      "SocialAuth",
+      error instanceof Error ? error : new Error(String(error))
+    );
     throw error;
   }
 }
@@ -227,7 +231,23 @@ export async function signInWithGoogle(): Promise<SocialAuthResult> {
     }
 
     if (error) {
-      logger.error("Erro no OAuth Google", "SocialAuth", error as Error);
+      logger.error("Erro no OAuth Google", "SocialAuth", error as Error, {
+        redirectUri: REDIRECT_URI,
+        errorMessage: error instanceof Error ? error.message : String(error),
+      });
+
+      // Verificar se é erro 400 (Bad Request) - geralmente redirect URI não autorizado
+      const errorMessage = error instanceof Error ? error.message : String(error);
+      if (
+        errorMessage.includes("400") ||
+        errorMessage.includes("bad request") ||
+        errorMessage.includes("redirect_uri")
+      ) {
+        return {
+          success: false,
+          error: `Erro 400: Redirect URI não autorizado. Adicione "${REDIRECT_URI}" em Supabase Dashboard → Authentication → URL Configuration → Additional Redirect URLs`,
+        };
+      }
 
       // Verificar se é erro de provider não configurado
       if (isOAuthNotConfiguredError(error) || String(error).includes("not enabled")) {
@@ -240,7 +260,7 @@ export async function signInWithGoogle(): Promise<SocialAuthResult> {
 
       return {
         success: false,
-        error: error instanceof Error ? error.message : String(error),
+        error: errorMessage,
       };
     }
 
@@ -279,7 +299,10 @@ export async function signInWithGoogle(): Promise<SocialAuthResult> {
         }
 
         // Obter dados do usuário atualizado
-        const { data: { user }, error: userError } = await client.auth.getUser();
+        const {
+          data: { user },
+          error: userError,
+        } = await client.auth.getUser();
 
         if (userError || !user) {
           return {
@@ -302,10 +325,15 @@ export async function signInWithGoogle(): Promise<SocialAuthResult> {
           },
         };
       } catch (error) {
-        logger.error("Erro ao processar redirect do Google", "SocialAuth", error instanceof Error ? error : new Error(String(error)));
+        logger.error(
+          "Erro ao processar redirect do Google",
+          "SocialAuth",
+          error instanceof Error ? error : new Error(String(error))
+        );
         return {
           success: false,
-          error: error instanceof Error ? error.message : "Erro ao processar resposta de autenticação",
+          error:
+            error instanceof Error ? error.message : "Erro ao processar resposta de autenticação",
         };
       }
     }
@@ -505,7 +533,23 @@ async function signInWithAppleOAuth(
   }
 
   if (error) {
-    logger.error("Erro no OAuth Apple", "SocialAuth", error as Error);
+    logger.error("Erro no OAuth Apple", "SocialAuth", error as Error, {
+      redirectUri: REDIRECT_URI,
+      errorMessage: error instanceof Error ? error.message : String(error),
+    });
+
+    // Verificar se é erro 400 (Bad Request) - geralmente redirect URI não autorizado
+    const errorMessage = error instanceof Error ? error.message : String(error);
+    if (
+      errorMessage.includes("400") ||
+      errorMessage.includes("bad request") ||
+      errorMessage.includes("redirect_uri")
+    ) {
+      return {
+        success: false,
+        error: `Erro 400: Redirect URI não autorizado. Adicione "${REDIRECT_URI}" em Supabase Dashboard → Authentication → URL Configuration → Additional Redirect URLs`,
+      };
+    }
 
     // Verificar se é erro de provider não configurado
     if (isOAuthNotConfiguredError(error) || String(error).includes("not enabled")) {
@@ -518,7 +562,7 @@ async function signInWithAppleOAuth(
 
     return {
       success: false,
-      error: error instanceof Error ? error.message : String(error),
+      error: errorMessage,
     };
   }
 
@@ -556,7 +600,10 @@ async function signInWithAppleOAuth(
       }
 
       // Obter dados do usuário atualizado
-      const { data: { user }, error: userError } = await client.auth.getUser();
+      const {
+        data: { user },
+        error: userError,
+      } = await client.auth.getUser();
 
       if (userError || !user) {
         return {
@@ -579,10 +626,15 @@ async function signInWithAppleOAuth(
         },
       };
     } catch (error) {
-      logger.error("Erro ao processar redirect do Apple", "SocialAuth", error instanceof Error ? error : new Error(String(error)));
+      logger.error(
+        "Erro ao processar redirect do Apple",
+        "SocialAuth",
+        error instanceof Error ? error : new Error(String(error))
+      );
       return {
         success: false,
-        error: error instanceof Error ? error.message : "Erro ao processar resposta de autenticação",
+        error:
+          error instanceof Error ? error.message : "Erro ao processar resposta de autenticação",
       };
     }
   }
@@ -670,7 +722,23 @@ export async function signInWithFacebook(): Promise<SocialAuthResult> {
     }
 
     if (error) {
-      logger.error("Erro no OAuth Facebook", "SocialAuth", error as Error);
+      logger.error("Erro no OAuth Facebook", "SocialAuth", error as Error, {
+        redirectUri: REDIRECT_URI,
+        errorMessage: error instanceof Error ? error.message : String(error),
+      });
+
+      // Verificar se é erro 400 (Bad Request) - geralmente redirect URI não autorizado
+      const errorMessage = error instanceof Error ? error.message : String(error);
+      if (
+        errorMessage.includes("400") ||
+        errorMessage.includes("bad request") ||
+        errorMessage.includes("redirect_uri")
+      ) {
+        return {
+          success: false,
+          error: `Erro 400: Redirect URI não autorizado. Adicione "${REDIRECT_URI}" em Supabase Dashboard → Authentication → URL Configuration → Additional Redirect URLs`,
+        };
+      }
 
       // Verificar se é erro de provider não configurado
       if (isOAuthNotConfiguredError(error) || String(error).includes("not enabled")) {
@@ -683,7 +751,7 @@ export async function signInWithFacebook(): Promise<SocialAuthResult> {
 
       return {
         success: false,
-        error: error instanceof Error ? error.message : String(error),
+        error: errorMessage,
       };
     }
 
@@ -721,7 +789,10 @@ export async function signInWithFacebook(): Promise<SocialAuthResult> {
         }
 
         // Obter dados do usuário atualizado
-        const { data: { user }, error: userError } = await client.auth.getUser();
+        const {
+          data: { user },
+          error: userError,
+        } = await client.auth.getUser();
 
         if (userError || !user) {
           return {
@@ -744,10 +815,15 @@ export async function signInWithFacebook(): Promise<SocialAuthResult> {
           },
         };
       } catch (error) {
-        logger.error("Erro ao processar redirect do Facebook", "SocialAuth", error instanceof Error ? error : new Error(String(error)));
+        logger.error(
+          "Erro ao processar redirect do Facebook",
+          "SocialAuth",
+          error instanceof Error ? error : new Error(String(error))
+        );
         return {
           success: false,
-          error: error instanceof Error ? error.message : "Erro ao processar resposta de autenticação",
+          error:
+            error instanceof Error ? error.message : "Erro ao processar resposta de autenticação",
         };
       }
     }
