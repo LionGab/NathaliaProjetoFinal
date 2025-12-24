@@ -91,28 +91,38 @@ export function Card({
   const variantStyle = useMemo(
     () => ({
       default: {
-        borderWidth: 1,
-        borderColor: cardTokens.base.border,
+        borderWidth: isDark ? 0.5 : 1,  // Subtle border in dark mode
+        borderColor: isDark ? "#2A2A2A" : cardTokens.base.border,
       },
       elevated: {
         backgroundColor: color || cardTokens.elevated.background,
-        shadowColor: isDark ? brand.primary[900] : brand.primary[900],
-        shadowOffset: { width: 0, height: 4 },
-        shadowOpacity: isDark ? 0.3 : 0.06,
-        shadowRadius: 16,
-        elevation: 3,
+        // Dark mode: Use border instead of shadow for better visibility
+        ...(isDark
+          ? {
+              borderWidth: 0.5,
+              borderColor: "#3D3D3D",
+            }
+          : {
+              shadowColor: brand.primary[900],
+              shadowOffset: { width: 0, height: 4 },
+              shadowOpacity: 0.06,
+              shadowRadius: 16,
+              elevation: 3,
+            }),
       },
       outlined: {
         backgroundColor: color || cardTokens.outlined.background,
-        borderWidth: 1,
-        borderColor: cardTokens.outlined.border,
+        borderWidth: isDark ? 1 : 1,
+        borderColor: isDark ? "#3D3D3D" : cardTokens.outlined.border,
       },
       soft: {
         backgroundColor: color || brand.primary[isDark ? 900 : 50],
+        borderWidth: isDark ? 0.5 : 0,  // Add subtle border in dark
+        borderColor: isDark ? "#2A2A2A" : "transparent",
       },
       accent: {
         borderWidth: 1.5,
-        borderColor: brand.accent[300],
+        borderColor: isDark ? brand.accent[400] : brand.accent[300],
         backgroundColor: isDark
           ? `${brand.accent[400]}14` // ~8% opacity em hex
           : brand.accent[50],
