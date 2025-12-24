@@ -32,6 +32,7 @@ import {
 import Animated, { FadeIn, FadeInUp } from "react-native-reanimated";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { detectMedicalQuestion, estimateTokens, getNathIAResponse, imageUriToBase64 } from "../api/ai-service";
+import { preClassifyMessage } from "../ai/policies/nathia.preClassifier";
 import { AIConsentModal } from "../components/chat/AIConsentModal";
 import { ChatEmptyState } from "../components/chat/ChatEmptyState";
 import { ChatHistorySidebar } from "../components/chat/ChatHistorySidebar";
@@ -329,6 +330,31 @@ export default function AssistantScreen({ navigation, route }: MainTabScreenProp
     }, 100);
 
     try {
+      // SECURITY: Pre-classify message BEFORE calling LLM
+      // Bloqueia mensagens de crise/médicas/identidade com templates fixos
+      const preClassifyResult = preClassifyMessage(userInput);
+
+      if (preClassifyResult.shouldBlock) {
+        // Retornar template fixo SEM chamar LLM (economia + segurança)
+        logger.info("Message blocked by pre-classifier", "AssistantScreen", {
+          blockType: preClassifyResult.blockType,
+          inputLength: userInput.length,
+        });
+
+        const blockedMessage: ChatMessage = {
+          id: (Date.now() + 1).toString(),
+          role: "assistant",
+          content: preClassifyResult.template || "",
+          createdAt: new Date().toISOString(),
+        };
+        addMessage(blockedMessage);
+        setLoading(false);
+        setTimeout(() => {
+          flatListRef.current?.scrollToEnd({ animated: true });
+        }, 100);
+        return; // Early return - NÃO chama getNathIAResponse
+      }
+
       // Preparar histórico de mensagens para a API
       const currentConv = conversations.find((c) => c.id === currentConversationId);
       const messageHistory = currentConv?.messages || [];

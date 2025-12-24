@@ -704,3 +704,26 @@ export const SPACING = spacing;
 export const RADIUS = radius;
 export const SHADOWS = shadows;
 export const GRADIENTS = gradients;
+
+/**
+ * Tokens - Objeto agregado para fácil importação
+ * Uso: import { Tokens } from '@/theme/tokens'
+ */
+export const Tokens = {
+  brand,
+  neutral,
+  text,
+  semantic,
+  surface,
+  gradients,
+  typography,
+  spacing,
+  radius,
+  shadows,
+  feeling,
+  animation,
+  accessibility,
+  components,
+  layout,
+  elevation,
+} as const;

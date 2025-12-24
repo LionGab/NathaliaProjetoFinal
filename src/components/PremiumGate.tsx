@@ -14,6 +14,7 @@ import { LinearGradient } from "expo-linear-gradient";
 import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { usePremiumStore, useIsPremium, useHasPremiumScreensAccess } from "../state/premium-store";
 import { COLORS } from "../theme/design-system";
+import { Tokens } from "../theme/tokens";
 import type { RootStackParamList } from "../types/navigation";
 
 const PRIMARY_COLOR = COLORS.primary[500];
@@ -144,14 +145,14 @@ const BlockedContent: React.FC<BlockedContentProps> = ({ feature, onUnlock }) =>
         className="flex-row items-center px-8 py-4 rounded-full"
         style={{ backgroundColor: PRIMARY_COLOR }}
       >
-        <Ionicons name="diamond" size={20} color="#fff" />
+        <Ionicons name="diamond" size={20} color={Tokens.text.light.inverse} />
         <Text className="text-white text-base font-bold ml-2">
           Desbloquear Premium
         </Text>
       </Pressable>
 
       <View className="flex-row items-center mt-6">
-        <Ionicons name="shield-checkmark-outline" size={16} color="#9CA3AF" />
+        <Ionicons name="shield-checkmark-outline" size={16} color={Tokens.neutral[400]} />
         <Text className="text-sm text-gray-400 ml-2">
           7 dias gratis para testar
         </Text>
@@ -252,7 +253,7 @@ export const PremiumBadge: React.FC<PremiumBadgeProps> = ({
   return (
     <View className="flex-row items-center">
       <LinearGradient
-        colors={[PRIMARY_COLOR, "#EC4899"]}
+        colors={[PRIMARY_COLOR, Tokens.brand.accent[500]]}
         start={{ x: 0, y: 0 }}
         end={{ x: 1, y: 1 }}
         style={{
@@ -263,7 +264,7 @@ export const PremiumBadge: React.FC<PremiumBadgeProps> = ({
           alignItems: "center",
         }}
       >
-        <Ionicons name="diamond" size={icon} color="#fff" />
+        <Ionicons name="diamond" size={icon} color={Tokens.text.light.inverse} />
       </LinearGradient>
 
       {showText && (

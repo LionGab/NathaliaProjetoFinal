@@ -192,7 +192,7 @@ module.exports = {
         "expo-build-properties",
         {
           ios: {
-            deploymentTarget: "15.0",
+            deploymentTarget: "15.1",
             useFrameworks: "static",
           },
           android: {
@@ -317,17 +317,10 @@ module.exports = {
       ],
 
       // RevenueCat (In-App Purchases)
-      [
-        "react-native-purchases",
-        {
-          ios: {
-            usesIAP: true,
-          },
-          android: {
-            usesIAP: true,
-          },
-        },
-      ],
+      // NOTA: react-native-purchases não tem plugin Expo nativo
+      // A integração é feita via código em src/services/revenuecat.ts
+      // Para usar IAP em Expo Go: impossível (requer Development Build)
+      // Para Development/Production builds: funcionará via configuração manual
 
       // Sentry (Error tracking)
       [

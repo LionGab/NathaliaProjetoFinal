@@ -39,6 +39,7 @@ import { useToast } from "../context/ToastContext";
 import { RootStackParamList } from "../types/navigation";
 import { IconName } from "../types/icons";
 import { COLORS, GRADIENTS } from "../theme/design-system";
+import { Tokens } from "../theme/tokens";
 import { cn } from "../utils/cn";
 import { logger } from "../utils/logger";
 
@@ -127,7 +128,7 @@ const FeatureCard = ({
       entering={FadeInUp.delay(100 + index * 100).springify()}
       className="flex-row items-center bg-white/80 rounded-2xl p-4 mb-3"
       style={{
-        shadowColor: "#000",
+        shadowColor: Tokens.neutral[900],
         shadowOffset: { width: 0, height: 2 },
         shadowOpacity: 0.05,
         shadowRadius: 8,
@@ -173,7 +174,7 @@ const PlanButton = ({
         isSelected ? "border-primary bg-primary/5" : "border-gray-200 bg-white"
       )}
       style={{
-        shadowColor: isSelected ? PRIMARY_COLOR : "#000",
+        shadowColor: isSelected ? PRIMARY_COLOR : Tokens.neutral[900],
         shadowOffset: { width: 0, height: 2 },
         shadowOpacity: isSelected ? 0.15 : 0.05,
         shadowRadius: 8,
@@ -601,7 +602,7 @@ export const PaywallScreen: React.FC<PaywallScreenProps> = ({ navigation, route 
         <View
           className="absolute bottom-0 left-0 right-0 bg-white/95 px-6 pt-4 pb-8"
           style={{
-            shadowColor: "#000",
+            shadowColor: Tokens.neutral[900],
             shadowOffset: { width: 0, height: -4 },
             shadowOpacity: 0.1,
             shadowRadius: 12,
