@@ -120,20 +120,20 @@ export const surface = {
     cardAlpha: "rgba(255, 255, 255, 0.96)",
   },
   dark: {
-    /** Base: azul muito escuro (não preto puro - OLED friendly) */
-    base: "#0F1419",
-    /** Cards: elevação 1 */
-    card: "#1A2027",
+    /** Base: True AMOLED black (economiza bateria, conforto noturno) */
+    base: "#000000",
+    /** Cards: elevação 1 (precisa border sutil para separação) */
+    card: "#121212",
     /** Elevated: elevação 2 */
-    elevated: "#242D36",
+    elevated: "#1E1E1E",
     /** Tertiary: separadores */
-    tertiary: "#2F3B46",
+    tertiary: "#2A2A2A",
     /** Overlay */
-    overlay: "rgba(0, 0, 0, 0.7)",
+    overlay: "rgba(0, 0, 0, 0.85)",
     /** Glass */
-    glass: "rgba(26, 32, 39, 0.72)",
+    glass: "rgba(18, 18, 18, 0.85)",
     /** Card alpha */
-    cardAlpha: "rgba(26, 32, 39, 0.95)",
+    cardAlpha: "rgba(18, 18, 18, 0.97)",
   },
 } as const;
 
@@ -159,13 +159,13 @@ export const text = {
     link: "#4488AB",
   },
   dark: {
-    primary: "#F3F5F7",
-    secondary: "#9DA8B4",
-    tertiary: "#7D8B99",
-    muted: "#5C6B7A",
+    primary: "#F9FAFB",     // Máximo contraste com preto (18.5:1)
+    secondary: "#B0B8C1",   // Contraste 9.2:1 com preto
+    tertiary: "#8A95A3",    // Contraste 6.8:1 com preto (WCAG AAA)
+    muted: "#6B7785",       // Contraste 4.9:1 com preto (WCAG AA)
     inverse: "#1F2937",
-    accent: "#FB7190",
-    link: "#96C7DE",
+    accent: "#FFB3C4",      // Rosa mais suave para noite (menos agressivo)
+    link: "#A8D4E8",        // Azul mais claro para contraste
   },
 } as const;
 
@@ -299,10 +299,10 @@ export const typography = {
   titleMedium: { fontSize: 16, lineHeight: 22, fontWeight: "600" as const },
   titleSmall: { fontSize: 14, lineHeight: 20, fontWeight: "600" as const },
 
-  // Body (texto corrido) - Escala principal
-  bodyLarge: { fontSize: 16, lineHeight: 24, fontWeight: "400" as const }, // body
-  bodyMedium: { fontSize: 15, lineHeight: 22, fontWeight: "400" as const }, // body (padrão)
-  bodySmall: { fontSize: 14, lineHeight: 20, fontWeight: "400" as const }, // bodySm
+  // Body (texto corrido) - Escala principal (lineHeight 1.6+ para legibilidade noturna)
+  bodyLarge: { fontSize: 16, lineHeight: 26, fontWeight: "400" as const }, // body (ratio 1.625)
+  bodyMedium: { fontSize: 15, lineHeight: 24, fontWeight: "400" as const }, // body (padrão, ratio 1.6)
+  bodySmall: { fontSize: 14, lineHeight: 22, fontWeight: "400" as const }, // bodySm (ratio 1.57)
 
   // Label (botões, tags, inputs)
   labelLarge: { fontSize: 14, lineHeight: 20, fontWeight: "600" as const }, // label
@@ -668,23 +668,23 @@ export const COLORS_DARK = {
   secondary: brand.secondary,
   accent: brand.teal,
   neutral: {
-    0: "#0F1419",
-    50: "#1A2027",
-    100: "#242D36",
-    200: "#2F3B46",
-    300: "#3D4A57",
-    400: "#5C6B7A",
-    500: "#7D8B99",
-    600: "#9DA8B4",
-    700: "#C7CED5",
-    800: "#E2E7EC",
-    900: "#F3F5F7",
+    0: "#000000",           // True AMOLED black
+    50: "#121212",          // Card background
+    100: "#1E1E1E",         // Elevated surface
+    200: "#2A2A2A",         // Tertiary surface
+    300: "#3D3D3D",         // Border default
+    400: "#6B7785",         // Text muted
+    500: "#8A95A3",         // Text tertiary
+    600: "#B0B8C1",         // Text secondary
+    700: "#D4D9DD",         // Text secondary light
+    800: "#E8EBED",         // Text primary subtle
+    900: "#F9FAFB",         // Text primary
   },
   background: {
     primary: surface.dark.base,
     secondary: surface.dark.card,
     tertiary: surface.dark.tertiary,
-    warm: "#151C22",
+    warm: "#0A0A0A",
     card: surface.dark.cardAlpha,
     glass: surface.dark.glass,
   },
