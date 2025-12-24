@@ -89,6 +89,7 @@
 **❌ REJEITADO**: Client-side Gemini com `EXPO_PUBLIC_GEMINI_API_KEY`
 
 **Razão**:
+
 - API key exposta no bundle JavaScript
 - Pode ser extraída via `apktool` em 5 minutos
 - Quota pode ser drenada completamente
@@ -97,6 +98,7 @@
 **✅ MANTIDO**: Supabase Edge Functions com JWT
 
 **Benefícios**:
+
 - API keys no servidor (seguro)
 - Rate limiting por `user_id`
 - LGPD compliant
@@ -110,17 +112,20 @@
 ### 2. Arquitetura de IA - Híbrida Claude + Gemini
 
 **Estratégia**:
+
 - **Claude 3.5 Sonnet**: Default (persona brasileira, empatia, tom natural)
 - **Gemini 2.5 Flash**: Queries médicas com grounding (Google Search)
 - **Fallback automático**: Se um falhar, usa o outro
 
 **Por quê híbrida**:
+
 1. Claude: Superior em persona (tom brasileiro, empatia, "vida real")
 2. Gemini: Melhor para grounding médico (Google Search, 1M context)
 3. Resiliência: Fallback automático
 4. Melhor ferramenta para cada trabalho
 
 **Arquivos**:
+
 - `src/api/chat-service.ts` (client)
 - `supabase/functions/ai/index.ts` (server)
 
@@ -131,21 +136,25 @@
 **⚠️ ATENÇÃO**: Migração de design system em progresso
 
 **❌ DEPRECADO**:
+
 - `src/utils/colors.ts` (legado)
 - `src/theme/design-system.ts` (legado)
 
 **✅ NOVO (Fonte Única)**:
+
 - `src/theme/tokens.ts` (Calm FemTech preset)
 
 **Regras**:
+
 - **NUNCA** hardcodar cores (`#xxx`, `rgba()`, `'white'`, `'black'`)
 - **SEMPRE** usar `Tokens.*` ou `useThemeColors()`
 - Overlays: `Tokens.overlay.light/medium/dark/heavy/backdrop`
 - Shadows: `Tokens.neutral[900]` como `shadowColor`
 
 **Hook**:
+
 ```typescript
-import { useThemeColors } from '@/hooks/useTheme';
+import { useThemeColors } from "@/hooks/useTheme";
 
 const colors = useThemeColors(); // Auto-switch light/dark
 ```
@@ -159,11 +168,12 @@ const colors = useThemeColors(); // Auto-switch light/dark
 **✅ OBRIGATÓRIO**: `logger.*` de `src/utils/logger.ts`
 
 **Padrão**:
-```typescript
-import { logger } from '@/utils/logger';
 
-logger.info('mensagem', 'contexto', { metadata });
-logger.error('erro', 'contexto', { error });
+```typescript
+import { logger } from "@/utils/logger";
+
+logger.info("mensagem", "contexto", { metadata });
+logger.error("erro", "contexto", { error });
 ```
 
 **Quality gate falha** se encontrar `console.log`
@@ -173,6 +183,7 @@ logger.error('erro', 'contexto', { error });
 ### 5. TypeScript - Strict Mode
 
 **Regras**:
+
 - **Zero `any`** (usar `unknown` + type guards)
 - **Sem `@ts-ignore`** ou `@ts-expect-error` sem justificativa explícita
 - Type checking obrigatório antes de PR (`npm run typecheck`)
@@ -184,14 +195,16 @@ logger.error('erro', 'contexto', { error });
 ### Pré-requisitos Windows
 
 1. **Node.js v22.x**:
+
    ```powershell
    # Verificar versão
    node --version
-   
+
    # Se não tiver, baixar de: https://nodejs.org/
    ```
 
 2. **Git**:
+
    ```powershell
    git --version
    # Configurar mesmo user/email do MacBook
@@ -227,6 +240,7 @@ cat .env
 **Arquivo**: `.env.local` (não commitado)
 
 **Variáveis obrigatórias**:
+
 ```env
 # Supabase
 EXPO_PUBLIC_SUPABASE_URL=https://seu-projeto.supabase.co
@@ -361,6 +375,7 @@ assets/
 ### Navegação
 
 **RootNavigator** (5-stage auth flow):
+
 1. `LoginScreen` (se `!isAuthenticated`)
 2. `NotificationPermissionScreen` (se `!notificationSetupDone`)
 3. `OnboardingScreen` (6 steps)
@@ -368,6 +383,7 @@ assets/
 5. `MainTabs` (Bottom Tab Navigator)
 
 **MainTabs**:
+
 - `Home` → `HomeScreen`
 - `Ciclo` → `CycleTrackerScreen`
 - `NathIA` → `AssistantScreen` (chat IA)
@@ -378,15 +394,15 @@ assets/
 
 **Stores centralizados** em `src/state/store.ts`:
 
-| Store | Persistido | Propósito |
-|-------|-----------|-----------|
-| `useAppStore` | Sim | User profile, onboarding state |
-| `useCommunityStore` | Não | Posts, groups (sempre fresh da API) |
-| `useChatStore` | Sim | Histórico de conversa IA |
-| `useCycleStore` | Sim | Rastreamento menstrual, daily logs |
-| `useAffirmationsStore` | Sim | Afirmações favoritas, seleção diária |
-| `useHabitsStore` | Sim | 8 hábitos de bem-estar, streaks |
-| `useCheckInStore` | Sim | Check-ins diários (mood/energy/sleep) |
+| Store                  | Persistido | Propósito                             |
+| ---------------------- | ---------- | ------------------------------------- |
+| `useAppStore`          | Sim        | User profile, onboarding state        |
+| `useCommunityStore`    | Não        | Posts, groups (sempre fresh da API)   |
+| `useChatStore`         | Sim        | Histórico de conversa IA              |
+| `useCycleStore`        | Sim        | Rastreamento menstrual, daily logs    |
+| `useAffirmationsStore` | Sim        | Afirmações favoritas, seleção diária  |
+| `useHabitsStore`       | Sim        | 8 hábitos de bem-estar, streaks       |
+| `useCheckInStore`      | Sim        | Check-ins diários (mood/energy/sleep) |
 
 **⚠️ Padrão de Selector** (evitar loops infinitos):
 
@@ -396,9 +412,9 @@ const user = useAppStore((s) => s.user);
 const setUser = useAppStore((s) => s.setUser);
 
 // ❌ RUIM: Objeto cria nova ref a cada render
-const { user, setUser } = useAppStore((s) => ({ 
-  user: s.user, 
-  setUser: s.setUser 
+const { user, setUser } = useAppStore((s) => ({
+  user: s.user,
+  setUser: s.setUser,
 }));
 ```
 
@@ -413,6 +429,7 @@ const { user, setUser } = useAppStore((s) => ({
 **Causa**: Redirect URI não autorizado no Supabase Dashboard
 
 **Solução**:
+
 1. Removido `queryParams` do Google OAuth (conflito com PKCE)
 2. Adicionado tratamento específico de erro 400
 3. **AÇÃO NECESSÁRIA**: Configurar redirect URI no Supabase Dashboard:
@@ -429,6 +446,7 @@ const { user, setUser } = useAppStore((s) => ({
 **Problema**: Cursor indexando arquivos pesados (vídeos, builds, node_modules)
 
 **Solução**: Criado `.cursorignore` para excluir:
+
 - `node_modules/` (1.3GB)
 - `ios/build/` (702MB)
 - `assets/onboarding/videos/*.mp4` (124MB)
@@ -445,6 +463,7 @@ const { user, setUser } = useAppStore((s) => ({
 **Problema**: Instagram bloqueia downloads automáticos sem autenticação
 
 **Solução**:
+
 - Scripts criados: `scripts/download-reels.js`, `scripts/download-top-reels.js`
 - Reels baixados: 9 vídeos (~105 MB) em `assets/onboarding/videos/`
 - Documentação: `docs/REELS_DOWNLOADED.md`
@@ -460,6 +479,7 @@ const { user, setUser } = useAppStore((s) => ({
 **Status**: Phase 1 Task 1/7 completada (14%)
 
 **Próximas tarefas**:
+
 1. ✅ **Task 1**: Pre-Classifier criado (`src/ai/policies/nathia.preClassifier.ts`)
 2. ⏸️ **Task 2**: Response Canonicalizer (próximo)
 3. **Task 3**: Unit tests para policies
@@ -475,24 +495,28 @@ const { user, setUser } = useAppStore((s) => ({
 ### Plataforma Premium (Roadmap)
 
 **Fase 1: Foundation** (Semana 1)
+
 - [ ] Remote Config / Kill Switch
 - [ ] Cloud Sync - Ciclo (bidirecional, offline-first)
 - [ ] Cloud Sync - Habits & Check-ins
 - [ ] LGPD UI em Settings
 
 **Fase 2: Business & Premium** (Semana 2)
+
 - [ ] `usePremiumStatus()` hook + realtime subscription
 - [ ] Feature gating (IA limite, community, exports)
 - [ ] RevenueCat SDK + Paywall integration
 - [ ] Rate limiting diferenciado FREE/PRO
 
 **Fase 3: Intelligence & Quality** (Semana 3)
+
 - [ ] Guardian Agent - Bloqueio UI + recursos de crise
 - [ ] CI/CD Pipeline (GitHub Actions)
 - [ ] Testes unitários (ciclo, premium, IA)
 - [ ] Testes E2E (Maestro)
 
 **Fase 4: Polish & Launch** (Semana 4)
+
 - [ ] A11Y Audit + Fixes
 - [ ] RAG Setup (pgvector + embeddings)
 - [ ] Refactor AssistantScreen (1085 LOC → componentes)
@@ -506,14 +530,14 @@ const { user, setUser } = useAppStore((s) => ({
 
 ### Arquivos Críticos
 
-| Arquivo | Propósito |
-|---------|-----------|
-| `CLAUDE.md` | Regras críticas + comandos + arquitetura |
-| `src/theme/tokens.ts` | Design Tokens (fonte única) |
-| `src/utils/logger.ts` | Sistema de logging centralizado |
-| `src/state/store.ts` | Todos os stores Zustand |
-| `src/api/chat-service.ts` | Serviço de chat IA |
-| `supabase/functions/ai/index.ts` | Edge Function IA (server) |
+| Arquivo                          | Propósito                                |
+| -------------------------------- | ---------------------------------------- |
+| `CLAUDE.md`                      | Regras críticas + comandos + arquitetura |
+| `src/theme/tokens.ts`            | Design Tokens (fonte única)              |
+| `src/utils/logger.ts`            | Sistema de logging centralizado          |
+| `src/state/store.ts`             | Todos os stores Zustand                  |
+| `src/api/chat-service.ts`        | Serviço de chat IA                       |
+| `supabase/functions/ai/index.ts` | Edge Function IA (server)                |
 
 ### Documentação Importante
 
@@ -592,4 +616,3 @@ npm run clean
 **Última atualização**: 2025-01-17  
 **Versão**: 1.0.0  
 **Status**: ✅ Completo e pronto para uso
-
