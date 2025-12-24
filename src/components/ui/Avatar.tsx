@@ -4,6 +4,9 @@ import { Image, ImageSourcePropType, View, ViewStyle } from "react-native";
 import { COLORS, OVERLAY } from "../../theme/design-system";
 import { cn } from "../../utils/cn";
 
+// Imagem real da Nath para avatares
+const NATH_PROFILE_IMAGE = require("../../../assets/onboarding/images/nath-profile-small.jpg");
+
 export interface AvatarProps {
   size?: number;
   source?: ImageSourcePropType | { uri: string } | null;
@@ -33,12 +36,12 @@ const Avatar = React.memo(
     // Prioridade: NathIA > Comunidade > Nathália > source customizado
     let imageSource: ImageSourcePropType | { uri: string } | null = null;
 
-    if (isNathIA) {
-      imageSource = { uri: "https://i.imgur.com/a4O1jAT.jpg" };
+    if (isNathIA || isNathalia) {
+      // Usa a foto real da Nath para NathIA e Nathalia
+      imageSource = NATH_PROFILE_IMAGE;
     } else if (isCommunity) {
-      imageSource = require("../../../assets/community-avatar.jpg");
-    } else if (isNathalia) {
-      imageSource = require("../../../assets/nathalia-avatar.jpg");
+      // Comunidade também usa a foto da Nath como padrão
+      imageSource = NATH_PROFILE_IMAGE;
     } else {
       imageSource = source || null;
     }

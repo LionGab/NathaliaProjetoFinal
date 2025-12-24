@@ -47,8 +47,8 @@ import { MainTabScreenProps } from "../types/navigation";
 import { EmotionalCheckInPrimary } from "../components/home";
 import { Avatar, AVATAR_SIZES } from "../components/ui";
 
-// Hero image da Nathalia
-const NATHALIA_HERO_URL = "https://i.imgur.com/7GX41Ft.jpg";
+// Hero image da Nathalia - usando imagem local
+const NATHALIA_HERO_IMAGE = require("../../assets/onboarding/images/stage-gravida-t2.jpg");
 
 // Progress Ring Component
 const ProgressRing: React.FC<{
@@ -375,14 +375,13 @@ export default function HomeScreen({ navigation }: MainTabScreenProps<"Home">): 
             accessibilityLabel="Conversar com NathIA"
             accessibilityRole="button"
           >
-            {/* Background image */}
+            {/* Background image - foto real da Nath */}
             <Image
-              source={{ uri: NATHALIA_HERO_URL }}
+              source={NATHALIA_HERO_IMAGE}
               style={styles.heroImage}
               contentFit="cover"
-              contentPosition={{ top: 0.55 }}
+              contentPosition="top"
               transition={300}
-              placeholder={{ blurhash: "LKO2?U%2Tw=w]~RBVZRi};RPxuwH" }}
             />
 
             {/* Gradient overlay */}

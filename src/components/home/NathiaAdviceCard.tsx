@@ -9,13 +9,16 @@
  */
 
 import React, { useMemo, useCallback } from "react";
-import { View, Text, Pressable, StyleSheet } from "react-native";
+import { View, Text, Pressable, StyleSheet, Image } from "react-native";
 import Animated, { FadeInUp } from "react-native-reanimated";
 import { Ionicons } from "@expo/vector-icons";
 import * as Haptics from "expo-haptics";
 import { useTheme } from "../../hooks/useTheme";
 import { useCheckInStore } from "../../state/store";
 import { SPACING, RADIUS, SHADOWS } from "../../theme/design-system";
+
+// Imagem real da Nath
+const NATH_PROFILE = require("../../../assets/onboarding/images/nath-profile-small.jpg");
 
 interface NathiaAdviceCardProps {
   onPressChat: () => void;
@@ -80,9 +83,14 @@ export const NathiaAdviceCard: React.FC<NathiaAdviceCardProps> = ({
           },
         ]}
       >
-        {/* Icon - Sparkles para representar IA */}
+        {/* Foto da Nath */}
         <View style={[styles.iconContainer, { backgroundColor: iconBg }]}>
-          <Ionicons name="sparkles" size={22} color={accentColor} />
+          <Image
+            source={NATH_PROFILE}
+            style={styles.nathPhoto}
+            resizeMode="cover"
+            accessibilityLabel="Foto da Nathália"
+          />
         </View>
 
         {/* Content */}
@@ -118,6 +126,12 @@ const styles = StyleSheet.create({
     borderRadius: 22,
     alignItems: "center",
     justifyContent: "center",
+    overflow: "hidden",
+  },
+  nathPhoto: {
+    width: 44,
+    height: 44,
+    borderRadius: 22,
   },
   content: {
     flex: 1,

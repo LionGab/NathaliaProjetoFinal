@@ -12,7 +12,7 @@ import { Ionicons } from "@expo/vector-icons";
 import * as Haptics from "expo-haptics";
 import { Image } from "expo-image";
 import React from "react";
-import { Pressable, StyleSheet, Text, View } from "react-native";
+import { Pressable, StyleSheet, Text, View, Image as RNImage } from "react-native";
 import Animated, {
   FadeInUp,
   useAnimatedStyle,
@@ -24,6 +24,9 @@ import { Tokens } from "../../theme/tokens";
 import { RADIUS, SHADOWS, SPACING } from "../../theme/design-system";
 import type { Post } from "../../types/navigation";
 import { formatTimeAgo } from "../../utils/formatters";
+
+// Imagem real da Nath para posts dela
+const NATH_AVATAR = require("../../../assets/onboarding/images/nath-profile-small.jpg");
 
 interface PostCardProps {
   post: Post;
@@ -102,16 +105,25 @@ export const PostCard: React.FC<PostCardProps> = React.memo(
 
           {/* Header */}
           <View style={styles.header}>
-            <View
-              style={[
-                styles.avatar,
-                {
-                  backgroundColor: isDark ? Tokens.brand.primary[900] : Tokens.brand.primary[100],
-                },
-              ]}
-            >
-              <Ionicons name="person" size={22} color={Tokens.brand.primary[500]} />
-            </View>
+            {/* Avatar - usa foto da Nath para posts dela */}
+            {post.authorName.toLowerCase().includes("nath") ? (
+              <RNImage
+                source={NATH_AVATAR}
+                style={styles.avatarImage}
+                accessibilityLabel="Foto da Nathália"
+              />
+            ) : (
+              <View
+                style={[
+                  styles.avatar,
+                  {
+                    backgroundColor: isDark ? Tokens.brand.primary[900] : Tokens.brand.primary[100],
+                  },
+                ]}
+              >
+                <Ionicons name="person" size={22} color={Tokens.brand.primary[500]} />
+              </View>
+            )}
             <View style={styles.authorInfo}>
               <Text style={[styles.authorName, { color: textPrimary }]}>{post.authorName}</Text>
               <Text style={[styles.timeAgo, { color: textSecondary }]}>
@@ -253,6 +265,11 @@ const styles = StyleSheet.create({
     borderRadius: 24,
     alignItems: "center",
     justifyContent: "center",
+  },
+  avatarImage: {
+    width: 48,
+    height: 48,
+    borderRadius: 24,
   },
   authorInfo: {
     flex: 1,
