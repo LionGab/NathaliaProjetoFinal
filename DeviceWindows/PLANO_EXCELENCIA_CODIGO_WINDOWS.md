@@ -1,4 +1,5 @@
 # Plano de Excelência de Código - Nossa Maternidade
+
 ## Guia Completo para Windows Device
 
 **Data:** 2025-01-XX  
@@ -21,9 +22,11 @@
 ## 🎯 Contexto do Projeto
 
 ### Sobre o App
+
 **Nossa Maternidade** - App mobile-first iOS/Android para acompanhamento de saúde materna no Brasil, criado pela influenciadora Nathalia Valente. App React Native com Expo SDK 54+, integração com IA (Gemini 2.5 Flash, GPT-4o, Claude), Supabase backend, e design system "Calm FemTech".
 
 ### Stack Tecnológica
+
 - **Expo SDK 54+** (managed workflow)
 - **React Native 0.81+**
 - **TypeScript 5.7+** (strict mode)
@@ -35,6 +38,7 @@
 - **Reanimated v3** (animações)
 
 ### Regras Críticas (Não-Negociáveis)
+
 1. **TypeScript strict** - Zero `any` types
 2. **Logging** - Usar `logger.*` (NUNCA `console.log`)
 3. **Design System** - Apenas `tokens.ts` (fonte única de verdade)
@@ -73,34 +77,39 @@
 ### ❌ Problemas Críticos Encontrados
 
 #### 1. Inconsistência no Design System
+
 **Problema:** 58 arquivos usando sistema LEGADO (`design-system.ts`) vs 26 usando sistema NOVO (`tokens.ts`)
 
 **Arquivos Prioritários:**
+
 - `src/screens/NathIAOnboardingScreen.tsx` (1461 LOC)
 - `src/screens/MundoDaNathScreen.tsx` (1106 LOC)
 - `src/screens/ProfileScreen.tsx` (849 LOC)
 - `src/screens/MyCareScreen.tsx` (807 LOC)
 - `src/screens/MaeValenteProgressScreen.tsx` (819 LOC)
-- + 53 outros arquivos
+- - 53 outros arquivos
 
 **Impacto:** Inconsistência visual, manutenção difícil, possível quebra em dark mode
 
 #### 2. Arquivos Gigantes (Violam Regra de 250 LOC)
-| Arquivo | LOC | Ação Necessária |
-|---------|-----|-----------------|
-| `NathIAOnboardingScreen.tsx` | 1461 | Extrair 5 componentes |
-| `AssistantScreen.tsx` | 1110 | Extrair MessageBubble, InputArea, QuickChips |
-| `MundoDaNathScreen.tsx` | 1106 | Extrair PostCard, StoryCard, AdminModal |
-| `OnboardingScreen.tsx` | 946 | Já modularizado (OK) |
-| `ProfileScreen.tsx` | 849 | Extrair DeleteAccountModal, MenuSection |
-| `MaeValenteProgressScreen.tsx` | 819 | Extrair ProgressCard, MilestoneCard |
-| `MyCareScreen.tsx` | 807 | Extrair CareSection, AffirmationCard |
-| `HomeScreen.tsx` | 786 | Extrair HeroCard, ProgressSection |
+
+| Arquivo                        | LOC  | Ação Necessária                              |
+| ------------------------------ | ---- | -------------------------------------------- |
+| `NathIAOnboardingScreen.tsx`   | 1461 | Extrair 5 componentes                        |
+| `AssistantScreen.tsx`          | 1110 | Extrair MessageBubble, InputArea, QuickChips |
+| `MundoDaNathScreen.tsx`        | 1106 | Extrair PostCard, StoryCard, AdminModal      |
+| `OnboardingScreen.tsx`         | 946  | Já modularizado (OK)                         |
+| `ProfileScreen.tsx`            | 849  | Extrair DeleteAccountModal, MenuSection      |
+| `MaeValenteProgressScreen.tsx` | 819  | Extrair ProgressCard, MilestoneCard          |
+| `MyCareScreen.tsx`             | 807  | Extrair CareSection, AffirmationCard         |
+| `HomeScreen.tsx`               | 786  | Extrair HeroCard, ProgressSection            |
 
 **Impacto:** Performance ruim, difícil manutenção, testes complexos
 
 #### 3. Componentes UI Não Utilizados
+
 **Problema:** Componentes prontos em `src/components/ui/` que NÃO estão sendo usados nas telas:
+
 - `LoadingState` - Usado em 0 telas (deveria estar em todas com fetch)
 - `ErrorState` - Usado em 0 telas (deveria ter fallback de erro)
 - `SkeletonLoader` - Usado em 0 telas (deveria mostrar skeleton ao carregar)
@@ -109,6 +118,7 @@
 **Impacto:** UX inconsistente, falta de feedback visual
 
 #### 4. TODOs Pendentes em Código de Produção
+
 ```
 src/screens/onboarding/OnboardingPaywall.tsx:64
   TODO: Implementar integração real com RevenueCat
@@ -127,11 +137,13 @@ src/screens/ProfileScreen.tsx:203
 **Impacto:** Funcionalidades incompletas, experiência degradada
 
 #### 5. ScrollView + map() em vez de FlatList
+
 **Problema:** 60 usos de `.map()` em telas, apenas 7 usos de FlatList/FlashList
 
 **Impacto:** Performance ruim em listas longas, scroll lag, consumo excessivo de memória
 
 #### 6. Acessibilidade Incompleta
+
 **Problema:** 319 Pressables mas apenas 83 com `accessibilityLabel` (74% sem acessibilidade)
 
 **Impacto:** App inacessível para usuários com deficiência visual, violação de guidelines das stores
@@ -163,6 +175,7 @@ const textColor = isDark ? Tokens.neutral[100] : Tokens.neutral[900];
 ```
 
 **Arquivos Prioritários (Telas Mais Vistas):**
+
 1. `src/screens/HomeScreen.tsx`
 2. `src/screens/AssistantScreen.tsx`
 3. `src/screens/MyCareScreen.tsx`
@@ -173,6 +186,7 @@ const textColor = isDark ? Tokens.neutral[100] : Tokens.neutral[900];
 8. `src/screens/MaeValenteProgressScreen.tsx`
 
 **Comando de Verificação:**
+
 ```bash
 # Windows (PowerShell)
 Get-ChildItem -Path src -Recurse -Include *.tsx,*.ts | Select-String "from.*design-system" | Measure-Object
@@ -185,6 +199,7 @@ Get-ChildItem -Path src -Recurse -Include *.tsx,*.ts | Select-String "from.*desi
 **NathIAOnboardingScreen.tsx (1461 LOC → ~200 LOC cada)**
 
 Estrutura proposta:
+
 ```
 src/components/nathia-onboarding/
 ├── OptionButton.tsx       # Botão de opção reutilizável (emoji + label + description)
@@ -199,6 +214,7 @@ src/components/nathia-onboarding/
 **AssistantScreen.tsx (1110 LOC → ~300 LOC cada)**
 
 Estrutura proposta:
+
 ```
 src/components/chat/
 ├── MessageBubble.tsx     # Bola de mensagem (usuário/IA)
@@ -212,6 +228,7 @@ src/components/chat/
 **MundoDaNathScreen.tsx (1106 LOC → ~300 LOC cada)**
 
 Estrutura proposta:
+
 ```
 src/components/mundo-da-nath/
 ├── NathPostCard.tsx      # Card de post da Nath
@@ -222,6 +239,7 @@ src/components/mundo-da-nath/
 ```
 
 **Comando de Verificação:**
+
 ```bash
 # Windows (PowerShell)
 Get-ChildItem -Path src/screens -Include *.tsx | ForEach-Object {
@@ -296,6 +314,7 @@ export default function MyScreen() {
 ```
 
 **Telas que Precisam:**
+
 - `CommunityScreen.tsx` - Feed de posts
 - `MundoDaNathScreen.tsx` - Conteúdo da Nath
 - `AssistantScreen.tsx` - Histórico de chat
@@ -332,6 +351,7 @@ export default function MyScreen() {
 ```
 
 **Arquivos Prioritários:**
+
 - `MundoDaNathScreen.tsx` - Feed de posts
 - `NathIAOnboardingScreen.tsx` - Lista de opções
 - `MaeValenteProgressScreen.tsx` - Lista de marcos
@@ -362,6 +382,7 @@ export default function MyScreen() {
 ```
 
 **Verificação:**
+
 ```bash
 # Windows (PowerShell)
 Get-ChildItem -Path src/screens -Recurse -Include *.tsx | Select-String "Pressable" | Measure-Object
@@ -384,6 +405,7 @@ style={{
 ```
 
 **Verificação Manual:**
+
 - Testar em dispositivo físico
 - Usar React Native Debugger para inspecionar dimensões
 - Verificar em diferentes tamanhos de tela
@@ -445,11 +467,13 @@ const handleStartTrial = async () => {
 **Opções:**
 
 **Opção 1: Video Real da Nath**
+
 ```typescript
 const WELCOME_VIDEO = require("../../assets/onboarding/videos/welcome.mp4");
 ```
 
 **Opção 2: Imagem com Animação (Mais Seguro para v1)**
+
 ```typescript
 import { Image } from "expo-image";
 import Animated, { FadeIn } from "react-native-reanimated";
@@ -465,6 +489,7 @@ import Animated, { FadeIn } from "react-native-reanimated";
 ```
 
 **Opção 3: Lottie Animation**
+
 ```typescript
 import LottieView from "lottie-react-native";
 
@@ -489,20 +514,23 @@ import LottieView from "lottie-react-native";
 ```typescript
 import React from "react";
 
-const PostCard = React.memo<PostCardProps>(({ post, onLike, onComment }) => {
-  // ...
-}, (prevProps, nextProps) => {
-  // Comparação customizada (opcional)
-  return (
-    prevProps.post.id === nextProps.post.id &&
-    prevProps.post.isLiked === nextProps.post.isLiked
-  );
-});
+const PostCard = React.memo<PostCardProps>(
+  ({ post, onLike, onComment }) => {
+    // ...
+  },
+  (prevProps, nextProps) => {
+    // Comparação customizada (opcional)
+    return (
+      prevProps.post.id === nextProps.post.id && prevProps.post.isLiked === nextProps.post.isLiked
+    );
+  }
+);
 
 PostCard.displayName = "PostCard";
 ```
 
 **Componentes Prioritários:**
+
 - `PostCard.tsx` (CommunityScreen)
 - `MessageBubble` (AssistantScreen)
 - `OptionButton` (NathIAOnboardingScreen)
@@ -675,6 +703,7 @@ Get-ChildItem -Path src/screens -Recurse -Include *.tsx | Select-String "accessi
 ## ✅ Checklist de Execução
 
 ### FASE 1: Arquitetura
+
 - [ ] Migrar `HomeScreen.tsx` para `tokens.ts`
 - [ ] Migrar `AssistantScreen.tsx` para `tokens.ts`
 - [ ] Migrar `MyCareScreen.tsx` para `tokens.ts`
@@ -694,6 +723,7 @@ Get-ChildItem -Path src/screens -Recurse -Include *.tsx | Select-String "accessi
 - [ ] Verificar: Nenhum arquivo > 250 LOC
 
 ### FASE 2: UX e Estados
+
 - [ ] Adicionar `LoadingState` em `CommunityScreen.tsx`
 - [ ] Adicionar `LoadingState` em `MundoDaNathScreen.tsx`
 - [ ] Adicionar `LoadingState` em `AssistantScreen.tsx`
@@ -706,6 +736,7 @@ Get-ChildItem -Path src/screens -Recurse -Include *.tsx | Select-String "accessi
 - [ ] Verificar: `Get-ChildItem -Path src/screens -Recurse -Include *.tsx | Select-String "ScrollView.*map"` retorna 0
 
 ### FASE 3: Acessibilidade
+
 - [ ] Adicionar `accessibilityLabel` em todos os Pressables de `HomeScreen.tsx`
 - [ ] Adicionar `accessibilityLabel` em todos os Pressables de `AssistantScreen.tsx`
 - [ ] Adicionar `accessibilityLabel` em todos os Pressables de `CommunityScreen.tsx`
@@ -717,6 +748,7 @@ Get-ChildItem -Path src/screens -Recurse -Include *.tsx | Select-String "accessi
 - [ ] Verificar: Todos os botões têm `minHeight: 44` ou `padding: 12`
 
 ### FASE 4: TODOs
+
 - [ ] Implementar RevenueCat em `OnboardingPaywall.tsx`
 - [ ] Substituir vídeo placeholder em `OnboardingWelcome.tsx`
 - [ ] Substituir assets placeholder em `OnboardingSummary.tsx`
@@ -724,6 +756,7 @@ Get-ChildItem -Path src/screens -Recurse -Include *.tsx | Select-String "accessi
 - [ ] Verificar: `Get-ChildItem -Path src -Recurse -Include *.tsx,*.ts | Select-String "TODO|FIXME"` retorna 0
 
 ### FASE 5: Performance
+
 - [ ] Adicionar `React.memo` em `PostCard.tsx`
 - [ ] Adicionar `React.memo` em `MessageBubble` (AssistantScreen)
 - [ ] Adicionar `React.memo` em `OptionButton` (NathIAOnboardingScreen)
@@ -732,6 +765,7 @@ Get-ChildItem -Path src/screens -Recurse -Include *.tsx | Select-String "accessi
 - [ ] Verificar performance com React DevTools Profiler
 
 ### Validação Final
+
 - [ ] `npm run quality-gate` passa sem erros
 - [ ] `npm run diagnose:production` passa sem erros
 - [ ] Testar em dispositivo físico Android
@@ -745,25 +779,27 @@ Get-ChildItem -Path src/screens -Recurse -Include *.tsx | Select-String "accessi
 
 ### Arquivos Importantes
 
-| Arquivo | Propósito |
-|---------|-----------|
-| `CLAUDE.md` | Regras críticas do projeto |
-| `src/theme/tokens.ts` | Design System (fonte única de verdade) |
-| `src/utils/logger.ts` | Sistema de logging centralizado |
-| `src/state/store.ts` | Todos os stores Zustand |
-| `src/hooks/useTheme.ts` | Hook para tema (light/dark) |
-| `src/components/ui/` | Componentes UI reutilizáveis |
-| `package.json` | Scripts e dependências |
+| Arquivo                 | Propósito                              |
+| ----------------------- | -------------------------------------- |
+| `CLAUDE.md`             | Regras críticas do projeto             |
+| `src/theme/tokens.ts`   | Design System (fonte única de verdade) |
+| `src/utils/logger.ts`   | Sistema de logging centralizado        |
+| `src/state/store.ts`    | Todos os stores Zustand                |
+| `src/hooks/useTheme.ts` | Hook para tema (light/dark)            |
+| `src/components/ui/`    | Componentes UI reutilizáveis           |
+| `package.json`          | Scripts e dependências                 |
 
 ### Padrões de Código
 
 **Import de Tokens:**
+
 ```typescript
 import { Tokens } from "../theme/tokens";
 import { useTheme } from "../hooks/useTheme";
 ```
 
 **Logging:**
+
 ```typescript
 import { logger } from "../utils/logger";
 
@@ -772,6 +808,7 @@ logger.error("Erro", "Contexto", error);
 ```
 
 **Zustand Selector:**
+
 ```typescript
 // ✅ BOM
 const user = useAppStore((s) => s.user);
@@ -782,6 +819,7 @@ const { user, setUser } = useAppStore((s) => ({ user: s.user, setUser: s.setUser
 ```
 
 **Acessibilidade:**
+
 ```typescript
 <Pressable
   accessibilityRole="button"
@@ -817,6 +855,7 @@ Get-ChildItem -Path src -Recurse -Include *.tsx,*.ts | Select-String "console\.l
 Garantir que o app **Nossa Maternidade** esteja em nível de **excelência profissional** antes do lançamento nas stores, atendendo aos padrões de qualidade esperados para uma influenciadora top 1 do Brasil com 40 milhões de visualizações.
 
 **Critérios de Sucesso:**
+
 - ✅ Zero erros no quality gate
 - ✅ Zero TODOs em código de produção
 - ✅ 100% de acessibilidade (WCAG AAA)
@@ -828,4 +867,3 @@ Garantir que o app **Nossa Maternidade** esteja em nível de **excelência profi
 
 **Última Atualização:** 2025-01-XX  
 **Próxima Revisão:** Após conclusão de cada fase
-
