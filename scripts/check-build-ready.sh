@@ -23,13 +23,10 @@ else
     echo -e "${GREEN}✅ eas.json encontrado${NC}"
 fi
 
-# Verificar se app.json existe e tem configurações básicas
-if [ ! -f "app.json" ]; then
-    echo -e "${RED}❌ app.json não encontrado${NC}"
-    ERRORS=$((ERRORS + 1))
-else
+# Verificar se app.json ou app.config.js existe
+if [ -f "app.json" ]; then
     echo -e "${GREEN}✅ app.json encontrado${NC}"
-    
+
     # Verificar bundle identifier iOS
     if ! grep -q '"bundleIdentifier"' app.json; then
         echo -e "${YELLOW}⚠️  bundleIdentifier iOS não configurado${NC}"
@@ -37,7 +34,7 @@ else
     else
         echo -e "${GREEN}✅ bundleIdentifier iOS configurado${NC}"
     fi
-    
+
     # Verificar package Android
     if ! grep -q '"package"' app.json; then
         echo -e "${YELLOW}⚠️  package Android não configurado${NC}"
@@ -45,6 +42,27 @@ else
     else
         echo -e "${GREEN}✅ package Android configurado${NC}"
     fi
+elif [ -f "app.config.js" ]; then
+    echo -e "${GREEN}✅ app.config.js encontrado (dynamic config)${NC}"
+
+    # Verificar bundle identifier iOS no config dinâmico
+    if ! grep -q 'bundleIdentifier' app.config.js; then
+        echo -e "${YELLOW}⚠️  bundleIdentifier iOS não configurado${NC}"
+        WARNINGS=$((WARNINGS + 1))
+    else
+        echo -e "${GREEN}✅ bundleIdentifier iOS configurado${NC}"
+    fi
+
+    # Verificar package Android
+    if ! grep -q 'package' app.config.js; then
+        echo -e "${YELLOW}⚠️  package Android não configurado${NC}"
+        WARNINGS=$((WARNINGS + 1))
+    else
+        echo -e "${GREEN}✅ package Android configurado${NC}"
+    fi
+else
+    echo -e "${RED}❌ app.json ou app.config.js não encontrado${NC}"
+    ERRORS=$((ERRORS + 1))
 fi
 
 # Verificar assets

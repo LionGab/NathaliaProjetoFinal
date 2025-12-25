@@ -20,7 +20,7 @@ import Animated, {
 import { LinearGradient } from "expo-linear-gradient";
 import * as Haptics from "expo-haptics";
 import { useTheme } from "../../hooks/useTheme";
-import { brand, neutral, shadows, radius, spacing } from "../../theme/tokens";
+import { brand, neutral, shadows, radius, spacing, accessibility } from "../../theme/tokens";
 
 interface PremiumCardProps {
   children: React.ReactNode;
@@ -207,7 +207,10 @@ export function PremiumCard({
         onPress={handlePress}
         onPressIn={handlePressIn}
         onPressOut={handlePressOut}
-        style={animatedContainerStyle}
+        style={[
+          animatedContainerStyle,
+          { minHeight: accessibility.minTapTarget }
+        ]}
         accessibilityLabel={accessibilityLabel}
         accessibilityRole="button"
       >

@@ -1,7 +1,7 @@
 /**
  * Badge - Indicador visual de status/contagem
  *
- * Design System 2025 - Calm FemTech
+ * Design System 2025 - Pink Clean + Blue Clean ✨
  * Badge padronizado para notificações, tags e indicadores
  */
 
@@ -35,6 +35,8 @@ interface BadgeProps {
   outline?: boolean;
   /** Additional style */
   style?: ViewStyle;
+  /** Custom accessibility label */
+  accessibilityLabel?: string;
 }
 
 const SIZES = {
@@ -80,6 +82,7 @@ export function Badge({
   dot = false,
   outline = false,
   style,
+  accessibilityLabel,
 }: BadgeProps) {
   const { brand, colors, isDark } = useTheme();
 
@@ -138,16 +141,27 @@ export function Badge({
   const colorConfig = getColors();
 
   // Format count display
-  const displayContent = count !== undefined
+  const countDisplay = count !== undefined
     ? count > maxCount
       ? `${maxCount}+`
       : count.toString()
-    : children;
+    : "";
+  
+  const displayContent = count !== undefined ? countDisplay : children;
+
+  // Accessibility label
+  const defaultA11yLabel = count !== undefined 
+    ? `${countDisplay} ${variant === "primary" ? "notificações" : "itens"}`
+    : typeof children === "string" ? children : "Indicador";
+  
+  const a11yLabel = accessibilityLabel || defaultA11yLabel;
 
   // Dot-only mode
   if (dot) {
     return (
       <View
+        accessibilityLabel={a11yLabel}
+        accessibilityRole="none"
         style={[
           {
             width: currentSize.dotSize,
@@ -165,6 +179,8 @@ export function Badge({
 
   return (
     <View
+      accessibilityLabel={a11yLabel}
+      accessibilityRole="text"
       style={[
         {
           minWidth: currentSize.minWidth,
@@ -181,6 +197,7 @@ export function Badge({
       ]}
     >
       <Text
+        importantForAccessibility="no-hide-descendants"
         style={{
           color: outline ? colorConfig.text : colorConfig.textFilled,
           fontSize: currentSize.fontSize,

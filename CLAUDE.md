@@ -13,9 +13,10 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - **NO `@ts-ignore`** or `@ts-expect-error` without explicit justification
 
 ### Logging
-- **NEVER use `console.log/warn/error`** - Use `logger.*` from `src/utils/logger.ts`
+- **NEVER use `console.log`** - Use `logger.*` from `src/utils/logger.ts`
 - Pattern: `logger.info('message', 'context', metadata?)`
 - Quality gate will fail if `console.log` is found
+- **NOTE**: ESLint allows `console.warn` and `console.error` (use sparingly)
 
 ### Colors & Design System
 - **NEVER hardcode colors** - Use `useThemeColors()` hook or `Tokens.*` from `src/theme/tokens.ts`
@@ -75,12 +76,13 @@ npm run eas:build:list    # List builds
 ### Navigation Structure
 
 ```
-RootNavigator (Native Stack) - 5-stage auth flow:
-├── 1. LoginScreen (if !isAuthenticated)
+RootNavigator (Native Stack) - 6-stage auth flow:
+├── 1. AuthLanding → EmailAuth → Login (if !isAuthenticated)
 ├── 2. NotificationPermissionScreen (if !notificationSetupDone)
-├── 3. OnboardingScreen (6 steps: welcome, name, stage, date, interests, complete)
-├── 4. NathIAOnboardingScreen (5 steps: AI personalization)
-└── 5. MainTabs (Bottom Tab Navigator)
+├── 3. OnboardingStoriesScreen (Nath Journey - stories format) [NEW]
+├── 4. OnboardingScreen (legacy: name, stage, interests)
+├── 5. NathIAOnboardingScreen (AI personalization)
+└── 6. MainTabs (Bottom Tab Navigator)
     ├── Home         → HomeScreen
     ├── Ciclo        → CycleTrackerScreen
     ├── NathIA       → AssistantScreen (AI chat)
@@ -90,22 +92,25 @@ RootNavigator (Native Stack) - 5-stage auth flow:
 Modal Screens (presentation: "modal"):
 ├── PostDetail, NewPost
 ├── DailyLog, Affirmations, Habits
-├── WeightCalculator, ComingSoon
+├── Paywall, ComingSoon
 ```
 
 ### State Management (Zustand + AsyncStorage)
 
-All stores centralized in `src/state/store.ts`:
+All stores in `src/state/`:
 
-| Store                | Persisted | Purpose                                |
-| -------------------- | --------- | -------------------------------------- |
-| useAppStore          | Yes       | User profile, onboarding state         |
-| useCommunityStore    | No        | Posts, groups (always fresh from API)  |
-| useChatStore         | Yes       | AI conversation history                |
-| useCycleStore        | Yes       | Menstrual cycle tracking, daily logs   |
-| useAffirmationsStore | Yes       | Favorite affirmations, daily selection |
-| useHabitsStore       | Yes       | 8 wellness habits, streaks             |
-| useCheckInStore      | Yes       | Daily mood/energy/sleep check-ins      |
+| Store                          | Persisted | Purpose                                |
+| ------------------------------ | --------- | -------------------------------------- |
+| useAppStore                    | Yes       | User profile, auth, theme              |
+| useCommunityStore              | No        | Posts, groups (always fresh from API)  |
+| useChatStore                   | Yes       | AI conversation history                |
+| useCycleStore                  | Yes       | Menstrual cycle tracking, daily logs   |
+| useAffirmationsStore           | Yes       | Favorite affirmations, daily selection |
+| useHabitsStore                 | Yes       | 8 wellness habits, streaks             |
+| useCheckInStore                | Yes       | Daily mood/energy/sleep check-ins      |
+| usePremiumStore                | Yes       | IAP/RevenueCat subscription state      |
+| useNathJourneyOnboardingStore  | Yes       | Nath Journey onboarding progress       |
+| useNathIAOnboardingStore       | Yes       | NathIA AI personalization              |
 
 **Zustand selector pattern** (avoid infinite loops):
 
@@ -155,7 +160,7 @@ generateImage(prompt)      // Uses gpt-image-1
 - **Lists**: Use `FlatList` or `FlashList` - NEVER `ScrollView + map()`
 - **Memoization**: Use `React.memo()` for components with repetitive renders
 - **Lazy loading**: Use `React.lazy()` for large components
-- **Tap targets**: Minimum 44pt (iOS HIG) - `ACCESSIBILITY.minTapTarget` from tokens
+- **Tap targets**: Minimum 44pt (iOS HIG) - `Tokens.accessibility.minTapTarget`
 - **Contrast**: WCAG AAA by default (7:1 ratio)
 - **Always** add `accessibilityLabel` and `accessibilityRole`
 
@@ -182,11 +187,11 @@ Tokens.brand.teal      // Health indicators
 Tokens.neutral[50]  // Lightest background
 Tokens.neutral[900] // Darkest text/shadows
 
-// Semantic colors
-Tokens.semantic.error/errorLight
-Tokens.semantic.warning/warningLight
-Tokens.semantic.info/infoLight
-Tokens.semantic.success/successLight
+// Semantic colors (theme-aware: light/dark)
+Tokens.semantic.light.error / Tokens.semantic.dark.error
+Tokens.semantic.light.warning / Tokens.semantic.dark.warning
+Tokens.semantic.light.info / Tokens.semantic.dark.info
+Tokens.semantic.light.success / Tokens.semantic.dark.success
 
 // Typography
 Tokens.typography.h1/h2/h3/body/caption
@@ -217,7 +222,7 @@ const colors = useThemeColors();  // Automatically switches based on theme
 
 ## Animation & Gestures
 
-- **Use react-native-reanimated v3** - NOT `Animated` from react-native
+- **Use react-native-reanimated v4** - NOT `Animated` from react-native
 - **Use react-native-gesture-handler** for gestures
 - **Always WebSearch docs** before implementing - training data may be outdated
 
@@ -362,12 +367,16 @@ This executes:
 ### Supabase Edge Functions
 
 Deployed functions (see `supabase/functions/`):
-- `ai` - NathIA chat (Claude/Gemini/GPT integration)
+- `ai` - NathIA chat (Claude/Gemini/GPT with rate limiting + circuit breakers)
 - `transcribe` - Audio transcription (Whisper)
 - `upload-image` - Image upload & optimization
 - `notifications` - Push notification handling
-- `delete-account` - LGPD-compliant account deletion
+- `delete-account` - LGPD-compliant account deletion (soft/hard delete)
+- `export-data` - LGPD-compliant data export
 - `analytics` - Privacy-preserving analytics
+- `elevenlabs-tts` - Text-to-speech for NathIA voice
+- `moderate-content` - Content moderation
+- `webhook` - RevenueCat webhook (signature verified)
 
 **Deploy**: `npx supabase functions deploy <function-name>`
 **Secrets**: Managed via `npm run setup-secrets`
@@ -423,11 +432,11 @@ const community = useCommunity(navigation);
 2. Use `useThemeColors()` hook for light/dark mode
 3. Never hardcode colors (`#xxx`, `rgba()`, `'white'`, `'black'`)
 
-**Semantic colors** (from `Tokens.semantic.*`):
-- `error/errorLight` - Medical warnings, validation errors
-- `warning/warningLight` - Caution states, important notices
-- `info/infoLight` - Informational messages, tips
-- `success/successLight` - Confirmations, achievements
+**Semantic colors** (from `Tokens.semantic.light.*` or `Tokens.semantic.dark.*`):
+- `error` - Medical warnings, validation errors
+- `warning` - Caution states, important notices
+- `info` - Informational messages, tips
+- `success` - Confirmations, achievements
 
 **Special features**:
 - Affirmation gradients: Immersive themes (Oceano, Ametista, Lavanda, etc.)

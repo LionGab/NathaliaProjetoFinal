@@ -3,6 +3,7 @@ import { Pressable } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import * as Haptics from "expo-haptics";
 import { useTheme } from "../../hooks/useTheme";
+import { buttonAccessibility } from "../../utils/accessibility";
 
 interface IconButtonProps {
   icon: keyof typeof Ionicons.glyphMap;
@@ -12,6 +13,10 @@ interface IconButtonProps {
   color?: string;
   bgColor?: string;
   disabled?: boolean;
+  /** Accessibility label for screen readers (defaults to icon name) */
+  accessibilityLabel?: string;
+  /** Accessibility hint for screen readers */
+  accessibilityHint?: string;
 }
 
 // iOS HIG minimum tap target: 44pt
@@ -29,8 +34,54 @@ export default function IconButton({
   color,
   bgColor,
   disabled = false,
+  accessibilityLabel,
+  accessibilityHint,
 }: IconButtonProps) {
   const { colors } = useTheme();
+
+  // Create human-readable label from icon name (e.g., "close-circle" -> "Fechar")
+  const getDefaultLabel = (iconName: string): string => {
+    const iconLabels: Record<string, string> = {
+      close: "Fechar",
+      "close-circle": "Fechar",
+      "close-outline": "Fechar",
+      back: "Voltar",
+      "arrow-back": "Voltar",
+      "chevron-back": "Voltar",
+      "chevron-forward": "Avançar",
+      menu: "Menu",
+      search: "Buscar",
+      settings: "Configurações",
+      "settings-outline": "Configurações",
+      heart: "Favoritar",
+      "heart-outline": "Favoritar",
+      share: "Compartilhar",
+      "share-outline": "Compartilhar",
+      trash: "Excluir",
+      "trash-outline": "Excluir",
+      add: "Adicionar",
+      "add-circle": "Adicionar",
+      edit: "Editar",
+      "create-outline": "Editar",
+      play: "Reproduzir",
+      pause: "Pausar",
+      stop: "Parar",
+      mic: "Microfone",
+      "mic-outline": "Microfone",
+      send: "Enviar",
+      camera: "Câmera",
+      "camera-outline": "Câmera",
+      notifications: "Notificações",
+      "notifications-outline": "Notificações",
+    };
+    return iconLabels[iconName] || iconName.replace(/-/g, " ");
+  };
+
+  const a11yProps = buttonAccessibility(
+    accessibilityLabel || getDefaultLabel(icon),
+    accessibilityHint,
+    disabled
+  );
 
   const handlePress = async () => {
     if (!disabled) {
@@ -65,6 +116,7 @@ export default function IconButton({
 
   return (
     <Pressable
+      {...a11yProps}
       onPress={handlePress}
       disabled={disabled}
       style={({ pressed }) => ({

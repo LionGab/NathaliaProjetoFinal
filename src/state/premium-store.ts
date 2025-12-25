@@ -132,7 +132,7 @@ export const usePremiumStore = create<PremiumState>()(
           // Extrai detalhes da subscription
           const subscriptionDetails: SubscriptionDetails = {
             tier: isPremium ? "premium" : "free",
-            period: premiumEntitlement?.productIdentifier?.includes("yearly")
+            period: premiumEntitlement?.productIdentifier?.includes("annual")
               ? "yearly"
               : premiumEntitlement?.productIdentifier?.includes("monthly")
               ? "monthly"

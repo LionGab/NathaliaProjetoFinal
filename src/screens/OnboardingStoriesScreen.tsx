@@ -61,34 +61,32 @@ import DateTimePicker from "@react-native-community/datetimepicker";
 import { useAppStore } from "../state/store";
 import { useNathJourneyOnboardingStore } from "../state/nath-journey-onboarding-store";
 import { logger } from "../utils/logger";
-import { brand } from "../theme/tokens";
+import { brand, maternal, typography, semantic, mood, premium } from "../theme/tokens";
 import { PregnancyStage, Interest } from "../types/navigation";
 
 // ============================================
-// DESIGN SYSTEM - Jornada da Nath
+// DESIGN SYSTEM - Using Tokens
 // ============================================
 
 const { width: SCREEN_WIDTH } = Dimensions.get("window");
 
-// Story gradients - each slide has its own vibe
-const STORY_GRADIENTS = {
-  welcome: ["#1A1A2E", "#16213E", "#0F3460"] as const,
-  moment: ["#2D1B4E", "#462B7C", "#5B3A9B"] as const,
-  date: ["#3D2B54", "#5C3D7A", "#7B4F9F"] as const,
-  objectives: ["#1E3A5F", "#2E5A8F", "#3E7ABF"] as const,
-  emotional: ["#4A2040", "#6B3060", "#8C4080"] as const,
-  checkIn: ["#1F4E5F", "#2F6E8F", "#3F8EAF"] as const,
-  reward: ["#0D0D0D", "#1A1A1A", "#2D2D2D"] as const,
+// Story gradients - from Tokens.maternal.stories
+const STORY_GRADIENTS = maternal.stories;
+
+// Typography - from Tokens.typography.fontFamily
+const FONTS = {
+  display: typography.fontFamily.extrabold,
+  headline: typography.fontFamily.bold,
+  body: typography.fontFamily.medium,
+  accent: typography.fontFamily.semibold,
+  light: typography.fontFamily.base,
 };
 
-// Typography - Editorial, bold, memorable
-const FONTS = {
-  display: "Manrope_800ExtraBold",
-  headline: "Manrope_700Bold",
-  body: "Manrope_500Medium",
-  accent: "Manrope_600SemiBold",
-  light: "Manrope_400Regular",
-};
+// Glass/Overlay colors - from premium.glass tokens
+const GLASS = premium.glass;
+
+// Text colors for dark immersive screens - from premium.text tokens
+const TEXT = premium.text;
 
 // Story slide type
 type StorySlide =
@@ -134,14 +132,14 @@ const OBJECTIVE_OPTIONS: { id: Interest; emoji: string; label: string }[] = [
   { id: "career", emoji: "✨", label: "Propósito" },
 ];
 
-// Emotional state options
+// Emotional state options - using Tokens.mood
 const EMOTIONAL_OPTIONS: { id: string; emoji: string; label: string; color: string }[] = [
-  { id: "peaceful", emoji: "😌", label: "Em paz", color: "#86EFAC" },
-  { id: "anxious", emoji: "😰", label: "Ansiosa", color: "#FDE68A" },
-  { id: "excited", emoji: "🤩", label: "Animada", color: "#F9A8D4" },
-  { id: "tired", emoji: "😴", label: "Cansada", color: "#BAE6FD" },
-  { id: "overwhelmed", emoji: "🥺", label: "Sobrecarregada", color: "#DDD6FE" },
-  { id: "hopeful", emoji: "🌟", label: "Esperançosa", color: "#FED7AA" },
+  { id: "peaceful", emoji: "😌", label: "Em paz", color: mood.calm },
+  { id: "anxious", emoji: "😰", label: "Ansiosa", color: mood.anxious },
+  { id: "excited", emoji: "🤩", label: "Animada", color: mood.energetic },
+  { id: "tired", emoji: "😴", label: "Cansada", color: mood.tired },
+  { id: "overwhelmed", emoji: "🥺", label: "Sobrecarregada", color: mood.sensitive },
+  { id: "hopeful", emoji: "🌟", label: "Esperançosa", color: mood.happy },
 ];
 
 // Check-in time options
@@ -188,8 +186,8 @@ const StoryProgressBar: React.FC<{
                       : "0%",
                 backgroundColor:
                   index <= currentSlide
-                    ? "rgba(255,255,255,0.95)"
-                    : "rgba(255,255,255,0.25)",
+                    ? GLASS.progressActive
+                    : GLASS.strong,
               },
             ]}
           />
@@ -274,7 +272,7 @@ const SelectionCard: React.FC<{
           </View>
           {selected && (
             <View style={styles.checkmark}>
-              <Ionicons name="checkmark" size={16} color="#FFF" />
+              <Ionicons name="checkmark" size={16} color={TEXT.primary} />
             </View>
           )}
         </View>
@@ -376,7 +374,7 @@ const StoryButton: React.FC<{
           <LinearGradient
             colors={
               disabled
-                ? ["rgba(255,255,255,0.2)", "rgba(255,255,255,0.1)"]
+                ? [GLASS.border, GLASS.base]
                 : [brand.accent[400], brand.accent[500], brand.accent[600]]
             }
             start={{ x: 0, y: 0 }}
@@ -446,7 +444,7 @@ const EpisodeCard: React.FC<{ day: number; title: string; icon: string; delay: n
           <Text style={styles.episodeTitle}>{title}</Text>
         </View>
         <View style={styles.episodeLock}>
-          <Ionicons name="lock-closed" size={14} color="rgba(255,255,255,0.4)" />
+          <Ionicons name="lock-closed" size={14} color={TEXT.hint} />
         </View>
       </Animated.View>
     );
@@ -672,7 +670,7 @@ export default function OnboardingStoriesScreen(): React.JSX.Element {
                 value={name}
                 onChangeText={setName}
                 placeholder="Seu nome ou apelido"
-                placeholderTextColor="rgba(255,255,255,0.4)"
+                placeholderTextColor={TEXT.hint}
                 style={styles.nameInput}
                 autoCapitalize="words"
               />
@@ -731,7 +729,7 @@ export default function OnboardingStoriesScreen(): React.JSX.Element {
                 <Ionicons
                   name="calendar"
                   size={24}
-                  color={date ? brand.accent[400] : "rgba(255,255,255,0.5)"}
+                  color={date ? brand.accent[400] : TEXT.disabled}
                 />
                 <Text
                   style={[
@@ -777,7 +775,7 @@ export default function OnboardingStoriesScreen(): React.JSX.Element {
                       ? new Date(Date.now() + 300 * 24 * 60 * 60 * 1000)
                       : new Date()
                   }
-                  textColor="#FFFFFF"
+                  textColor={TEXT.primary}
                 />
               )}
             </Animated.View>
@@ -960,7 +958,7 @@ export default function OnboardingStoriesScreen(): React.JSX.Element {
                 style={[styles.backButton, { top: insets.top + 40 }]}
                 hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
               >
-                <Ionicons name="chevron-back" size={24} color="rgba(255,255,255,0.9)" />
+                <Ionicons name="chevron-back" size={24} color={TEXT.bright} />
               </Pressable>
             )}
 
@@ -1028,7 +1026,7 @@ const styles = StyleSheet.create({
   progressSegment: {
     flex: 1,
     height: 3,
-    backgroundColor: "rgba(255,255,255,0.25)",
+    backgroundColor: GLASS.strong,
     borderRadius: 1.5,
     overflow: "hidden",
   },
@@ -1045,7 +1043,7 @@ const styles = StyleSheet.create({
     width: 40,
     height: 40,
     borderRadius: 20,
-    backgroundColor: "rgba(0,0,0,0.3)",
+    backgroundColor: GLASS.dark,
     alignItems: "center",
     justifyContent: "center",
   },
@@ -1079,14 +1077,14 @@ const styles = StyleSheet.create({
     width: 20,
     height: 20,
     borderRadius: 10,
-    backgroundColor: "#10B981",
+    backgroundColor: semantic.light.success,
     borderWidth: 3,
-    borderColor: "#1A1A2E",
+    borderColor: maternal.stories.welcome[0],
   },
   welcomeTitle: {
     fontSize: 32,
     fontFamily: FONTS.display,
-    color: "#FFF",
+    color: TEXT.primary,
     textAlign: "center",
     lineHeight: 40,
     letterSpacing: -0.5,
@@ -1094,7 +1092,7 @@ const styles = StyleSheet.create({
   welcomeSubtitle: {
     fontSize: 16,
     fontFamily: FONTS.body,
-    color: "rgba(255,255,255,0.8)",
+    color: TEXT.secondary,
     textAlign: "center",
     marginTop: 12,
     lineHeight: 24,
@@ -1113,7 +1111,7 @@ const styles = StyleSheet.create({
   welcomeFeatureText: {
     fontSize: 14,
     fontFamily: FONTS.accent,
-    color: "rgba(255,255,255,0.9)",
+    color: TEXT.bright,
   },
   nameInputContainer: {
     marginTop: 32,
@@ -1121,21 +1119,21 @@ const styles = StyleSheet.create({
   nameLabel: {
     fontSize: 14,
     fontFamily: FONTS.accent,
-    color: "rgba(255,255,255,0.7)",
+    color: TEXT.muted,
     marginBottom: 8,
     textAlign: "center",
   },
   nameInput: {
-    backgroundColor: "rgba(255,255,255,0.1)",
+    backgroundColor: GLASS.base,
     borderRadius: 16,
     paddingVertical: 16,
     paddingHorizontal: 20,
     fontSize: 18,
     fontFamily: FONTS.body,
-    color: "#FFF",
+    color: TEXT.primary,
     textAlign: "center",
     borderWidth: 1,
-    borderColor: "rgba(255,255,255,0.2)",
+    borderColor: GLASS.border,
   },
 
   // Nath speaks
@@ -1161,13 +1159,13 @@ const styles = StyleSheet.create({
     width: 14,
     height: 14,
     borderRadius: 7,
-    backgroundColor: "#10B981",
+    backgroundColor: semantic.light.success,
     borderWidth: 2,
-    borderColor: "#2D1B4E",
+    borderColor: maternal.stories.moment[0],
   },
   speechBubble: {
     flex: 1,
-    backgroundColor: "rgba(255,255,255,0.12)",
+    backgroundColor: GLASS.medium,
     borderRadius: 20,
     borderTopLeftRadius: 4,
     padding: 16,
@@ -1176,7 +1174,7 @@ const styles = StyleSheet.create({
   speechText: {
     fontSize: 17,
     fontFamily: FONTS.body,
-    color: "#FFF",
+    color: TEXT.primary,
     lineHeight: 24,
   },
   speechTail: {
@@ -1190,7 +1188,7 @@ const styles = StyleSheet.create({
     borderBottomWidth: 8,
     borderBottomColor: "transparent",
     borderRightWidth: 8,
-    borderRightColor: "rgba(255,255,255,0.12)",
+    borderRightColor: GLASS.medium,
   },
 
   // Options
@@ -1202,7 +1200,7 @@ const styles = StyleSheet.create({
   selectionCard: {
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: "rgba(255,255,255,0.08)",
+    backgroundColor: GLASS.light,
     borderRadius: 20,
     padding: 16,
     borderWidth: 2,
@@ -1214,7 +1212,7 @@ const styles = StyleSheet.create({
   },
   selectionCardSelected: {
     borderColor: brand.accent[400],
-    backgroundColor: "rgba(244,37,140,0.15)",
+    backgroundColor: GLASS.accentLight,
   },
   cardGlow: {
     position: "absolute",
@@ -1247,7 +1245,7 @@ const styles = StyleSheet.create({
   cardLabel: {
     fontSize: 17,
     fontFamily: FONTS.headline,
-    color: "#FFF",
+    color: TEXT.primary,
   },
   cardLabelCompact: {
     fontSize: 15,
@@ -1258,7 +1256,7 @@ const styles = StyleSheet.create({
   cardSubtitle: {
     fontSize: 13,
     fontFamily: FONTS.light,
-    color: "rgba(255,255,255,0.6)",
+    color: TEXT.subtle,
     marginTop: 2,
   },
   checkmark: {
@@ -1278,29 +1276,29 @@ const styles = StyleSheet.create({
   dateButton: {
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: "rgba(255,255,255,0.1)",
+    backgroundColor: GLASS.base,
     borderRadius: 20,
     paddingVertical: 20,
     paddingHorizontal: 24,
     gap: 12,
     width: "100%",
     borderWidth: 1,
-    borderColor: "rgba(255,255,255,0.2)",
+    borderColor: GLASS.border,
   },
   dateText: {
     fontSize: 16,
     fontFamily: FONTS.body,
-    color: "rgba(255,255,255,0.5)",
+    color: TEXT.disabled,
   },
   dateTextSelected: {
-    color: "#FFF",
+    color: TEXT.primary,
     fontFamily: FONTS.accent,
   },
   dateInfo: {
     flexDirection: "row",
     alignItems: "center",
     gap: 8,
-    backgroundColor: "rgba(244,37,140,0.15)",
+    backgroundColor: GLASS.accentLight,
     paddingVertical: 10,
     paddingHorizontal: 16,
     borderRadius: 12,
@@ -1315,7 +1313,7 @@ const styles = StyleSheet.create({
   objectivesHint: {
     fontSize: 14,
     fontFamily: FONTS.light,
-    color: "rgba(255,255,255,0.6)",
+    color: TEXT.subtle,
     textAlign: "center",
     marginBottom: 20,
   },
@@ -1328,7 +1326,7 @@ const styles = StyleSheet.create({
   chip: {
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: "rgba(255,255,255,0.1)",
+    backgroundColor: GLASS.base,
     borderRadius: 24,
     paddingVertical: 12,
     paddingHorizontal: 18,
@@ -1337,7 +1335,7 @@ const styles = StyleSheet.create({
     borderColor: "transparent",
   },
   chipSelected: {
-    backgroundColor: "rgba(244,37,140,0.2)",
+    backgroundColor: GLASS.accentMedium,
     borderColor: brand.accent[400],
   },
   chipEmoji: {
@@ -1346,7 +1344,7 @@ const styles = StyleSheet.create({
   chipLabel: {
     fontSize: 14,
     fontFamily: FONTS.accent,
-    color: "rgba(255,255,255,0.9)",
+    color: TEXT.bright,
   },
   chipLabelSelected: {
     color: brand.accent[300],
@@ -1364,7 +1362,7 @@ const styles = StyleSheet.create({
   },
   emotionalCard: {
     alignItems: "center",
-    backgroundColor: "rgba(255,255,255,0.08)",
+    backgroundColor: GLASS.light,
     borderRadius: 16,
     paddingVertical: 20,
     paddingHorizontal: 8,
@@ -1378,7 +1376,7 @@ const styles = StyleSheet.create({
   emotionalLabel: {
     fontSize: 12,
     fontFamily: FONTS.accent,
-    color: "rgba(255,255,255,0.8)",
+    color: TEXT.secondary,
     textAlign: "center",
   },
 
@@ -1406,7 +1404,7 @@ const styles = StyleSheet.create({
   rewardTitle: {
     fontSize: 36,
     fontFamily: FONTS.display,
-    color: "#FFF",
+    color: TEXT.primary,
     textAlign: "center",
     lineHeight: 44,
     letterSpacing: -1,
@@ -1414,7 +1412,7 @@ const styles = StyleSheet.create({
   rewardSubtitle: {
     fontSize: 15,
     fontFamily: FONTS.body,
-    color: "rgba(255,255,255,0.7)",
+    color: TEXT.muted,
     marginTop: 12,
   },
   episodeList: {
@@ -1427,17 +1425,17 @@ const styles = StyleSheet.create({
   episodeCard: {
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: "rgba(255,255,255,0.06)",
+    backgroundColor: GLASS.ultraLight,
     borderRadius: 14,
     padding: 14,
     borderWidth: 1,
-    borderColor: "rgba(255,255,255,0.1)",
+    borderColor: GLASS.base,
   },
   episodeDay: {
     width: 36,
     height: 36,
     borderRadius: 18,
-    backgroundColor: "rgba(255,255,255,0.1)",
+    backgroundColor: GLASS.base,
     alignItems: "center",
     justifyContent: "center",
     marginRight: 14,
@@ -1445,7 +1443,7 @@ const styles = StyleSheet.create({
   episodeDayText: {
     fontSize: 14,
     fontFamily: FONTS.headline,
-    color: "rgba(255,255,255,0.9)",
+    color: TEXT.bright,
   },
   episodeContent: {
     flex: 1,
@@ -1456,7 +1454,7 @@ const styles = StyleSheet.create({
   episodeTitle: {
     fontSize: 15,
     fontFamily: FONTS.body,
-    color: "rgba(255,255,255,0.9)",
+    color: TEXT.bright,
   },
   episodeLock: {
     padding: 8,
@@ -1467,7 +1465,7 @@ const styles = StyleSheet.create({
   rewardBadge: {
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: "rgba(244,37,140,0.15)",
+    backgroundColor: GLASS.accentLight,
     borderRadius: 12,
     paddingVertical: 12,
     paddingHorizontal: 16,
@@ -1503,27 +1501,27 @@ const styles = StyleSheet.create({
   ctaText: {
     fontSize: 17,
     fontFamily: FONTS.headline,
-    color: "#FFF",
+    color: TEXT.primary,
   },
   ctaTextDisabled: {
-    color: "rgba(255,255,255,0.5)",
+    color: TEXT.disabled,
   },
   secondaryButton: {
     height: 48,
     borderRadius: 24,
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: "rgba(255,255,255,0.1)",
+    backgroundColor: GLASS.base,
   },
   secondaryText: {
     fontSize: 15,
     fontFamily: FONTS.accent,
-    color: "rgba(255,255,255,0.9)",
+    color: TEXT.bright,
   },
   tapHint: {
     fontSize: 12,
     fontFamily: FONTS.light,
-    color: "rgba(255,255,255,0.4)",
+    color: TEXT.hint,
     textAlign: "center",
     marginTop: 12,
   },

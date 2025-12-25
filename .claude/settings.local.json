@@ -19,5 +19,6 @@
     ],
     "deny": [],
     "defaultMode": "bypassPermissions"
-  }
+  },
+  "enableAllProjectMcpServers": false
 }

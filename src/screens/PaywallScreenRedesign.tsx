@@ -57,7 +57,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { useToast } from "../context/ToastContext";
 import { usePremiumStore } from "../state/premium-store";
-import { brand } from "../theme/tokens";
+import { brand, premium, typography } from "../theme/tokens";
 import { RootStackParamList } from "../types/navigation";
 import { DEFAULT_PRICING, type PricingConfig } from "../types/premium";
 import { logger } from "../utils/logger";
@@ -66,47 +66,47 @@ import { isExpoGo } from "../utils/expo";
 const { width: SCREEN_WIDTH } = Dimensions.get("window");
 
 // ============================================
-// DESIGN SYSTEM
+// DESIGN SYSTEM - Using Tokens
 // ============================================
 
 const COLORS = {
-  // Premium gradient
-  gradientTop: "#0F0A1F",
-  gradientMid: "#1A1030",
-  gradientBottom: "#251540",
-  gradientAccent: "#301A55",
+  // Premium gradient - from Tokens.premium
+  gradientTop: premium.gradient.top,
+  gradientMid: premium.gradient.mid,
+  gradientBottom: premium.gradient.bottom,
+  gradientAccent: premium.gradient.accent,
 
-  // Glow effects
-  glow1: "rgba(244, 37, 140, 0.25)",
-  glow2: "rgba(139, 92, 246, 0.2)",
+  // Glow effects - from Tokens.premium
+  glow1: premium.glow.accent,
+  glow2: premium.glow.secondary,
 
-  // Text
-  textPrimary: "#FFFFFF",
-  textSecondary: "rgba(255, 255, 255, 0.8)",
-  textMuted: "rgba(255, 255, 255, 0.5)",
-  textAccent: brand.accent[400],
+  // Text - from Tokens.premium
+  textPrimary: premium.text.primary,
+  textSecondary: premium.text.secondary,
+  textMuted: premium.text.muted,
+  textAccent: premium.text.accent,
 
-  // Glass
-  glassBg: "rgba(255, 255, 255, 0.08)",
-  glassBorder: "rgba(255, 255, 255, 0.12)",
-  glassSelected: "rgba(244, 37, 140, 0.15)",
+  // Glass - from Tokens.premium
+  glassBg: premium.glass.background,
+  glassBorder: premium.glass.border,
+  glassSelected: premium.glass.selected,
   glassSelectedBorder: brand.accent[400],
 
-  // CTA
-  ctaGradientStart: brand.accent[400],
-  ctaGradientEnd: brand.accent[600],
+  // CTA - from Tokens.premium
+  ctaGradientStart: premium.cta.start,
+  ctaGradientEnd: premium.cta.end,
 
-  // Success
-  success: "#34D399",
-  gold: "#FCD34D",
+  // Special - from Tokens.premium
+  success: premium.special.success,
+  gold: premium.special.gold,
 };
 
 const FONTS = {
-  display: "Manrope_800ExtraBold",
-  headline: "Manrope_700Bold",
-  body: "Manrope_500Medium",
-  accent: "Manrope_600SemiBold",
-  light: "Manrope_400Regular",
+  display: typography.fontFamily.extrabold,
+  headline: typography.fontFamily.bold,
+  body: typography.fontFamily.medium,
+  accent: typography.fontFamily.semibold,
+  light: typography.fontFamily.base,
 };
 
 type Props = NativeStackScreenProps<RootStackParamList, "Paywall">;
@@ -559,19 +559,25 @@ export default function PaywallScreenRedesign({ navigation, route }: Props): Rea
 
       const result = await revenuecat.purchasePackage(selectedPackage);
 
-      if (result) {
-        await syncWithRevenueCat();
-        logger.info("Purchase successful", "PaywallScreen", { productId });
-        await Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
-        navigation.goBack();
-      }
-    } catch (error: unknown) {
-      if ((error as { userCancelled?: boolean })?.userCancelled) {
+      // Check if user cancelled (not an error)
+      if (result.error === "cancelled") {
         logger.info("Purchase cancelled by user", "PaywallScreen");
         return;
       }
 
-      logger.error("Purchase failed", "PaywallScreen", error instanceof Error ? error : new Error(String(error)));
+      if (result.success) {
+        await syncWithRevenueCat();
+        logger.info("Purchase successful", "PaywallScreen", { productId });
+        await Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+        navigation.goBack();
+      } else {
+        // Purchase failed
+        logger.error("Purchase failed", "PaywallScreen", new Error(result.error || "Unknown error"));
+        setError("Erro ao processar compra. Tente novamente.");
+        showError("Não foi possível completar a compra. Tente novamente.");
+      }
+    } catch (error: unknown) {
+      logger.error("Purchase exception", "PaywallScreen", error instanceof Error ? error : new Error(String(error)));
       setError("Erro ao processar compra. Tente novamente.");
       showError("Não foi possível completar a compra. Tente novamente.");
     } finally {

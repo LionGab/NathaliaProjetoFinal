@@ -18,26 +18,9 @@ import {
   RADIUS,
   TYPOGRAPHY,
   SHADOWS,
+  premium,
+  streak,
 } from "../theme/tokens";
-
-// Overlay compatibility mapping
-const OVERLAY = {
-  white: {
-    text: "rgba(255, 255, 255, 0.7)",
-    textStrong: "rgba(255, 255, 255, 0.8)",
-    strong: "rgba(255, 255, 255, 0.2)",
-  },
-} as const;
-
-// Gradients compatibility (from design-system.ts)
-const GRADIENTS = {
-  successGradient: ["#10B981", "#5A9D68", "#4A8C58"] as const,
-  streakBg: "#FEF3C7",
-  streakIcon: "#F59E0B",
-  streakText: "#B45309",
-  completionLight: "#D4EDD9",
-  completionMedium: "#A7D4B4",
-} as const;
 
 type ViewMode = "today" | "week" | "month";
 
@@ -76,7 +59,7 @@ export default function HabitsEnhancedScreen() {
     <View style={{ flex: 1, backgroundColor: COLORS.background.primary }}>
       {/* Header */}
       <LinearGradient
-        colors={GRADIENTS.successGradient}
+        colors={streak.gradient}
         style={{
           paddingTop: insets.top + SPACING.lg,
           paddingBottom: SPACING["2xl"],
@@ -100,7 +83,7 @@ export default function HabitsEnhancedScreen() {
           <View style={{ flex: 1 }}>
             <Text
               style={{
-                color: OVERLAY.white.textStrong,
+                color: premium.text.secondary,
                 fontSize: TYPOGRAPHY.bodySmall.fontSize,
                 fontWeight: "500",
               }}
@@ -132,7 +115,7 @@ export default function HabitsEnhancedScreen() {
           <View
             style={{
               flex: 1,
-              backgroundColor: OVERLAY.white.strong,
+              backgroundColor: premium.glass.border,
               borderRadius: RADIUS["2xl"],
               padding: SPACING.lg,
             }}
@@ -148,7 +131,7 @@ export default function HabitsEnhancedScreen() {
               <Ionicons name="checkmark-circle" size={20} color={COLORS.text.inverse} />
               <Text
                 style={{
-                  color: OVERLAY.white.textStrong,
+                  color: premium.text.secondary,
                   fontSize: TYPOGRAPHY.labelSmall.fontSize,
                 }}
               >
@@ -166,7 +149,7 @@ export default function HabitsEnhancedScreen() {
             </Text>
             <Text
               style={{
-                color: OVERLAY.white.text,
+                color: premium.text.muted,
                 fontSize: TYPOGRAPHY.labelSmall.fontSize,
               }}
             >
@@ -177,7 +160,7 @@ export default function HabitsEnhancedScreen() {
           <View
             style={{
               flex: 1,
-              backgroundColor: OVERLAY.white.strong,
+              backgroundColor: premium.glass.border,
               borderRadius: RADIUS["2xl"],
               padding: SPACING.lg,
             }}
@@ -193,7 +176,7 @@ export default function HabitsEnhancedScreen() {
               <Ionicons name="flame" size={20} color={COLORS.text.inverse} />
               <Text
                 style={{
-                  color: OVERLAY.white.textStrong,
+                  color: premium.text.secondary,
                   fontSize: TYPOGRAPHY.labelSmall.fontSize,
                 }}
               >
@@ -211,7 +194,7 @@ export default function HabitsEnhancedScreen() {
             </Text>
             <Text
               style={{
-                color: OVERLAY.white.text,
+                color: premium.text.muted,
                 fontSize: TYPOGRAPHY.labelSmall.fontSize,
               }}
             >
@@ -222,7 +205,7 @@ export default function HabitsEnhancedScreen() {
           <View
             style={{
               flex: 1,
-              backgroundColor: OVERLAY.white.strong,
+              backgroundColor: premium.glass.border,
               borderRadius: RADIUS["2xl"],
               padding: SPACING.lg,
             }}
@@ -238,7 +221,7 @@ export default function HabitsEnhancedScreen() {
               <Ionicons name="trophy" size={20} color={COLORS.text.inverse} />
               <Text
                 style={{
-                  color: OVERLAY.white.textStrong,
+                  color: premium.text.secondary,
                   fontSize: TYPOGRAPHY.labelSmall.fontSize,
                 }}
               >
@@ -256,7 +239,7 @@ export default function HabitsEnhancedScreen() {
             </Text>
             <Text
               style={{
-                color: OVERLAY.white.text,
+                color: premium.text.muted,
                 fontSize: TYPOGRAPHY.labelSmall.fontSize,
               }}
             >
@@ -273,7 +256,7 @@ export default function HabitsEnhancedScreen() {
               height: 140,
               borderRadius: 70,
               borderWidth: 12,
-              borderColor: OVERLAY.white.strong,
+              borderColor: premium.glass.border,
               alignItems: "center",
               justifyContent: "center",
               backgroundColor: "transparent",
@@ -305,7 +288,7 @@ export default function HabitsEnhancedScreen() {
             </Text>
             <Text
               style={{
-                color: OVERLAY.white.textStrong,
+                color: premium.text.secondary,
                 fontSize: TYPOGRAPHY.bodySmall.fontSize,
                 marginTop: 2,
               }}
@@ -505,7 +488,7 @@ function HabitCard({ habit, index, onToggle }: HabitCardProps) {
                 <View style={{ flexDirection: "row", alignItems: "center" }}>
                   <View
                     style={{
-                      backgroundColor: GRADIENTS.streakBg,
+                      backgroundColor: streak.background,
                       borderRadius: RADIUS.full,
                       paddingHorizontal: SPACING.sm + 2,
                       paddingVertical: SPACING.xs,
@@ -513,10 +496,10 @@ function HabitCard({ habit, index, onToggle }: HabitCardProps) {
                       alignItems: "center",
                     }}
                   >
-                    <Ionicons name="flame" size={14} color={GRADIENTS.streakIcon} />
+                    <Ionicons name="flame" size={14} color={streak.icon} />
                     <Text
                       style={{
-                        color: GRADIENTS.streakText,
+                        color: streak.text,
                         fontSize: TYPOGRAPHY.labelSmall.fontSize,
                         fontWeight: "600",
                         marginLeft: 4,
@@ -631,9 +614,9 @@ function WeeklyHeatmap({ habits }: { habits: Habit[] }) {
                     completion >= 100
                       ? COLORS.semantic.success
                       : completion >= 50
-                      ? GRADIENTS.completionMedium
+                      ? streak.completion.medium
                       : completion > 0
-                      ? GRADIENTS.completionLight
+                      ? streak.completion.light
                       : COLORS.neutral[100],
                 }}
               >

@@ -1,26 +1,31 @@
 # Status RevenueCat - Nossa Maternidade
 
-**Data**: 2025-12-24 01:05:55
-**Status**: ⏳ Configuração Pendente
+**Data**: 2025-12-25
+**Status**: ✅ Código Pronto - Dashboard Pendente
 
 ---
 
 ## ✅ O Que Já Está Pronto
 
 ### Código
-- ✅ SDK instalado: `react-native-purchases` v9.6.7
+- ✅ SDK instalado: `react-native-purchases` v9.6.10
 - ✅ Service layer: `src/services/revenuecat.ts`
 - ✅ Premium store: `src/state/premium-store.ts`
-- ✅ Paywall screen: `src/screens/PaywallScreen.tsx`
+- ✅ Paywall screens: `src/screens/PaywallScreen.tsx` + `PaywallScreenRedesign.tsx`
 - ✅ Premium gate: `src/components/PremiumGate.tsx`
+- ✅ Webhook handler: `supabase/functions/webhook/index.ts`
 
 ### Identificadores do App
 - ✅ iOS Bundle ID: `com.nossamaternidade.app`
 - ✅ Android Package: `com.nossamaternidade.app`
 
 ### Product IDs (Hardcoded no Código)
-- ✅ Mensal: `nossa_maternidade_monthly`
-- ✅ Anual: `nossa_maternidade_yearly`
+- ✅ Mensal: `com.nossamaternidade.subscription.monthly`
+- ✅ Anual: `com.nossamaternidade.subscription.annual`
+
+### Preços (Fallback)
+- Mensal: R$ 19,90/mês
+- Anual: R$ 79,90/ano (67% desconto = R$ 6,66/mês)
 
 ### Entitlement (Hardcoded no Código)
 - ✅ Identifier: `premium` (OBRIGATÓRIO - deve ser exatamente este nome)
@@ -28,9 +33,9 @@
 ### Offering (Hardcoded no Código)
 - ✅ Identifier: `default` (OBRIGATÓRIO - é buscado automaticamente)
 
-### Variáveis de Ambiente
-- ✅ Chave iOS (teste): `test_sHyDAsAlAcvbPaCXagzIPFlNIUS`
-- ⚠️ Chave Android: Não configurada (placeholder: `...`)
+### Variáveis de Ambiente (.env.local)
+- ✅ Chave iOS: `appl_qYAhdJlewUtgaKBDWEAmZsCRIqK`
+- ✅ Chave Android: `goog_YSHALitkRyhugtDvYVVQVmqrqDu`
 
 ---
 

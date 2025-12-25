@@ -1,18 +1,18 @@
 /**
  * Design Tokens 2025 - Nossa Maternidade
- * "Calm FemTech" - Azul + Rosa Híbrido
+ * "Pink Clean + Blue Clean" - Cores vibrantes e Instagram-worthy ✨
  *
  * FONTE ÚNICA DE VERDADE para cores, tipografia, espaçamento.
  *
  * Princípios:
- * - Azul domina superfícies e estrutura (calma, confiança, saúde)
- * - Rosa aparece pontualmente (CTAs, destaques, "momentos de alegria")
- * - Baixo estímulo visual (WCAG AAA por padrão)
- * - Accessibility-first: 44pt tap targets, contraste 4.5:1+
+ * - Blue Clean: Céu limpo, água cristalina, frescor digital
+ * - Pink Clean: Flores frescas, blush natural, feminilidade moderna
+ * - Paleta Instagram-worthy, perfeita para influenciadoras
+ * - WCAG AAA por padrão, accessibility-first
  *
  * Hierarquia:
- * - brand.primary = Azul pastel (base)
- * - brand.accent = Rosa vibrante (CTAs, warmth)
+ * - brand.primary = Blue Clean (#1AB8FF) - sky blue vibrante
+ * - brand.accent = Pink Clean (#FF5C94) - rosa fresco e moderno
  * - brand.secondary = Lilás suave (apoio)
  *
  * @see https://developer.apple.com/design/human-interface-guidelines
@@ -20,45 +20,47 @@
  */
 
 // ===========================================
-// BRAND TOKENS - Paleta Híbrida Azul + Rosa
+// BRAND TOKENS - Pink Clean + Blue Clean ✨
 // ===========================================
 
 export const brand = {
   /**
-   * Primary: Azul Pastel Suave
-   * - Transmite: calma, confiança, saúde, baixo estímulo
+   * Primary: Blue Clean ✨
+   * - Transmite: frescor, leveza, confiança, modernidade
    * - Uso: superfícies, navegação, estrutura, elementos principais
+   * - Inspiração: Céu limpo, água cristalina, digital wellness
    */
   primary: {
-    50: "#F7FBFD", // Background principal
-    100: "#E8F3F9", // Highlights, cards
-    200: "#DCE9F1", // Border subtle
-    300: "#B4D7E8", // Hover states
-    400: "#96C7DE", // Active elements
-    500: "#7DB9D5", // Principal - elementos destacados
-    600: "#5BA3C7", // CTA secundário
-    700: "#4488AB", // Links, ícones
-    800: "#376E8C", // Textos sobre claro
-    900: "#2B576D", // Headings
+    50: "#F0FAFF", // Background principal - quase branco azulado
+    100: "#E0F4FF", // Highlights, cards - azul clarinho
+    200: "#B8E8FF", // Border subtle - baby blue suave
+    300: "#7DD8FF", // Hover states - sky blue
+    400: "#4AC8FF", // Active elements - azul vibrante
+    500: "#1AB8FF", // Principal - azul clean e fresco ✨
+    600: "#0099E6", // CTA secundário
+    700: "#007ACC", // Links, ícones
+    800: "#005C99", // Textos sobre claro
+    900: "#004066", // Headings
   },
 
   /**
-   * Accent: Rosa Vibrante
-   * - Transmite: calor humano, cuidado, afeto, energia
+   * Accent: Pink Clean ✨
+   * - Transmite: calor humano, feminilidade, energia positiva
    * - Uso: CTAs principais, badges especiais, "momentos de alegria"
    * - REGRA: usar pontualmente (máx 10-15% da tela)
+   * - Inspiração: Flores frescas, blush natural, Instagram aesthetic
    */
   accent: {
-    50: "#FFF1F5", // Background accent suave
-    100: "#FFE4EC", // Highlight rosa
-    200: "#FECDD6", // Border rosa
-    300: "#FDA4B8", // Hover
-    400: "#FB7190", // Active
-    500: "#F4258C", // CTA PRINCIPAL - destaque máximo
-    600: "#DB1F7D", // CTA pressed
-    700: "#B8196A", // Links rosa
-    800: "#961456", // Text accent
-    900: "#7A1047", // Heading accent (raro)
+    50: "#FFF5F8", // Background accent suave - quase branco rosado
+    100: "#FFE5ED", // Highlight rosa - rosa clarinho
+    200: "#FFD0E0", // Border rosa - rosa suave
+    300: "#FFA8C5", // Hover - rosa médio
+    400: "#FF7AA8", // Active - rosa vibrante
+    500: "#FF5C94", // CTA PRINCIPAL - pink clean e Instagram-worthy ✨
+    600: "#E84D82", // CTA pressed
+    700: "#CC3E6F", // Links rosa
+    800: "#A8335B", // Text accent
+    900: "#852848", // Heading accent (raro)
   },
 
   /**
@@ -99,41 +101,141 @@ export const brand = {
 } as const;
 
 // ===========================================
+// MATERNAL TOKENS - Auto-cuidado & Acolhimento
+// Cores que transmitem: segurança, amor, cuidado, crescimento
+// ===========================================
+
+export const maternal = {
+  /**
+   * Acolhimento - Tons quentes que abraçam
+   * Para momentos de conexão, boas-vindas, conforto
+   */
+  warmth: {
+    blush: "#FFEEF2",      // Abraço suave
+    peach: "#FFE4D6",      // Carinho maternal
+    honey: "#FFF4E6",      // Doçura, lar
+    cream: "#FFFBF5",      // Aconchego
+  },
+
+  /**
+   * Serenidade - Tons que acalmam
+   * Para meditação, respiração, momentos de paz
+   */
+  calm: {
+    lavender: "#F5F0FF",   // Tranquilidade
+    mist: "#F0F7FF",       // Clareza mental
+    sage: "#F0FDF4",       // Natureza, renovação
+    cloud: "#F8FAFC",      // Leveza
+  },
+
+  /**
+   * Força - Tons que empoderam
+   * Para conquistas, progresso, superação
+   */
+  strength: {
+    rose: "#FCE7F3",       // Força feminina
+    coral: "#FFF1F0",      // Energia positiva
+    gold: "#FFFBEB",       // Conquista, valor
+    mint: "#ECFDF5",       // Renovação, crescimento
+  },
+
+  /**
+   * Conexão - Tons para momentos de vínculo
+   * Para interações, comunidade, compartilhamento
+   */
+  bond: {
+    heart: "#FDF2F8",      // Amor incondicional
+    nurture: "#FEF3F2",    // Cuidado mútuo
+    trust: "#EFF6FF",      // Confiança
+    together: "#F5F3FF",   // Comunidade
+  },
+
+  /**
+   * Jornada - Fases da maternidade
+   * Cores específicas para cada momento
+   */
+  journey: {
+    tentando: "#FFF7ED",   // Esperança dourada
+    gravidez: "#FDF4FF",   // Magia lilás
+    posNatal: "#FEF2F2",   // Rosa acolhedor
+    amamentacao: "#F0FDF4", // Verde nutritivo
+    maternidade: "#FFF1F2", // Rosa maduro
+  },
+
+  /**
+   * Autocuidado - Rituais e bem-estar
+   */
+  selfCare: {
+    rest: "#F8F4FF",       // Descanso
+    hydrate: "#F0F9FF",    // Água, frescor
+    nourish: "#FFFBEB",    // Nutrição
+    move: "#ECFDF5",       // Movimento
+    breathe: "#F0FDFA",    // Respiração
+    reflect: "#FDF4FF",    // Reflexão
+  },
+
+  /**
+   * Gradientes maternais suaves (light backgrounds)
+   */
+  gradients: {
+    embrace: ["#FFEEF2", "#FFF4E6", "#FFFBF5"] as const,     // Abraço
+    serenity: ["#F5F0FF", "#F0F7FF", "#F8FAFC"] as const,    // Paz
+    growth: ["#ECFDF5", "#F0FDF4", "#FFFBEB"] as const,      // Crescimento
+    love: ["#FDF2F8", "#FCE7F3", "#FFF1F2"] as const,        // Amor
+    journey: ["#FFF7ED", "#FDF4FF", "#FEF2F2"] as const,     // Jornada
+  },
+
+  /**
+   * Gradientes para Stories/Onboarding (dark immersive)
+   * Cada etapa tem sua própria atmosfera
+   */
+  stories: {
+    welcome: ["#1A1A2E", "#16213E", "#0F3460"] as const,     // Noite acolhedora
+    moment: ["#2D1B4E", "#462B7C", "#5B3A9B"] as const,      // Lilás introspectivo
+    date: ["#3D2B54", "#5C3D7A", "#7B4F9F"] as const,        // Roxo mágico
+    objectives: ["#1E3A5F", "#2E5A8F", "#3E7ABF"] as const,  // Azul sereno
+    emotional: ["#4A2040", "#6B3060", "#8C4080"] as const,   // Rosa profundo
+    checkIn: ["#1F4E5F", "#2F6E8F", "#3F8EAF"] as const,     // Azul teal
+    reward: ["#0D0D0D", "#1A1A1A", "#2D2D2D"] as const,      // Premium escuro
+  },
+} as const;
+
+// ===========================================
 // SURFACE TOKENS - Superfícies e Backgrounds
 // ===========================================
 
 export const surface = {
   light: {
-    /** Base: azul clarinho (nunca branco puro) */
-    base: "#F7FBFD",
+    /** Base: Blue Clean clarinho (nunca branco puro) */
+    base: "#F0FAFF",
     /** Cards: branco puro */
     card: "#FFFFFF",
     /** Elevated: cards com elevação */
     elevated: "#FFFFFF",
     /** Tertiary: separadores, dividers */
-    tertiary: "#EDF4F8",
+    tertiary: "#E0F4FF",
     /** Overlay: modais, sheets */
     overlay: "rgba(0, 0, 0, 0.5)",
     /** Glass: elementos com blur */
-    glass: "rgba(247, 251, 253, 0.85)",
+    glass: "rgba(240, 250, 255, 0.85)",
     /** Card com transparência */
     cardAlpha: "rgba(255, 255, 255, 0.96)",
   },
   dark: {
-    /** Base: azul muito escuro (não preto puro - OLED friendly) */
-    base: "#0F1419",
+    /** Base: Blue Clean escuro (não preto puro - OLED friendly) */
+    base: "#0A1520",
     /** Cards: elevação 1 */
-    card: "#1A2027",
+    card: "#0F1E2D",
     /** Elevated: elevação 2 */
-    elevated: "#242D36",
+    elevated: "#15283A",
     /** Tertiary: separadores */
-    tertiary: "#2F3B46",
+    tertiary: "#1F3A4F",
     /** Overlay */
     overlay: "rgba(0, 0, 0, 0.7)",
     /** Glass */
-    glass: "rgba(26, 32, 39, 0.72)",
+    glass: "rgba(15, 30, 45, 0.72)",
     /** Card alpha */
-    cardAlpha: "rgba(26, 32, 39, 0.95)",
+    cardAlpha: "rgba(15, 30, 45, 0.95)",
   },
 } as const;
 
@@ -154,9 +256,9 @@ export const text = {
     /** Inverse: texto em fundo escuro */
     inverse: "#F9FAFB",
     /** Accent: texto rosa (links CTA) */
-    accent: "#F4258C",
+    accent: "#FF5C94",
     /** Link: texto azul (links normais) */
-    link: "#4488AB",
+    link: "#007ACC",
   },
   dark: {
     primary: "#F3F5F7",
@@ -164,8 +266,8 @@ export const text = {
     tertiary: "#7D8B99",
     muted: "#5C6B7A",
     inverse: "#1F2937",
-    accent: "#FB7190",
-    link: "#96C7DE",
+    accent: "#FF7AA8",
+    link: "#4AC8FF",
   },
 } as const;
 
@@ -247,9 +349,9 @@ export const feeling = {
   },
   /** Amada - Rosa (coração) */
   amada: {
-    color: "#FECDD3",
-    active: "#FFE4E9",
-    icon: "#F4258C",
+    color: "#FFD0E0",
+    active: "#FFE5ED",
+    icon: "#FF5C94",
   },
   /** Ansiosa - Coral (urgência suave) */
   ansiosa: {
@@ -404,7 +506,7 @@ export const shadows = {
   }),
   /** Glow rosa para CTA accent */
   accentGlow: {
-    shadowColor: "#F4258C",
+    shadowColor: "#FF5C94",
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.25,
     shadowRadius: 12,
@@ -477,18 +579,47 @@ export const gradients = {
 
 export const animation = {
   duration: {
-    instant: 100,
-    fast: 200,
+    instant: 80,
+    fast: 150,
     normal: 300,
     slow: 500,
     slower: 800,
+    glow: 1500,
+    particle: 2000,
   },
   easing: {
     easeInOut: "cubic-bezier(0.42, 0, 0.58, 1)",
     easeOut: "cubic-bezier(0, 0, 0.58, 1)",
     easeIn: "cubic-bezier(0.42, 0, 1, 1)",
+    emphasized: "cubic-bezier(0.2, 0, 0, 1)",
     spring: { damping: 15, stiffness: 150 },
+    springSnappy: { damping: 12, stiffness: 200 },
+    springBouncy: { damping: 8, stiffness: 180 },
   },
+} as const;
+
+// ===========================================
+// MICRO-INTERACTION TOKENS
+// ===========================================
+
+export const micro = {
+  /** Escala quando pressionado (0.97 = 3% menor) */
+  pressScale: 0.97,
+  /** Escala no hover/focus */
+  hoverScale: 1.02,
+  /** Escala para pop/destaque */
+  popScale: 1.15,
+  /** Distância de float para partículas (px) */
+  floatDistance: 10,
+  /** Ângulo de tilt sutil (graus) */
+  tiltAngle: 3,
+  /** Opacidade de glow */
+  glow: {
+    min: 0.3,
+    max: 0.7,
+  },
+  /** Delay entre itens em stagger (ms) */
+  staggerDelay: 50,
 } as const;
 
 // ===========================================
@@ -575,7 +706,7 @@ export const components = {
 
   // Tab Bar
   tabBar: {
-    backgroundColor: "rgba(247, 251, 253, 0.95)",
+    backgroundColor: "rgba(240, 250, 255, 0.95)",
     borderTopWidth: 0.5,
     borderTopColor: brand.primary[200],
     paddingTop: spacing.sm,
@@ -624,6 +755,123 @@ export const overlay = {
   dark: "rgba(0, 0, 0, 0.5)",
   heavy: "rgba(0, 0, 0, 0.7)",
   backdrop: "rgba(0, 0, 0, 0.85)",
+} as const;
+
+// ===========================================
+// PREMIUM TOKENS - Dark Immersive Screens
+// (Paywall, Premium features, Cinematic UI)
+// ===========================================
+
+export const premium = {
+  /**
+   * Premium Gradient Background
+   * Deep purple/violet for luxurious feel
+   * Used in: Paywall, Premium features
+   */
+  gradient: {
+    top: "#0F0A1F",
+    mid: "#1A1030",
+    bottom: "#251540",
+    accent: "#301A55",
+  },
+
+  /**
+   * Glow effects for premium screens
+   */
+  glow: {
+    accent: "rgba(255, 92, 148, 0.25)",
+    secondary: "rgba(139, 92, 246, 0.2)",
+    primary: "rgba(26, 184, 255, 0.2)",
+  },
+
+  /**
+   * Aurora effects for cinematic screens (Login, onboarding)
+   */
+  aurora: {
+    pink: "rgba(255, 92, 148, 0.3)",
+    purple: "rgba(139, 92, 246, 0.3)",
+    blue: "rgba(26, 184, 255, 0.25)",
+  },
+
+  /**
+   * Input styles for dark premium screens
+   */
+  input: {
+    background: "rgba(255, 255, 255, 0.06)",
+    border: "rgba(255, 255, 255, 0.12)",
+  },
+
+  /**
+   * Glass morphism for premium cards
+   */
+  glass: {
+    ultraLight: "rgba(255, 255, 255, 0.06)",
+    light: "rgba(255, 255, 255, 0.08)",
+    base: "rgba(255, 255, 255, 0.1)",
+    medium: "rgba(255, 255, 255, 0.12)",
+    border: "rgba(255, 255, 255, 0.2)",
+    strong: "rgba(255, 255, 255, 0.25)",
+    progressActive: "rgba(255, 255, 255, 0.95)",
+    accentLight: "rgba(255, 92, 148, 0.15)",
+    accentMedium: "rgba(255, 92, 148, 0.2)",
+    dark: "rgba(0, 0, 0, 0.3)",
+    // Legacy aliases
+    background: "rgba(255, 255, 255, 0.08)",
+    selected: "rgba(255, 92, 148, 0.15)",
+    highlight: "rgba(255, 255, 255, 0.2)",
+  },
+
+  /**
+   * Text colors on premium dark backgrounds
+   */
+  text: {
+    primary: "#FFFFFF",
+    bright: "rgba(255, 255, 255, 0.9)",
+    secondary: "rgba(255, 255, 255, 0.8)",
+    muted: "rgba(255, 255, 255, 0.7)",
+    subtle: "rgba(255, 255, 255, 0.6)",
+    disabled: "rgba(255, 255, 255, 0.5)",
+    hint: "rgba(255, 255, 255, 0.4)",
+    accent: brand.accent[400],
+  },
+
+  /**
+   * CTA gradient for premium buttons
+   */
+  cta: {
+    start: brand.accent[400],
+    end: brand.accent[600],
+  },
+
+  /**
+   * Special colors for premium UI
+   */
+  special: {
+    success: "#34D399",
+    gold: "#FCD34D",
+    crown: "#FCD34D",
+  },
+} as const;
+
+// ===========================================
+// STREAK/HABIT TOKENS
+// ===========================================
+
+export const streak = {
+  /** Streak badge background (warm yellow) */
+  background: "#FEF3C7",
+  /** Streak flame icon color */
+  icon: "#F59E0B",
+  /** Streak text color */
+  text: "#B45309",
+  /** Completion states */
+  completion: {
+    light: "#D4EDD9",
+    medium: "#A7D4B4",
+    full: "#10B981",
+  },
+  /** Success gradient for habits header */
+  gradient: ["#10B981", "#5A9D68", "#4A8C58"] as const,
 } as const;
 
 // ===========================================
@@ -700,12 +948,12 @@ export const COLORS = {
   accent: brand.teal,
   neutral,
   background: {
-    primary: surface.light.base,
-    secondary: surface.light.card,
-    tertiary: surface.light.tertiary,
-    warm: brand.primary[50],
-    card: surface.light.cardAlpha,
-    glass: surface.light.glass,
+    primary: "#F0FAFF",
+    secondary: "#FFFFFF",
+    tertiary: "#E0F4FF",
+    warm: "#F0FAFF",
+    card: "rgba(255, 255, 255, 0.96)",
+    glass: "rgba(240, 250, 255, 0.85)",
   },
   text: {
     primary: text.light.primary,
@@ -754,33 +1002,33 @@ export const COLORS_DARK = {
   secondary: brand.secondary,
   accent: brand.teal,
   neutral: {
-    0: "#0F1419",
-    50: "#1A2027",
-    100: "#242D36",
-    200: "#2F3B46",
-    300: "#3D4A57",
-    400: "#5C6B7A",
-    500: "#7D8B99",
-    600: "#9DA8B4",
-    700: "#C7CED5",
-    800: "#E2E7EC",
-    900: "#F3F5F7",
+    0: "#0A1520",
+    50: "#0F1E2D",
+    100: "#15283A",
+    200: "#1F3A4F",
+    300: "#2A4A60",
+    400: "#4A6A80",
+    500: "#6A8A9F",
+    600: "#8AAABF",
+    700: "#AACADE",
+    800: "#D0EAFF",
+    900: "#F0FAFF",
   },
   background: {
-    primary: surface.dark.base,
-    secondary: surface.dark.card,
-    tertiary: surface.dark.tertiary,
-    warm: "#151C22",
-    card: surface.dark.cardAlpha,
-    glass: surface.dark.glass,
+    primary: "#0A1520",
+    secondary: "#0F1E2D",
+    tertiary: "#15283A",
+    warm: "#0F1A25",
+    card: "rgba(15, 30, 45, 0.95)",
+    glass: "rgba(15, 30, 45, 0.72)",
   },
   text: text.dark,
   semantic: semantic.dark,
   feeling: {
     bem: "rgba(255, 228, 181, 0.2)",
-    cansada: "rgba(186, 230, 253, 0.25)",
+    cansada: "rgba(26, 184, 255, 0.25)",
     indisposta: "rgba(167, 139, 250, 0.2)",
-    amada: "rgba(254, 205, 211, 0.2)",
+    amada: "rgba(255, 208, 224, 0.2)",
   },
   mood: COLORS.mood,
   legacyAccent: COLORS.legacyAccent,
@@ -798,6 +1046,7 @@ export const GRADIENTS = gradients;
  */
 export const Tokens = {
   brand,
+  maternal,
   neutral,
   text,
   semantic,
@@ -809,11 +1058,14 @@ export const Tokens = {
   shadows,
   feeling,
   animation,
+  micro,
   accessibility,
   components,
   layout,
   elevation,
   overlay,
+  premium,
   mood,
+  streak,
   cycleColors,
 } as const;

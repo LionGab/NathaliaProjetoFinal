@@ -94,9 +94,7 @@ module.exports = {
     android: {
       package: "com.nossamaternidade.app",
       versionCode: 1,
-      targetSdkVersion: 35,
-      compileSdkVersion: 35,
-      minSdkVersion: 24, // Android 7.0 (95%+ market coverage)
+      // NOTE: SDK versions are configured in expo-build-properties plugin
       icon: "./assets/icon.png",
       adaptiveIcon: {
         foregroundImage: "./assets/adaptive-icon.png",
@@ -332,6 +330,66 @@ module.exports = {
           checkAutomatically: "ON_LOAD",
         },
       ],
+
+      // ==================================================
+      // DESIGN & UX PLUGINS (require native config)
+      // ==================================================
+
+      // Screen orientation lock (portrait-only app)
+      [
+        "expo-screen-orientation",
+        {
+          initialOrientation: "PORTRAIT_UP",
+        },
+      ],
+
+      // Video player (native config)
+      [
+        "expo-video",
+        {
+          supportsBackgroundPlayback: false,
+          supportsPictureInPicture: false,
+        },
+      ],
+
+      // ==================================================
+      // STORE & MONETIZATION PLUGINS
+      // ==================================================
+
+      // App Tracking Transparency (iOS 14.5+ REQUIRED for App Store)
+      [
+        "expo-tracking-transparency",
+        {
+          userTrackingPermission:
+            "Precisamos de sua permissão para personalizar anúncios e melhorar sua experiência.",
+        },
+      ],
+
+      // NOTE: expo-store-review is included in dependencies but doesn't need plugin entry
+
+      // ==================================================
+      // BACKGROUND & SYNC PLUGINS
+      // ==================================================
+
+      // Background fetch (for sync tasks)
+      [
+        "expo-background-fetch",
+        {
+          stopOnTerminate: false,
+          enableHeadless: true,
+        },
+      ],
+
+      // ==================================================
+      // NOTE: The following modules are included in dependencies
+      // but don't require explicit plugin entries (pure JS or auto-config):
+      // - expo-haptics, expo-clipboard, expo-sharing, expo-file-system
+      // - expo-document-picker, expo-web-browser, expo-device
+      // - expo-application, expo-constants, expo-network, expo-battery
+      // - expo-brightness, expo-keep-awake, expo-crypto, expo-sqlite
+      // - expo-blur, expo-linear-gradient, expo-status-bar, expo-system-ui
+      // - expo-sensors, expo-sms, expo-mail-composer, expo-speech, expo-linking
+      // ==================================================
     ],
 
     // Experiments (stability)

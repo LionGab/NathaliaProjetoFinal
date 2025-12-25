@@ -34,10 +34,10 @@ import Animated, {
   FadeInUp,
   useAnimatedStyle,
   useSharedValue,
-  withSpring,
   withSequence,
   withDelay,
   withTiming,
+  withRepeat,
   Easing,
   interpolate,
   useAnimatedScrollHandler,
@@ -51,7 +51,8 @@ import { MainTabScreenProps } from "../types/navigation";
 
 // Componentes da Home
 import { EmotionalCheckInPrimary } from "../components/home";
-import { Avatar, AVATAR_SIZES } from "../components/ui";
+import { Avatar, AVATAR_SIZES, StreakBadge, PressableScale } from "../components/ui";
+import { staggeredFadeUp } from "../utils/animations";
 
 // Hero image da Nathalia - usando imagem local
 const NATHALIA_HERO_IMAGE = require("../../assets/onboarding/images/stage-gravida-t2.jpg");
@@ -102,7 +103,7 @@ const ProgressRing: React.FC<{
 
 ProgressRing.displayName = "ProgressRing";
 
-// Premium Feature Card
+// Premium Feature Card - com PressableScale
 const FeatureCard: React.FC<{
   icon: keyof typeof Ionicons.glyphMap;
   iconBgColor: string;
@@ -112,92 +113,69 @@ const FeatureCard: React.FC<{
   badge?: string;
   onPress: () => void;
   isDark: boolean;
-  delay?: number;
+  index?: number;
 }> = React.memo(
-  ({ icon, iconBgColor, iconColor, title, subtitle, badge, onPress, isDark, delay = 0 }) => {
-    const scale = useSharedValue(1);
-
-    const handlePressIn = () => {
-      scale.value = withSpring(0.97, { damping: 15 });
-    };
-
-    const handlePressOut = () => {
-      scale.value = withSpring(1, { damping: 10 });
-    };
-
-    const animatedStyle = useAnimatedStyle(() => ({
-      transform: [{ scale: scale.value }],
-    }));
-
-    const handlePress = async () => {
-      await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-      onPress();
-    };
-
+  ({ icon, iconBgColor, iconColor, title, subtitle, badge, onPress, isDark, index = 0 }) => {
     const cardBg = isDark ? brand.primary[900] : neutral[0];
     const borderColor = isDark ? brand.primary[700] : neutral[100];
     const textMain = isDark ? neutral[100] : neutral[900];
     const textMuted = isDark ? neutral[400] : neutral[500];
 
     return (
-      <Animated.View
-        entering={FadeInUp.delay(delay).duration(500).springify()}
-        style={animatedStyle}
-      >
-        <Pressable
-          onPress={handlePress}
-          onPressIn={handlePressIn}
-          onPressOut={handlePressOut}
-          accessibilityLabel={title}
-          accessibilityRole="button"
-          style={[
-            styles.featureCard,
-            {
-              backgroundColor: cardBg,
-              borderColor,
-              ...shadows.md,
-            },
-          ]}
-        >
-          {/* Icon */}
-          <View style={[styles.featureIconContainer, { backgroundColor: iconBgColor }]}>
-            <Ionicons name={icon} size={22} color={iconColor} />
-          </View>
+      <Animated.View entering={staggeredFadeUp(index, 80)}>
+        <PressableScale onPress={onPress} spring="snappy">
+          <View
+            accessibilityLabel={title}
+            accessibilityRole="button"
+            style={[
+              styles.featureCard,
+              {
+                backgroundColor: cardBg,
+                borderColor,
+                ...shadows.md,
+              },
+            ]}
+          >
+            {/* Icon */}
+            <View style={[styles.featureIconContainer, { backgroundColor: iconBgColor }]}>
+              <Ionicons name={icon} size={22} color={iconColor} />
+            </View>
 
-          {/* Content */}
-          <View style={styles.featureContent}>
-            <View style={styles.featureTitleRow}>
-              <Text style={[styles.featureTitle, { color: textMain }]}>{title}</Text>
-              {badge && (
-                <View
-                  style={[
-                    styles.badge,
-                    { backgroundColor: isDark ? brand.accent[500] : brand.accent[100] },
-                  ]}
-                >
-                  <Text
+            {/* Content */}
+            <View style={styles.featureContent}>
+              <View style={styles.featureTitleRow}>
+                <Text style={[styles.featureTitle, { color: textMain }]}>{title}</Text>
+                {badge && (
+                  <View
                     style={[
-                      styles.badgeText,
-                      { color: isDark ? neutral[900] : brand.accent[700] },
+                      styles.badge,
+                      { backgroundColor: isDark ? brand.accent[500] : brand.accent[100] },
                     ]}
                   >
-                    {badge}
-                  </Text>
-                </View>
-              )}
+                    <Text
+                      style={[
+                        styles.badgeText,
+                        { color: isDark ? neutral[900] : brand.accent[700] },
+                      ]}
+                    >
+                      {badge}
+                    </Text>
+                  </View>
+                )}
+              </View>
+              <Text style={[styles.featureSubtitle, { color: textMuted }]} numberOfLines={2}>
+                {subtitle}
+              </Text>
             </View>
-            <Text style={[styles.featureSubtitle, { color: textMuted }]} numberOfLines={2}>
-              {subtitle}
-            </Text>
-          </View>
 
-          {/* Arrow */}
-          <Ionicons
-            name="chevron-forward"
-            size={20}
-            color={isDark ? neutral[500] : neutral[400]}
-          />
-        </Pressable>
+            {/* Arrow */}
+            <Ionicons
+              name="chevron-forward"
+              size={20}
+              color={isDark ? neutral[500] : neutral[400]}
+            />
+          </View>
+        </PressableScale>
       </Animated.View>
     );
   }
@@ -242,23 +220,20 @@ export default function HomeScreen({ navigation }: MainTabScreenProps<"Home">): 
     };
   });
 
-  // CTA glow animation
+  // CTA glow animation - loop infinito otimizado
   React.useEffect(() => {
+    // Usa withRepeat ao invés de setInterval para melhor performance
     ctaGlow.value = withDelay(
       500,
-      withSequence(
-        withTiming(1, { duration: 1500, easing: Easing.bezier(0.4, 0, 0.2, 1) }),
-        withTiming(0.3, { duration: 1500, easing: Easing.bezier(0.4, 0, 0.2, 1) })
+      withRepeat(
+        withSequence(
+          withTiming(1, { duration: 1500, easing: Easing.bezier(0.4, 0, 0.2, 1) }),
+          withTiming(0.3, { duration: 1500, easing: Easing.bezier(0.4, 0, 0.2, 1) })
+        ),
+        -1, // Loop infinito
+        false // Não reverter
       )
     );
-    // Loop the glow
-    const interval = setInterval(() => {
-      ctaGlow.value = withSequence(
-        withTiming(1, { duration: 1500, easing: Easing.bezier(0.4, 0, 0.2, 1) }),
-        withTiming(0.3, { duration: 1500, easing: Easing.bezier(0.4, 0, 0.2, 1) })
-      );
-    }, 3000);
-    return () => clearInterval(interval);
   }, [ctaGlow]);
 
   const ctaGlowStyle = useAnimatedStyle(() => ({
@@ -399,31 +374,33 @@ export default function HomeScreen({ navigation }: MainTabScreenProps<"Home">): 
           </View>
 
           {/* Avatar with streak badge */}
-          <Pressable onPress={handleAvatarPress} style={styles.avatarContainer}>
-            <View
-              style={[
-                styles.avatarBorder,
-                {
-                  borderColor: habitsProgress > 0 ? brand.accent[400] : neutral[200],
-                  ...shadows.sm,
-                },
-              ]}
-            >
-              <Avatar
-                size={AVATAR_SIZES.md}
-                source={userAvatar ? { uri: userAvatar } : null}
-                fallbackIcon="person"
-                fallbackBgColor={brand.primary[500]}
-                fallbackColor={neutral[0]}
-              />
-            </View>
-            {/* Streak badge */}
+          <View style={styles.headerRight}>
+            {/* Streak Badge - Animado */}
             {checkInStreak > 0 && (
-              <View style={[styles.streakBadge, { backgroundColor: brand.accent[500] }]}>
-                <Text style={styles.streakText}>{checkInStreak}</Text>
-              </View>
+              <StreakBadge days={checkInStreak} size="sm" />
             )}
-          </Pressable>
+
+            {/* Avatar */}
+            <PressableScale onPress={handleAvatarPress} scale={0.95}>
+              <View
+                style={[
+                  styles.avatarBorder,
+                  {
+                    borderColor: habitsProgress > 0 ? brand.accent[400] : neutral[200],
+                    ...shadows.sm,
+                  },
+                ]}
+              >
+                <Avatar
+                  size={AVATAR_SIZES.md}
+                  source={userAvatar ? { uri: userAvatar } : null}
+                  fallbackIcon="person"
+                  fallbackBgColor={brand.primary[500]}
+                  fallbackColor={neutral[0]}
+                />
+              </View>
+            </PressableScale>
+          </View>
         </Animated.View>
 
         {/* HERO CARD - Premium CTA */}
@@ -582,7 +559,7 @@ export default function HomeScreen({ navigation }: MainTabScreenProps<"Home">): 
             badge="NOVO"
             onPress={handleMundoDaNath}
             isDark={isDark}
-            delay={200}
+            index={0}
           />
 
           {/* Comunidade */}
@@ -594,7 +571,7 @@ export default function HomeScreen({ navigation }: MainTabScreenProps<"Home">): 
             subtitle="Conecte-se com outras mães na mesma jornada"
             onPress={handleCommunity}
             isDark={isDark}
-            delay={250}
+            index={1}
           />
         </View>
       </AnimatedScrollView>
@@ -623,6 +600,11 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingRight: spacing.md,
   },
+  headerRight: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: spacing.sm,
+  },
   greeting: {
     fontSize: 24,
     fontWeight: "700",
@@ -635,32 +617,10 @@ const styles = StyleSheet.create({
     fontFamily: "Manrope_600SemiBold",
     marginTop: 2,
   },
-  avatarContainer: {
-    position: "relative",
-  },
   avatarBorder: {
     borderRadius: 999,
     borderWidth: 2.5,
   },
-  streakBadge: {
-    position: "absolute",
-    bottom: -4,
-    right: -4,
-    width: 22,
-    height: 22,
-    borderRadius: 11,
-    alignItems: "center",
-    justifyContent: "center",
-    borderWidth: 2,
-    borderColor: brand.primary[50],
-  },
-  streakText: {
-    fontSize: 11,
-    fontWeight: "700",
-    fontFamily: "Manrope_700Bold",
-    color: neutral[0],
-  },
-
   // Hero Card
   heroCard: {
     height: 200,

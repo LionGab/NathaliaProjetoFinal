@@ -1,15 +1,11 @@
 /**
  * Nossa Maternidade - AuthLandingScreen (Premium)
  *
- * DESIGN REFERENCES:
- * - Flo App (período/gravidez) - 200M+ downloads
- * - Calm - Meditação premium
- * - Headspace - UX clean
- * - Peanut - Comunidade materna
+ * DESIGN: Pink Clean + Blue Clean ✨
  *
  * PATTERN: Full hero + floating bottom sheet + zero scroll
  *
- * @version 1.0.0
+ * @version 2.0.0
  */
 
 import { Ionicons } from "@expo/vector-icons";
@@ -66,16 +62,16 @@ const TERMS_URL = "https://nossamaternidade.com.br/termos";
 const PRIVACY_URL = "https://nossamaternidade.com.br/privacidade";
 
 // ============================================
-// DESIGN SYSTEM - Calm FemTech (from Tokens)
+// DESIGN SYSTEM - Pink Clean + Blue Clean ✨
 // ============================================
 const DS = {
   // Core
   white: neutral[0],
   black: neutral[900],
 
-  // Brand (from tokens)
-  primary: brand.primary[500],
-  accent: brand.accent[500],
+  // Brand (from tokens) - Pink Clean + Blue Clean
+  primary: brand.primary[500], // #1AB8FF - Blue Clean
+  accent: brand.accent[500],   // #FF5C94 - Pink Clean
 
   // Text (from tokens)
   text: {
@@ -84,15 +80,22 @@ const DS = {
     muted: Tokens.text.light.tertiary,
     inverse: Tokens.text.light.inverse,
     inverseMuted: "rgba(255,255,255,0.85)",
+    accent: brand.accent[500], // Pink Clean for highlights
   },
 
   // UI
   border: neutral[200],
-  inputBg: neutral[50],
+  inputBg: brand.primary[50], // Light blue background
 
   // States (from tokens)
   error: Tokens.semantic.light.error,
   success: Tokens.semantic.light.success,
+
+  // Gradients for hero overlay
+  gradient: {
+    blueClean: "rgba(26, 184, 255, 0.15)",   // Blue Clean overlay
+    pinkClean: "rgba(255, 92, 148, 0.08)",   // Pink Clean subtle
+  },
 };
 
 // ============================================
@@ -288,14 +291,14 @@ export default function AuthLandingScreen({ navigation }: Props) {
           transition={400}
         />
 
-        {/* Gradient overlay - Calm FemTech style */}
+        {/* Gradient overlay - Pink Clean + Blue Clean ✨ */}
         <LinearGradient
           colors={[
-            "rgba(125, 185, 213, 0.12)", // Azul suave no topo
-            "rgba(0,0,0,0.20)",
-            "rgba(31, 41, 55, 0.88)", // Escuro acolhedor embaixo
+            DS.gradient.blueClean,        // Blue Clean no topo
+            DS.gradient.pinkClean,        // Pink Clean sutil
+            "rgba(10, 21, 32, 0.90)",     // Dark blue clean embaixo
           ]}
-          locations={[0, 0.4, 1]}
+          locations={[0, 0.35, 1]}
           style={StyleSheet.absoluteFillObject}
         />
 
@@ -472,21 +475,21 @@ const styles = StyleSheet.create({
     marginTop: 8,
   },
 
-  // Badge
+  // Badge - Pink Clean accent ✨
   badge: {
     alignSelf: "flex-start",
     marginTop: 16,
-    paddingHorizontal: 12,
-    paddingVertical: 6,
+    paddingHorizontal: 14,
+    paddingVertical: 8,
     borderRadius: 20,
-    backgroundColor: "rgba(255,255,255,0.15)",
+    backgroundColor: "rgba(255, 92, 148, 0.15)", // Pink Clean subtle bg
     borderWidth: 1,
-    borderColor: "rgba(255,255,255,0.2)",
+    borderColor: "rgba(255, 92, 148, 0.3)",      // Pink Clean border
   },
   badgeText: {
     fontSize: 12,
     fontWeight: "600",
-    color: DS.text.inverseMuted,
+    color: DS.text.inverse,
     fontFamily: typography.fontFamily.semibold,
     letterSpacing: 0.3,
   },
@@ -577,17 +580,16 @@ const styles = StyleSheet.create({
     fontFamily: typography.fontFamily.semibold,
   },
 
-  // Microcopy
+  // Microcopy - Pink Clean accent ✨
   microcopyContainer: {
     alignItems: "center",
     marginTop: 20,
   },
   microcopy: {
     fontSize: 14,
-    fontWeight: "500",
-    color: DS.text.muted,
-    fontFamily: typography.fontFamily.medium,
-    fontStyle: "italic",
+    fontWeight: "600",
+    color: DS.accent, // Pink Clean highlight
+    fontFamily: typography.fontFamily.semibold,
   },
 
   // Legal
@@ -603,7 +605,7 @@ const styles = StyleSheet.create({
     fontFamily: typography.fontFamily.base,
   },
   legalLink: {
-    color: DS.text.secondary,
+    color: DS.primary, // Blue Clean for links
     fontWeight: "600",
     textDecorationLine: "underline",
   },

@@ -1,9 +1,61 @@
+/**
+ * Button - Design System Component
+ *
+ * Pink Clean + Blue Clean 2025 ✨
+ *
+ * Hierarquia de variantes:
+ * - accent: Pink Clean CTA (destaque máximo)
+ * - glow: Pink Clean CTA com animação de glow pulsante
+ * - gradient: Gradiente pink para destaque premium
+ * - primary: Blue Clean (ação primária)
+ * - secondary: Outline blue
+ * - outline: Outline customizável
+ * - ghost: Sem fundo
+ * - soft: Fundo suave blue
+ *
+ * @example
+ * ```tsx
+ * <Button variant="glow" onPress={handleCTA}>Começar Agora</Button>
+ * <Button variant="gradient" onPress={handlePremium}>Upgrade Premium</Button>
+ * <Button variant="accent" onPress={handleSave}>Salvar</Button>
+ * <Button variant="primary" onPress={handleNext}>Próximo</Button>
+ * ```
+ */
+
 import { Ionicons } from "@expo/vector-icons";
-import * as Haptics from "expo-haptics";
-import React, { useMemo } from "react";
-import { ActivityIndicator, Pressable, Text, ViewStyle } from "react-native";
+import { LinearGradient } from "expo-linear-gradient";
+import React, { useEffect, useMemo, useCallback } from "react";
+import { ActivityIndicator, Pressable, Text, View, ViewStyle } from "react-native";
+import Animated, {
+  useAnimatedStyle,
+  useSharedValue,
+  withRepeat,
+  withSequence,
+  withTiming,
+  withSpring,
+  Easing,
+} from "react-native-reanimated";
 import { useTheme } from "../../hooks/useTheme";
 import { buttonAccessibility } from "../../utils/accessibility";
+import { haptic } from "../../utils/haptics";
+import { SPRING, TIMING } from "../../utils/animations";
+import { brand, neutral, gradients, shadows, micro } from "../../theme/tokens";
+
+// ===========================================
+// TYPES
+// ===========================================
+
+type ButtonVariant =
+  | "accent"
+  | "glow"
+  | "gradient"
+  | "primary"
+  | "secondary"
+  | "outline"
+  | "ghost"
+  | "soft";
+
+type ButtonSize = "sm" | "md" | "lg";
 
 interface ButtonProps {
   /** Button text label */
@@ -12,16 +64,18 @@ interface ButtonProps {
   onPress: () => void;
   /**
    * Visual style variant:
-   * - accent: Rosa CTA (ação principal, destaque máximo) - texto navy para AAA
-   * - primary: Azul pastel (ação primária, calmo)
-   * - secondary: Outline azul (ação secundária)
+   * - accent: Rosa CTA (destaque máximo)
+   * - glow: Rosa CTA com glow pulsante animado
+   * - gradient: Gradiente rosa premium
+   * - primary: Azul pastel (calmo)
+   * - secondary: Outline azul
    * - outline: Outline customizável
-   * - ghost: Sem fundo (terciário)
+   * - ghost: Sem fundo
    * - soft: Fundo suave azul
    */
-  variant?: "accent" | "primary" | "secondary" | "outline" | "ghost" | "soft";
+  variant?: ButtonVariant;
   /** Size variant */
-  size?: "sm" | "md" | "lg";
+  size?: ButtonSize;
   /** Optional icon (Ionicons name) */
   icon?: keyof typeof Ionicons.glyphMap;
   /** Icon position relative to text */
@@ -40,26 +94,47 @@ interface ButtonProps {
   style?: ViewStyle;
 }
 
-/**
- * Design System Button Component - Calm FemTech 2025
- *
- * Paleta híbrida: Azul (calma) + Rosa (CTAs)
- *
- * Hierarquia:
- * - accent (rosa): Ação principal, máximo destaque, texto navy (AAA contrast)
- * - primary (azul): Ação primária, tom calmo
- * - secondary (outline): Ação secundária
- * - ghost: Ação terciária
- * - soft: Fundo suave azul
- *
- * @example
- * ```tsx
- * <Button variant="accent" onPress={handleSave}>Salvar</Button>
- * <Button variant="primary" onPress={handleNext}>Próximo</Button>
- * <Button variant="secondary" icon="heart">Favoritar</Button>
- * <Button variant="ghost" onPress={handleCancel}>Cancelar</Button>
- * ```
- */
+// ===========================================
+// SIZE CONFIGS
+// ===========================================
+
+const SIZE_STYLES = {
+  sm: {
+    paddingVertical: 10,
+    paddingHorizontal: 16,
+    fontSize: 14,
+    iconSize: 16,
+    minHeight: 44, // iOS HIG minimum
+    borderRadius: 12,
+  },
+  md: {
+    paddingVertical: 14,
+    paddingHorizontal: 20,
+    fontSize: 15,
+    iconSize: 18,
+    minHeight: 44,
+    borderRadius: 14,
+  },
+  lg: {
+    paddingVertical: 18,
+    paddingHorizontal: 24,
+    fontSize: 16,
+    iconSize: 20,
+    minHeight: 52,
+    borderRadius: 16,
+  },
+} as const;
+
+// ===========================================
+// ANIMATED PRESSABLE
+// ===========================================
+
+const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
+
+// ===========================================
+// BUTTON COMPONENT
+// ===========================================
+
 export function Button({
   children,
   onPress,
@@ -74,45 +149,52 @@ export function Button({
   accessibilityLabel,
   style,
 }: ButtonProps) {
-  const { button: buttonTokens, brand, neutral, isDark } = useTheme();
+  const { button: buttonTokens, brand: themeBrand, neutral: themeNeutral, isDark } = useTheme();
 
-  const handlePress = async () => {
+  // Animation values
+  const scale = useSharedValue(1);
+  const glowOpacity = useSharedValue(micro.glow.min as number);
+
+  // Glow animation for glow variant
+  useEffect(() => {
+    if (variant === "glow" && !disabled) {
+      glowOpacity.value = withRepeat(
+        withSequence(
+          withTiming(micro.glow.max, {
+            duration: TIMING.glow.duration,
+            easing: Easing.bezier(0.4, 0, 0.2, 1),
+          }),
+          withTiming(micro.glow.min, {
+            duration: TIMING.glow.duration,
+            easing: Easing.bezier(0.4, 0, 0.2, 1),
+          })
+        ),
+        -1,
+        false
+      );
+    }
+  }, [variant, disabled, glowOpacity]);
+
+  const handlePressIn = useCallback(() => {
+    scale.value = withSpring(micro.pressScale, SPRING.snappy);
+  }, [scale]);
+
+  const handlePressOut = useCallback(() => {
+    scale.value = withSpring(1, SPRING.gentle);
+  }, [scale]);
+
+  const handlePress = useCallback(async () => {
     if (!disabled && !loading) {
-      await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+      haptic.light();
       onPress();
     }
-  };
+  }, [disabled, loading, onPress]);
 
-  // iOS HIG minimum tap target: 44pt for all sizes
-  const sizeStyles = useMemo(
-    () => ({
-      sm: {
-        paddingVertical: 10,
-        paddingHorizontal: 16,
-        fontSize: 14,
-        iconSize: 16,
-        minHeight: 44, // iOS HIG minimum
-      },
-      md: {
-        paddingVertical: 14,
-        paddingHorizontal: 20,
-        fontSize: 15,
-        iconSize: 18,
-        minHeight: 44,
-      },
-      lg: {
-        paddingVertical: 18,
-        paddingHorizontal: 24,
-        fontSize: 16,
-        iconSize: 20,
-        minHeight: 52,
-      },
-    }),
-    []
-  );
+  const currentSize = SIZE_STYLES[size];
+  const isDisabled = disabled || loading;
 
-  const variantStyles = useMemo(() => {
-    // Get preset tokens for primary/secondary/ghost/soft
+  // Get variant-specific styles
+  const getVariantStyles = useMemo(() => {
     const primary = buttonTokens.primary;
     const secondary = buttonTokens.secondary;
     const ghost = buttonTokens.ghost;
@@ -120,7 +202,6 @@ export function Button({
 
     return {
       // Rosa CTA - Destaque máximo
-      // IMPORTANTE: Texto navy escuro para AAA contrast (não branco!)
       accent: {
         bg: primary.background,
         text: primary.text,
@@ -128,26 +209,48 @@ export function Button({
         bgPressed: primary.backgroundPressed,
         bgDisabled: primary.backgroundDisabled,
         textDisabled: primary.textDisabled,
-        shadow: {
-          shadowColor: brand.accent[400],
-          shadowOffset: { width: 0, height: 4 },
-          shadowOpacity: 0.25,
-          shadowRadius: 12,
-          elevation: 6,
-        },
+        shadow: shadows.accentGlow,
+        isGradient: false,
+        hasGlow: false,
       },
-      // Azul pastel - Ação primária (calmo, confiante)
-      // Texto branco sobre azul garante contraste adequado
-      primary: {
-        bg: brand.primary[500],
-        text: isDark ? brand.primary[50] : neutral[0],
+      // Rosa CTA com glow animado
+      glow: {
+        bg: primary.background,
+        text: primary.text,
+        border: primary.border,
+        bgPressed: primary.backgroundPressed,
+        bgDisabled: primary.backgroundDisabled,
+        textDisabled: primary.textDisabled,
+        shadow: shadows.accentGlow,
+        isGradient: false,
+        hasGlow: true,
+      },
+      // Gradient rosa premium
+      gradient: {
+        bg: "transparent",
+        text: neutral[900], // Navy for contrast
         border: "transparent",
-        bgPressed: brand.primary[600],
-        bgDisabled: neutral[200],
-        textDisabled: neutral[400],
-        shadow: undefined,
+        bgPressed: "transparent",
+        bgDisabled: themeNeutral[200],
+        textDisabled: themeNeutral[400],
+        shadow: shadows.accentGlow,
+        isGradient: true,
+        hasGlow: false,
+        gradientColors: gradients.accent,
       },
-      // Outline azul - Ação secundária
+      // Azul pastel
+      primary: {
+        bg: themeBrand.primary[500],
+        text: isDark ? themeBrand.primary[50] : themeNeutral[0],
+        border: "transparent",
+        bgPressed: themeBrand.primary[600],
+        bgDisabled: themeNeutral[200],
+        textDisabled: themeNeutral[400],
+        shadow: undefined,
+        isGradient: false,
+        hasGlow: false,
+      },
+      // Outline azul
       secondary: {
         bg: secondary.background,
         text: secondary.text,
@@ -156,6 +259,8 @@ export function Button({
         bgDisabled: secondary.backgroundDisabled,
         textDisabled: secondary.textDisabled,
         shadow: undefined,
+        isGradient: false,
+        hasGlow: false,
       },
       // Outline customizável
       outline: {
@@ -164,10 +269,12 @@ export function Button({
         border: color || secondary.border,
         bgPressed: secondary.backgroundPressed,
         bgDisabled: "transparent",
-        textDisabled: neutral[400],
+        textDisabled: themeNeutral[400],
         shadow: undefined,
+        isGradient: false,
+        hasGlow: false,
       },
-      // Sem fundo - Terciário
+      // Sem fundo
       ghost: {
         bg: ghost.background,
         text: color || ghost.text,
@@ -176,6 +283,8 @@ export function Button({
         bgDisabled: ghost.backgroundDisabled,
         textDisabled: ghost.textDisabled,
         shadow: undefined,
+        isGradient: false,
+        hasGlow: false,
       },
       // Fundo suave azul
       soft: {
@@ -186,65 +295,51 @@ export function Button({
         bgDisabled: soft.backgroundDisabled,
         textDisabled: soft.textDisabled,
         shadow: undefined,
+        isGradient: false,
+        hasGlow: false,
       },
     };
-  }, [buttonTokens, brand, neutral, isDark, color]);
+  }, [buttonTokens, themeBrand, themeNeutral, isDark, color]);
 
-  const currentSize = sizeStyles[size];
-  const currentVariant = variantStyles[variant];
-  const isDisabled = disabled || loading;
+  const currentVariant = getVariantStyles[variant];
 
+  // Animated styles
+  const animatedContainerStyle = useAnimatedStyle(() => ({
+    transform: [{ scale: scale.value }],
+  }));
+
+  const animatedGlowStyle = useAnimatedStyle(() => ({
+    opacity: glowOpacity.value,
+  }));
+
+  // Accessibility props
   const accessibilityProps = buttonAccessibility(
     accessibilityLabel || children,
     disabled ? "Botão desabilitado" : loading ? "Carregando..." : undefined,
     isDisabled
   );
 
-  return (
-    <Pressable
-      {...accessibilityProps}
-      onPress={handlePress}
-      disabled={isDisabled}
-      style={({ pressed }) => ({
-        flexDirection: "row",
-        alignItems: "center",
-        justifyContent: "center",
-        backgroundColor: isDisabled
-          ? currentVariant.bgDisabled
-          : pressed
-            ? currentVariant.bgPressed
-            : currentVariant.bg,
-        borderWidth: currentVariant.border !== "transparent" ? 1.5 : 0,
-        borderColor: currentVariant.border,
-        borderRadius: 14,
-        paddingVertical: currentSize.paddingVertical,
-        paddingHorizontal: currentSize.paddingHorizontal,
-        minHeight: currentSize.minHeight,
-        opacity: isDisabled ? 0.6 : pressed ? 0.95 : 1,
-        transform: pressed && !isDisabled ? [{ scale: 0.98 }] : [{ scale: 1 }],
-        width: fullWidth ? "100%" : "auto",
-        ...(currentVariant.shadow || {}),
-        ...style,
-      })}
-    >
+  // Text color
+  const textColor = isDisabled ? currentVariant.textDisabled : currentVariant.text;
+
+  // Render button content
+  const renderContent = () => (
+    <>
       {loading ? (
-        <ActivityIndicator
-          size="small"
-          color={isDisabled ? currentVariant.textDisabled : currentVariant.text}
-        />
+        <ActivityIndicator size="small" color={textColor} />
       ) : (
         <>
           {icon && iconPosition === "left" && (
             <Ionicons
               name={icon}
               size={currentSize.iconSize}
-              color={isDisabled ? currentVariant.textDisabled : currentVariant.text}
+              color={textColor}
               style={{ marginRight: 8 }}
             />
           )}
           <Text
             style={{
-              color: isDisabled ? currentVariant.textDisabled : currentVariant.text,
+              color: textColor,
               fontSize: currentSize.fontSize,
               fontWeight: "600",
               fontFamily: "Manrope_600SemiBold",
@@ -256,13 +351,136 @@ export function Button({
             <Ionicons
               name={icon}
               size={currentSize.iconSize}
-              color={isDisabled ? currentVariant.textDisabled : currentVariant.text}
+              color={textColor}
               style={{ marginLeft: 8 }}
             />
           )}
         </>
       )}
-    </Pressable>
+    </>
+  );
+
+  // Base button styles
+  const baseButtonStyle = {
+    flexDirection: "row" as const,
+    alignItems: "center" as const,
+    justifyContent: "center" as const,
+    minHeight: currentSize.minHeight,
+    paddingVertical: currentSize.paddingVertical,
+    paddingHorizontal: currentSize.paddingHorizontal,
+    borderRadius: currentSize.borderRadius,
+    width: fullWidth ? ("100%" as const) : ("auto" as const),
+  };
+
+  // Gradient variant
+  if (variant === "gradient" && !isDisabled) {
+    return (
+      <AnimatedPressable
+        {...accessibilityProps}
+        onPress={handlePress}
+        onPressIn={handlePressIn}
+        onPressOut={handlePressOut}
+        disabled={isDisabled}
+        style={[
+          animatedContainerStyle,
+          { width: fullWidth ? "100%" : "auto" },
+          style,
+        ]}
+      >
+        <LinearGradient
+          colors={gradients.accent}
+          start={{ x: 0, y: 0 }}
+          end={{ x: 1, y: 0 }}
+          style={[
+            baseButtonStyle,
+            currentVariant.shadow,
+            { overflow: "hidden" },
+          ]}
+        >
+          {renderContent()}
+        </LinearGradient>
+      </AnimatedPressable>
+    );
+  }
+
+  // Glow variant
+  if (currentVariant.hasGlow) {
+    return (
+      <View style={[{ position: "relative" }, fullWidth && { width: "100%" }]}>
+        {/* Glow layer */}
+        <Animated.View
+          style={[
+            {
+              position: "absolute",
+              top: 0,
+              left: 0,
+              right: 0,
+              bottom: 0,
+              backgroundColor: brand.accent[400],
+              borderRadius: currentSize.borderRadius,
+              shadowColor: brand.accent[400],
+              shadowOffset: { width: 0, height: 0 },
+              shadowRadius: 20,
+              elevation: 10,
+            },
+            animatedGlowStyle,
+          ]}
+          pointerEvents="none"
+        />
+
+        {/* Button */}
+        <AnimatedPressable
+          {...accessibilityProps}
+          onPress={handlePress}
+          onPressIn={handlePressIn}
+          onPressOut={handlePressOut}
+          disabled={isDisabled}
+          style={[
+            animatedContainerStyle,
+            baseButtonStyle,
+            {
+              backgroundColor: isDisabled
+                ? currentVariant.bgDisabled
+                : currentVariant.bg,
+              borderWidth: currentVariant.border !== "transparent" ? 1.5 : 0,
+              borderColor: currentVariant.border,
+              opacity: isDisabled ? 0.6 : 1,
+            },
+            currentVariant.shadow,
+            style,
+          ]}
+        >
+          {renderContent()}
+        </AnimatedPressable>
+      </View>
+    );
+  }
+
+  // Standard variants
+  return (
+    <AnimatedPressable
+      {...accessibilityProps}
+      onPress={handlePress}
+      onPressIn={handlePressIn}
+      onPressOut={handlePressOut}
+      disabled={isDisabled}
+      style={[
+        animatedContainerStyle,
+        baseButtonStyle,
+        {
+          backgroundColor: isDisabled
+            ? currentVariant.bgDisabled
+            : currentVariant.bg,
+          borderWidth: currentVariant.border !== "transparent" ? 1.5 : 0,
+          borderColor: currentVariant.border,
+          opacity: isDisabled ? 0.6 : 1,
+        },
+        currentVariant.shadow,
+        style,
+      ]}
+    >
+      {renderContent()}
+    </AnimatedPressable>
   );
 }
 

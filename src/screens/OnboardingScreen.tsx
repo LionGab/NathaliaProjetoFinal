@@ -456,12 +456,12 @@ export default function OnboardingScreen() {
                 }}
               >
                 {/* Mini Preview */}
-                <View style={{ backgroundColor: "#F8FAFC", padding: spacing.md, height: 120 }}>
-                  <View style={{ backgroundColor: "#FFFFFF", borderRadius: 8, padding: 8, marginBottom: 6 }}>
-                    <View style={{ backgroundColor: "#E2E8F0", height: 8, width: "70%", borderRadius: 4 }} />
+                <View style={{ backgroundColor: neutral[50], padding: spacing.md, height: 120 }}>
+                  <View style={{ backgroundColor: neutral[0], borderRadius: 8, padding: 8, marginBottom: 6 }}>
+                    <View style={{ backgroundColor: neutral[200], height: 8, width: "70%", borderRadius: 4 }} />
                   </View>
-                  <View style={{ backgroundColor: "#FFFFFF", borderRadius: 8, padding: 8 }}>
-                    <View style={{ backgroundColor: "#E2E8F0", height: 8, width: "50%", borderRadius: 4 }} />
+                  <View style={{ backgroundColor: neutral[0], borderRadius: 8, padding: 8 }}>
+                    <View style={{ backgroundColor: neutral[200], height: 8, width: "50%", borderRadius: 4 }} />
                   </View>
                 </View>
                 <View style={{ backgroundColor: neutral[0], padding: spacing.md, alignItems: "center" }}>
@@ -488,17 +488,17 @@ export default function OnboardingScreen() {
                 }}
               >
                 {/* Mini Preview */}
-                <View style={{ backgroundColor: "#1E293B", padding: spacing.md, height: 120 }}>
-                  <View style={{ backgroundColor: "#334155", borderRadius: 8, padding: 8, marginBottom: 6 }}>
-                    <View style={{ backgroundColor: "#475569", height: 8, width: "70%", borderRadius: 4 }} />
+                <View style={{ backgroundColor: neutral[800], padding: spacing.md, height: 120 }}>
+                  <View style={{ backgroundColor: neutral[700], borderRadius: 8, padding: 8, marginBottom: 6 }}>
+                    <View style={{ backgroundColor: neutral[600], height: 8, width: "70%", borderRadius: 4 }} />
                   </View>
-                  <View style={{ backgroundColor: "#334155", borderRadius: 8, padding: 8 }}>
-                    <View style={{ backgroundColor: "#475569", height: 8, width: "50%", borderRadius: 4 }} />
+                  <View style={{ backgroundColor: neutral[700], borderRadius: 8, padding: 8 }}>
+                    <View style={{ backgroundColor: neutral[600], height: 8, width: "50%", borderRadius: 4 }} />
                   </View>
                 </View>
-                <View style={{ backgroundColor: "#0F172A", padding: spacing.md, alignItems: "center" }}>
+                <View style={{ backgroundColor: neutral[900], padding: spacing.md, alignItems: "center" }}>
                   <Text style={{ fontSize: 24, marginBottom: 4 }}>🌙</Text>
-                  <Text style={{ fontFamily: FONTS.semiBold, color: "#F1F5F9" }}>Escuro</Text>
+                  <Text style={{ fontFamily: FONTS.semiBold, color: neutral[100] }}>Escuro</Text>
                 </View>
                 {selectedTheme === "dark" && (
                   <View style={{ position: "absolute", top: 8, right: 8 }}>

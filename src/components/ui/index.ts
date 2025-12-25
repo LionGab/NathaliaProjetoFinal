@@ -27,6 +27,8 @@ export { Text } from "./Text";
 // Premium Effects (Design System 2025)
 export { GlowEffect, PulseGlow, ShimmerEffect } from "./GlowEffect";
 export { PremiumCard, GlassCard, AccentCard } from "./PremiumCard";
+export { AnimatedBadge, StreakBadge, AchievementBadge } from "./AnimatedBadge";
+export { PressableScale } from "./PressableScale";
 
 // ===========================================
 // AVATAR SIZES (Padronized sizes)

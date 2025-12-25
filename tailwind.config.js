@@ -16,33 +16,33 @@ module.exports = {
         // Nossa Maternidade - Sistema Calm FemTech 2025
         // Híbrido: Azul (base calm) + Rosa (accent CTA)
         //
-        // Primary: Azul Pastel (calma, confiança, estrutura)
+        // Primary: Blue Clean ✨ (frescor, leveza, confiança)
         primary: {
-          DEFAULT: "#7DB9D5",
-          50: "#F7FBFD",
-          100: "#E8F3F9",
-          200: "#DCE9F1",
-          300: "#B4D7E8",
-          400: "#96C7DE",
-          500: "#7DB9D5",
-          600: "#5BA3C7",
-          700: "#4488AB",
-          800: "#376E8C",
-          900: "#2B576D",
+          DEFAULT: "#1AB8FF",
+          50: "#F0FAFF",
+          100: "#E0F4FF",
+          200: "#B8E8FF",
+          300: "#7DD8FF",
+          400: "#4AC8FF",
+          500: "#1AB8FF",
+          600: "#0099E6",
+          700: "#007ACC",
+          800: "#005C99",
+          900: "#004066",
         },
-        // Accent: Rosa Vibrante (CTAs, warmth, destaques)
+        // Accent: Pink Clean ✨ (feminilidade, energia positiva)
         accent: {
-          DEFAULT: "#F4258C",
-          50: "#FFF1F5",
-          100: "#FFE4EC",
-          200: "#FECDD6",
-          300: "#FDA4B8",
-          400: "#FB7190",
-          500: "#F4258C",
-          600: "#DB1F7D",
-          700: "#B8196A",
-          800: "#961456",
-          900: "#7A1047",
+          DEFAULT: "#FF5C94",
+          50: "#FFF5F8",
+          100: "#FFE5ED",
+          200: "#FFD0E0",
+          300: "#FFA8C5",
+          400: "#FF7AA8",
+          500: "#FF5C94",
+          600: "#E84D82",
+          700: "#CC3E6F",
+          800: "#A8335B",
+          900: "#852848",
         },
         // Secondary: Lilás/Roxo (apoio, meditação, introspecção)
         secondary: {
@@ -74,16 +74,16 @@ module.exports = {
         },
         // Rose (legacy compat - aponta para accent)
         rose: {
-          50: "#FFF1F5",
-          100: "#FFE4EC",
-          200: "#FECDD6",
-          300: "#FDA4B8",
-          400: "#FB7190",
-          500: "#F4258C",
-          600: "#DB1F7D",
-          700: "#B8196A",
-          800: "#961456",
-          900: "#7A1047",
+          50: "#FFF5F8",
+          100: "#FFE5ED",
+          200: "#FFD0E0",
+          300: "#FFA8C5",
+          400: "#FF7AA8",
+          500: "#FF5C94",
+          600: "#E84D82",
+          700: "#CC3E6F",
+          800: "#A8335B",
+          900: "#852848",
         },
         blush: {
           50: "#FDF8F6",
@@ -148,8 +148,8 @@ module.exports = {
             light: "#EDE9FE",
           },
           amada: {
-            DEFAULT: "#FECDD3", // Rosa pastel (coração)
-            light: "#FFE4E9",
+            DEFAULT: "#FFD0E0", // Rosa pastel (coração)
+            light: "#FFE5ED",
           },
           ansiosa: {
             DEFAULT: "#FED7AA", // Coral pastel
@@ -162,15 +162,15 @@ module.exports = {
           DEFAULT: "#1F2937",
           light: "#6B7280",
           muted: "#9CA3AF",
-          accent: "#F4258C",
-          link: "#4488AB",
+          accent: "#FF5C94",
+          link: "#007ACC",
         },
-        // Background colors - Azul pastel base
+        // Background colors - Blue Clean base
         background: {
-          DEFAULT: "#F7FBFD",
-          primary: "#F7FBFD",
+          DEFAULT: "#F0FAFF",
+          primary: "#F0FAFF",
           secondary: "#FFFFFF",
-          tertiary: "#EDF4F8",
+          tertiary: "#E0F4FF",
           elevated: "#FFFFFF",
         },
         // Neutral colors
@@ -211,34 +211,34 @@ module.exports = {
         "22": "88px",
       },
     },
-    // Dark mode colors - Azul escuro base (não preto puro)
+    // Dark mode colors - Blue Clean dark base
     dark: {
       colors: {
         primary: {
-          DEFAULT: "#8BC5DD",
-          50: "#0F1419",
-          100: "#1A2027",
-          200: "#242D36",
-          300: "#2F3B46",
-          400: "#A8D4E8",
-          500: "#8BC5DD",
-          600: "#7DB9D5",
-          700: "#5BA3C7",
-          800: "#4488AB",
-          900: "#376E8C",
+          DEFAULT: "#4AC8FF",
+          50: "#0A1520",
+          100: "#0F1E2D",
+          200: "#15283A",
+          300: "#1F3A4F",
+          400: "#7DD8FF",
+          500: "#4AC8FF",
+          600: "#1AB8FF",
+          700: "#0099E6",
+          800: "#007ACC",
+          900: "#005C99",
         },
         accent: {
-          DEFAULT: "#FB7190",
+          DEFAULT: "#FF7AA8",
           50: "#1A0A12",
           100: "#2D0F1A",
           200: "#4D1A2E",
           300: "#6D2542",
-          400: "#FB7190",
-          500: "#F4258C",
-          600: "#DB1F7D",
-          700: "#B8196A",
-          800: "#961456",
-          900: "#7A1047",
+          400: "#FF7AA8",
+          500: "#FF5C94",
+          600: "#E84D82",
+          700: "#CC3E6F",
+          800: "#A8335B",
+          900: "#852848",
         },
         secondary: {
           DEFAULT: "#C084FC",
@@ -258,15 +258,15 @@ module.exports = {
           DEFAULT: "#F3F5F7",
           light: "#9DA8B4",
           muted: "#7D8B99",
-          accent: "#FB7190",
-          link: "#96C7DE",
+          accent: "#FF7AA8",
+          link: "#4AC8FF",
         },
         background: {
-          DEFAULT: "#0F1419",
-          primary: "#0F1419",
-          secondary: "#1A2027",
-          tertiary: "#242D36",
-          elevated: "#1A2027",
+          DEFAULT: "#0A1520",
+          primary: "#0A1520",
+          secondary: "#0F1E2D",
+          tertiary: "#15283A",
+          elevated: "#0F1E2D",
         },
         neutral: {
           0: "#0F1419",
@@ -286,6 +286,9 @@ module.exports = {
   },
   darkMode: "class",
   plugins: [
+    // ============================================
+    // SPACING PLUGIN - Gap utilities for RN
+    // ============================================
     plugin(({ matchUtilities, theme }) => {
       const spacing = theme("spacing");
 
@@ -306,6 +309,352 @@ module.exports = {
         { "space-y": (value) => ({ rowGap: value }) },
         { values: spacing, type: ["length", "number", "percentage"] }
       );
+    }),
+
+    // ============================================
+    // DESIGN SYSTEM PLUGIN - Nossa Maternidade
+    // ============================================
+    plugin(({ addUtilities, matchUtilities, theme }) => {
+      // ===================
+      // SHADOW UTILITIES
+      // ===================
+      addUtilities({
+        // iOS-style shadows (soft, elevated)
+        ".shadow-soft-sm": {
+          shadowColor: "#111827",
+          shadowOffset: { width: 0, height: 1 },
+          shadowOpacity: 0.05,
+          shadowRadius: 2,
+          elevation: 1,
+        },
+        ".shadow-soft": {
+          shadowColor: "#111827",
+          shadowOffset: { width: 0, height: 2 },
+          shadowOpacity: 0.08,
+          shadowRadius: 4,
+          elevation: 2,
+        },
+        ".shadow-soft-md": {
+          shadowColor: "#111827",
+          shadowOffset: { width: 0, height: 4 },
+          shadowOpacity: 0.1,
+          shadowRadius: 8,
+          elevation: 4,
+        },
+        ".shadow-soft-lg": {
+          shadowColor: "#111827",
+          shadowOffset: { width: 0, height: 8 },
+          shadowOpacity: 0.12,
+          shadowRadius: 16,
+          elevation: 8,
+        },
+        ".shadow-soft-xl": {
+          shadowColor: "#111827",
+          shadowOffset: { width: 0, height: 12 },
+          shadowOpacity: 0.15,
+          shadowRadius: 24,
+          elevation: 12,
+        },
+        // Pink glow shadows (for accent elements)
+        ".shadow-accent": {
+          shadowColor: "#FF5C94",
+          shadowOffset: { width: 0, height: 4 },
+          shadowOpacity: 0.3,
+          shadowRadius: 8,
+          elevation: 4,
+        },
+        ".shadow-accent-lg": {
+          shadowColor: "#FF5C94",
+          shadowOffset: { width: 0, height: 8 },
+          shadowOpacity: 0.4,
+          shadowRadius: 16,
+          elevation: 8,
+        },
+        // Blue glow shadows (for primary elements)
+        ".shadow-primary": {
+          shadowColor: "#1AB8FF",
+          shadowOffset: { width: 0, height: 4 },
+          shadowOpacity: 0.3,
+          shadowRadius: 8,
+          elevation: 4,
+        },
+      });
+
+      // ===================
+      // GLASSMORPHISM
+      // ===================
+      addUtilities({
+        ".glass": {
+          backgroundColor: "rgba(255, 255, 255, 0.7)",
+          backdropFilter: "blur(10px)",
+        },
+        ".glass-dark": {
+          backgroundColor: "rgba(15, 20, 25, 0.8)",
+          backdropFilter: "blur(10px)",
+        },
+        ".glass-strong": {
+          backgroundColor: "rgba(255, 255, 255, 0.85)",
+          backdropFilter: "blur(20px)",
+        },
+        ".glass-subtle": {
+          backgroundColor: "rgba(255, 255, 255, 0.5)",
+          backdropFilter: "blur(8px)",
+        },
+      });
+
+      // ===================
+      // CARD STYLES
+      // ===================
+      addUtilities({
+        ".card-elevated": {
+          backgroundColor: "#FFFFFF",
+          borderRadius: 16,
+          shadowColor: "#111827",
+          shadowOffset: { width: 0, height: 4 },
+          shadowOpacity: 0.08,
+          shadowRadius: 12,
+          elevation: 4,
+        },
+        ".card-flat": {
+          backgroundColor: "#FFFFFF",
+          borderRadius: 16,
+          borderWidth: 1,
+          borderColor: "#E7E5E4",
+        },
+        ".card-accent": {
+          backgroundColor: "#FFF5F8",
+          borderRadius: 16,
+          borderWidth: 1,
+          borderColor: "#FFD0E0",
+        },
+        ".card-primary": {
+          backgroundColor: "#F0FAFF",
+          borderRadius: 16,
+          borderWidth: 1,
+          borderColor: "#B8E8FF",
+        },
+      });
+
+      // ===================
+      // BUTTON STYLES
+      // ===================
+      addUtilities({
+        ".btn-primary": {
+          backgroundColor: "#FF5C94",
+          borderRadius: 12,
+          paddingVertical: 14,
+          paddingHorizontal: 24,
+        },
+        ".btn-secondary": {
+          backgroundColor: "#1AB8FF",
+          borderRadius: 12,
+          paddingVertical: 14,
+          paddingHorizontal: 24,
+        },
+        ".btn-outline": {
+          backgroundColor: "transparent",
+          borderRadius: 12,
+          borderWidth: 2,
+          borderColor: "#FF5C94",
+          paddingVertical: 12,
+          paddingHorizontal: 22,
+        },
+        ".btn-ghost": {
+          backgroundColor: "transparent",
+          borderRadius: 12,
+          paddingVertical: 14,
+          paddingHorizontal: 24,
+        },
+      });
+
+      // ===================
+      // INPUT STYLES
+      // ===================
+      addUtilities({
+        ".input-base": {
+          backgroundColor: "#FFFFFF",
+          borderRadius: 12,
+          borderWidth: 1,
+          borderColor: "#E7E5E4",
+          paddingVertical: 14,
+          paddingHorizontal: 16,
+          fontSize: 15,
+        },
+        ".input-focus": {
+          borderColor: "#1AB8FF",
+          shadowColor: "#1AB8FF",
+          shadowOffset: { width: 0, height: 0 },
+          shadowOpacity: 0.2,
+          shadowRadius: 4,
+        },
+        ".input-error": {
+          borderColor: "#EF4444",
+          backgroundColor: "#FEF2F2",
+        },
+      });
+
+      // ===================
+      // ACCESSIBILITY
+      // ===================
+      addUtilities({
+        // Minimum tap target (44pt iOS HIG)
+        ".tap-target": {
+          minWidth: 44,
+          minHeight: 44,
+        },
+        ".tap-target-lg": {
+          minWidth: 48,
+          minHeight: 48,
+        },
+        // Screen reader only
+        ".sr-only": {
+          position: "absolute",
+          width: 1,
+          height: 1,
+          padding: 0,
+          margin: -1,
+          overflow: "hidden",
+        },
+      });
+
+      // ===================
+      // LAYOUT HELPERS
+      // ===================
+      addUtilities({
+        ".safe-top": {
+          paddingTop: 44, // Will be overridden by useSafeAreaInsets
+        },
+        ".safe-bottom": {
+          paddingBottom: 34, // Will be overridden by useSafeAreaInsets
+        },
+        ".center-content": {
+          alignItems: "center",
+          justifyContent: "center",
+        },
+        ".stack-vertical": {
+          flexDirection: "column",
+          gap: 16,
+        },
+        ".stack-horizontal": {
+          flexDirection: "row",
+          alignItems: "center",
+          gap: 12,
+        },
+      });
+
+      // ===================
+      // OVERLAY UTILITIES
+      // ===================
+      addUtilities({
+        ".overlay-light": {
+          backgroundColor: "rgba(0, 0, 0, 0.1)",
+        },
+        ".overlay-medium": {
+          backgroundColor: "rgba(0, 0, 0, 0.3)",
+        },
+        ".overlay-dark": {
+          backgroundColor: "rgba(0, 0, 0, 0.5)",
+        },
+        ".overlay-heavy": {
+          backgroundColor: "rgba(0, 0, 0, 0.7)",
+        },
+        ".overlay-backdrop": {
+          backgroundColor: "rgba(0, 0, 0, 0.85)",
+        },
+      });
+
+      // ===================
+      // ANIMATION PRESETS (for use with react-native-reanimated)
+      // ===================
+      addUtilities({
+        ".animate-preset-bounce": {
+          // Marker class for bounce animation
+        },
+        ".animate-preset-fade": {
+          // Marker class for fade animation
+        },
+        ".animate-preset-slide-up": {
+          // Marker class for slide up animation
+        },
+        ".animate-preset-scale": {
+          // Marker class for scale animation
+        },
+      });
+    }),
+
+    // ============================================
+    // TYPOGRAPHY PLUGIN
+    // ============================================
+    plugin(({ addUtilities }) => {
+      addUtilities({
+        // Heading styles
+        ".heading-hero": {
+          fontFamily: "Manrope_700Bold",
+          fontSize: 36,
+          lineHeight: 40,
+          letterSpacing: -0.72,
+        },
+        ".heading-1": {
+          fontFamily: "Manrope_700Bold",
+          fontSize: 30,
+          lineHeight: 36,
+          letterSpacing: -0.6,
+        },
+        ".heading-2": {
+          fontFamily: "Manrope_600SemiBold",
+          fontSize: 24,
+          lineHeight: 32,
+          letterSpacing: -0.48,
+        },
+        ".heading-3": {
+          fontFamily: "Manrope_600SemiBold",
+          fontSize: 20,
+          lineHeight: 28,
+          letterSpacing: -0.2,
+        },
+        ".heading-4": {
+          fontFamily: "Manrope_600SemiBold",
+          fontSize: 17,
+          lineHeight: 24,
+          letterSpacing: -0.17,
+        },
+        // Body styles
+        ".body-large": {
+          fontFamily: "Manrope_400Regular",
+          fontSize: 17,
+          lineHeight: 24,
+        },
+        ".body-base": {
+          fontFamily: "Manrope_400Regular",
+          fontSize: 15,
+          lineHeight: 22,
+        },
+        ".body-small": {
+          fontFamily: "Manrope_400Regular",
+          fontSize: 13,
+          lineHeight: 18,
+        },
+        // Caption/Label styles
+        ".caption": {
+          fontFamily: "Manrope_500Medium",
+          fontSize: 11,
+          lineHeight: 16,
+          letterSpacing: 0.11,
+        },
+        ".label": {
+          fontFamily: "Manrope_600SemiBold",
+          fontSize: 13,
+          lineHeight: 18,
+          letterSpacing: 0.13,
+        },
+        ".overline": {
+          fontFamily: "Manrope_700Bold",
+          fontSize: 11,
+          lineHeight: 16,
+          letterSpacing: 0.55,
+          textTransform: "uppercase",
+        },
+      });
     }),
   ],
 };

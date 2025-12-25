@@ -105,10 +105,10 @@ export interface PaywallProps {
   source?: string; // Para analytics - de onde veio
 }
 
-// Constantes de product IDs
+// Constantes de product IDs (must match App Store Connect + Google Play Console)
 export const PRODUCT_IDS = {
-  MONTHLY: "nossa_maternidade_monthly",
-  YEARLY: "nossa_maternidade_yearly",
+  MONTHLY: "com.nossamaternidade.subscription.monthly",
+  YEARLY: "com.nossamaternidade.subscription.annual",
 } as const;
 
 // Constantes de entitlements
@@ -156,7 +156,7 @@ export const DEFAULT_PRICING: PricingConfig = {
     price: 19.90,
     priceString: "R$ 19,90",
     currency: "BRL",
-    period: "mes",
+    period: "mês",
   },
   yearly: {
     productId: PRODUCT_IDS.YEARLY,
@@ -164,7 +164,7 @@ export const DEFAULT_PRICING: PricingConfig = {
     priceString: "R$ 79,90",
     currency: "BRL",
     period: "ano",
-    savingsPercent: 67,
+    savingsPercent: 67, // R$6,66/mês vs R$19,90/mês
     monthlyEquivalent: 6.66,
   },
   trialDays: 7,

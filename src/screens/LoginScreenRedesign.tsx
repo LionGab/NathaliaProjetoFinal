@@ -61,7 +61,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { signInWithMagicLink } from "../api/auth";
 import { signInWithApple, signInWithGoogle } from "../api/social-auth";
-import { brand } from "../theme/tokens";
+import { brand, premium, typography, semantic } from "../theme/tokens";
 import { RootStackScreenProps } from "../types/navigation";
 
 type Props = RootStackScreenProps<"Login">;
@@ -69,51 +69,51 @@ type Props = RootStackScreenProps<"Login">;
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get("window");
 
 // ============================================
-// DESIGN SYSTEM - Cinematic Portal
+// DESIGN SYSTEM - Using Tokens
 // ============================================
 
 const COLORS = {
-  // Deep night sky gradient
-  gradientTop: "#0D0B1E",
-  gradientMid: "#1A1432",
-  gradientBottom: "#2D1B4E",
-  gradientAccent: "#3D2060",
+  // Deep night sky gradient - from Tokens.premium
+  gradientTop: premium.gradient.top,
+  gradientMid: premium.gradient.mid,
+  gradientBottom: premium.gradient.bottom,
+  gradientAccent: premium.gradient.accent,
 
-  // Aurora accents
-  aurora1: "rgba(244, 37, 140, 0.3)", // Pink
-  aurora2: "rgba(139, 92, 246, 0.3)", // Purple
-  aurora3: "rgba(99, 179, 237, 0.2)", // Blue
+  // Aurora accents - from Tokens.premium
+  aurora1: premium.aurora.pink,
+  aurora2: premium.aurora.purple,
+  aurora3: premium.aurora.blue,
 
-  // Text
-  textPrimary: "#FFFFFF",
-  textSecondary: "rgba(255, 255, 255, 0.75)",
-  textMuted: "rgba(255, 255, 255, 0.5)",
+  // Text - from Tokens.premium
+  textPrimary: premium.text.primary,
+  textSecondary: premium.text.secondary,
+  textMuted: premium.text.muted,
 
-  // Glass
-  glassBg: "rgba(255, 255, 255, 0.08)",
-  glassBorder: "rgba(255, 255, 255, 0.15)",
-  glassHighlight: "rgba(255, 255, 255, 0.2)",
+  // Glass - from Tokens.premium
+  glassBg: premium.glass.background,
+  glassBorder: premium.glass.border,
+  glassHighlight: premium.glass.highlight,
 
   // CTAs
   ctaPrimary: brand.accent[500],
-  ctaSecondary: "rgba(255, 255, 255, 0.1)",
+  ctaSecondary: premium.glass.background,
 
-  // Inputs
-  inputBg: "rgba(255, 255, 255, 0.06)",
-  inputBorder: "rgba(255, 255, 255, 0.12)",
+  // Inputs - from Tokens.premium
+  inputBg: premium.input.background,
+  inputBorder: premium.input.border,
   inputFocus: brand.accent[400],
 
-  // States
-  error: "#F87171",
-  success: "#34D399",
+  // States - from Tokens.semantic
+  error: semantic.dark.error,
+  success: semantic.dark.success,
 };
 
 const FONTS = {
-  display: "Manrope_800ExtraBold",
-  headline: "Manrope_700Bold",
-  body: "Manrope_500Medium",
-  accent: "Manrope_600SemiBold",
-  light: "Manrope_400Regular",
+  display: typography.fontFamily.extrabold,
+  headline: typography.fontFamily.bold,
+  body: typography.fontFamily.medium,
+  accent: typography.fontFamily.semibold,
+  light: typography.fontFamily.base,
 };
 
 // ============================================

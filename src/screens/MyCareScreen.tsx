@@ -9,81 +9,23 @@ import { useAppStore } from "../state/store";
 import * as Haptics from "expo-haptics";
 import { useTheme } from "../hooks/useTheme";
 import { IconName } from "../types/icons";
-import { SPACING, RADIUS } from "../theme/tokens";
+import {
+  brand,
+  neutral,
+  feeling,
+  maternal,
+  premium,
+  spacing as SPACING,
+  radius as RADIUS,
+} from "../theme/tokens";
 
-// COLORS compatibility mapping (from design-system.ts)
+// Alias for backward compatibility during migration
 const DS_COLORS = {
-  primary: {
-    50: "#F7FBFD",
-    100: "#E8F3F9",
-    200: "#DCE9F1",
-    300: "#B4D7E8",
-    400: "#96C7DE",
-    500: "#7DB9D5",
-    600: "#5BA3C7",
-    700: "#4488AB",
-    800: "#376E8C",
-    900: "#2B576D",
-  },
-  secondary: {
-    50: "#FAF5FF",
-    100: "#F3E8FF",
-    200: "#E9D5FF",
-    300: "#D8B4FE",
-    400: "#C084FC",
-    500: "#A855F7",
-    600: "#9333EA",
-    700: "#7C3AED",
-    800: "#6B21A8",
-    900: "#581C87",
-  },
-  accent: {
-    50: "#F0FDFA",
-    100: "#CCFBF1",
-    200: "#99F6E4",
-    300: "#5EEAD4",
-    400: "#2DD4BF",
-    500: "#14B8A6",
-    600: "#0D9488",
-    700: "#0F766E",
-    800: "#115E59",
-    900: "#134E4A",
-  },
-  neutral: {
-    0: "#FFFFFF",
-    50: "#F9FAFB",
-    100: "#F3F4F6",
-    200: "#E5E7EB",
-    300: "#D1D5DB",
-    400: "#9CA3AF",
-    500: "#6B7280",
-    600: "#4B5563",
-    700: "#374151",
-    800: "#1F2937",
-    900: "#111827",
-  },
-  surface: {
-    roseSoft: "#FDF0F0",
-    peachSoft: "#FDF6F2",
-    lilacBorder: "#E0D4F0",
-    roseBorder: "#F5E0E0",
-    blueBorder: "#D6E6F2",
-  },
-  feeling: {
-    amada: "#FB7185",
-  },
-  legacyAccent: {
-    peach: "#FED7AA",
-  },
-} as const;
-
-// Overlay compatibility mapping
-const OVERLAY = {
-  white: {
-    strong: "rgba(255, 255, 255, 0.2)",
-    text: "rgba(255, 255, 255, 0.7)",
-    textStrong: "rgba(255, 255, 255, 0.8)",
-  },
+  primary: brand.primary,
+  secondary: brand.secondary,
+  accent: brand.accent,
+  teal: brand.teal,
+  neutral: neutral,
 } as const;
 
 // Foto da Nathalia com o bebê Thales
@@ -94,28 +36,28 @@ const MAES_VALENTE_LOGO_URL = "https://i.imgur.com/U5ttbqK.jpg";
 
 /**
  * Cores semânticas para tela de cuidados
- * Mapeadas para o design-system azul pastel
+ * Usando Tokens - paleta maternal clean (rosa + azul pastel)
  */
 const getCareColors = (isDark: boolean) => ({
   // Lilac/Roxo suave - descanso e meditação
-  lilac: isDark ? DS_COLORS.secondary[400] : DS_COLORS.secondary[300],
-  lilacSoft: isDark ? "rgba(92, 163, 219, 0.15)" : DS_COLORS.secondary[50],
-  // Rose/Rosa suave - sentimentos e emoções
-  rose: isDark ? DS_COLORS.feeling.amada : DS_COLORS.feeling.amada,
-  roseSoft: isDark ? "rgba(254, 205, 211, 0.15)" : DS_COLORS.surface.roseSoft,
-  // Blue/Azul calmo - conexão e comunidade
-  blueCalm: isDark ? DS_COLORS.primary[400] : DS_COLORS.primary[300],
-  blueSoft: isDark ? "rgba(125, 185, 213, 0.15)" : DS_COLORS.primary[50],
+  lilac: isDark ? brand.secondary[400] : brand.secondary[300],
+  lilacSoft: isDark ? "rgba(168, 85, 247, 0.12)" : maternal.calm.lavender,
+  // Rose/Rosa clean - sentimentos e emoções
+  rose: isDark ? brand.accent[400] : brand.accent[400],
+  roseSoft: isDark ? "rgba(251, 113, 144, 0.12)" : maternal.warmth.blush,
+  // Blue/Azul pastel - conexão e comunidade
+  blueCalm: isDark ? brand.primary[400] : brand.primary[300],
+  blueSoft: isDark ? "rgba(125, 185, 213, 0.12)" : maternal.calm.mist,
   // Sage/Verde suave - respiração e bem-estar
-  sage: isDark ? DS_COLORS.accent[400] : DS_COLORS.accent[200],
-  sageSoft: isDark ? "rgba(20, 184, 166, 0.15)" : DS_COLORS.accent[50],
+  sage: isDark ? brand.teal[400] : brand.teal[300],
+  sageSoft: isDark ? "rgba(20, 184, 166, 0.12)" : maternal.selfCare.breathe,
   // Peach/Pêssego - afirmações e positividade
-  peach: isDark ? DS_COLORS.legacyAccent.peach : DS_COLORS.legacyAccent.peach,
-  peachSoft: isDark ? "rgba(254, 215, 170, 0.15)" : DS_COLORS.surface.peachSoft,
-  // Bordas sutis
-  borderLilac: isDark ? "rgba(92, 163, 219, 0.3)" : DS_COLORS.surface.lilacBorder,
-  borderRose: isDark ? "rgba(254, 205, 211, 0.3)" : DS_COLORS.surface.roseBorder,
-  borderBlue: isDark ? "rgba(125, 185, 213, 0.3)" : DS_COLORS.surface.blueBorder,
+  peach: isDark ? feeling.ansiosa.color : feeling.ansiosa.color,
+  peachSoft: isDark ? "rgba(254, 215, 170, 0.12)" : maternal.warmth.peach,
+  // Bordas sutis - muito clean
+  borderLilac: isDark ? "rgba(168, 85, 247, 0.2)" : brand.secondary[200],
+  borderRose: isDark ? "rgba(251, 113, 144, 0.2)" : brand.accent[200],
+  borderBlue: isDark ? "rgba(125, 185, 213, 0.2)" : brand.primary[200],
 });
 
 // Afirmações no estilo Nathalia - autênticas, jovens, sem julgamentos
@@ -656,7 +598,7 @@ export default function MyCareScreen({ navigation }: MainTabScreenProps<"MyCare"
                   width: 48,
                   height: 48,
                   borderRadius: RADIUS.lg,
-                  backgroundColor: OVERLAY.white.strong,
+                  backgroundColor: premium.glass.border,
                   alignItems: "center",
                   justifyContent: "center",
                   marginRight: SPACING.md,

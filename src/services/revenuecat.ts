@@ -24,10 +24,10 @@ const REVENUECAT_ANDROID_KEY = Constants.expoConfig?.extra?.revenueCatAndroidKey
 // Entitlement ID - must match RevenueCat dashboard
 export const PREMIUM_ENTITLEMENT = "premium";
 
-// Product identifiers
+// Product identifiers (must match App Store Connect + Google Play Console)
 export const PRODUCT_IDS = {
-  MONTHLY: "nossa_maternidade_monthly",
-  YEARLY: "nossa_maternidade_yearly",
+  MONTHLY: "com.nossamaternidade.subscription.monthly",
+  YEARLY: "com.nossamaternidade.subscription.annual",
 } as const;
 
 // Flag para rastrear se RevenueCat foi configurado
