@@ -17,6 +17,7 @@ import {
   RADIUS,
   SHADOWS,
   TYPOGRAPHY,
+  streak,
 } from "../theme/tokens";
 
 // Overlay compatibility mapping
@@ -27,11 +28,6 @@ const OVERLAY = {
     strong: "rgba(255, 255, 255, 0.2)",
     prominent: "rgba(255, 255, 255, 0.6)",
   },
-} as const;
-
-// Gradients compatibility (from design-system.ts)
-const GRADIENTS = {
-  streakIcon: "#F59E0B",
 } as const;
 
 type ViewMode = "week" | "month" | "year";
@@ -377,7 +373,7 @@ export default function MaeValenteProgressScreen() {
               description="7 dias seguidos de check-in"
               progress={currentStreak}
               total={7}
-              color={GRADIENTS.streakIcon}
+              color={streak.icon}
               unlocked={currentStreak >= 7}
             />
             <AchievementCard

@@ -22,23 +22,8 @@ import {
   SPACING,
   RADIUS,
   TYPOGRAPHY,
+  maternal,
 } from "../theme/tokens";
-
-// Breathing gradients compatibility (from design-system.ts)
-const GRADIENTS = {
-  breathing: {
-    box: {
-      color: "#60A5FA",
-      bgColors: ["#DBEAFE", "#BFDBFE", "#93C5FD"] as const,
-    },
-    technique478: {
-      bgColors: ["#EDE9FE", "#DDD6FE", "#C4B5FD"] as const,
-    },
-    calm: {
-      bgColors: ["#DCFCE7", "#BBF7D0", "#86EFAC"] as const,
-    },
-  },
-} as const;
 
 type BreathingTechnique = "box" | "478" | "calm";
 
@@ -54,37 +39,37 @@ interface Technique {
   duration: number;
   phases: Phase[];
   color: string;
-  bgColors: [string, string, string];
+  bgColors: readonly [string, string, string];
 }
 
 const TECHNIQUES: Record<BreathingTechnique, Technique> = {
   box: {
-    name: "Respiracao Box",
+    name: "Respiração Box",
     description: "4 segundos inspirar, 4 segurar, 4 expirar, 4 segurar",
     duration: 16000,
     phases: [
       { name: "Inspire", duration: 4000, instruction: "Inspire profundamente pelo nariz" },
-      { name: "Segure", duration: 4000, instruction: "Segure o ar nos pulmoes" },
+      { name: "Segure", duration: 4000, instruction: "Segure o ar nos pulmões" },
       { name: "Expire", duration: 4000, instruction: "Expire lentamente pela boca" },
-      { name: "Segure", duration: 4000, instruction: "Segure com os pulmoes vazios" },
+      { name: "Segure", duration: 4000, instruction: "Segure com os pulmões vazios" },
     ],
-    color: GRADIENTS.breathing.box.color,
-    bgColors: GRADIENTS.breathing.box.bgColors as unknown as [string, string, string],
+    color: maternal.breathing.box.color,
+    bgColors: maternal.breathing.box.bgColors,
   },
   "478": {
-    name: "Tecnica 4-7-8",
+    name: "Técnica 4-7-8",
     description: "4 segundos inspirar, 7 segurar, 8 expirar",
     duration: 19000,
     phases: [
       { name: "Inspire", duration: 4000, instruction: "Inspire pelo nariz" },
-      { name: "Segure", duration: 7000, instruction: "Segure a respiracao" },
+      { name: "Segure", duration: 7000, instruction: "Segure a respiração" },
       { name: "Expire", duration: 8000, instruction: "Expire lentamente pela boca" },
     ],
     color: COLORS.secondary[500],
-    bgColors: GRADIENTS.breathing.technique478.bgColors as unknown as [string, string, string],
+    bgColors: maternal.breathing.technique478.bgColors,
   },
   calm: {
-    name: "Respiracao Calma",
+    name: "Respiração Calma",
     description: "5 segundos inspirar, 5 segundos expirar",
     duration: 10000,
     phases: [
@@ -92,7 +77,7 @@ const TECHNIQUES: Record<BreathingTechnique, Technique> = {
       { name: "Expire", duration: 5000, instruction: "Expire relaxando" },
     ],
     color: COLORS.semantic.success,
-    bgColors: GRADIENTS.breathing.calm.bgColors as unknown as [string, string, string],
+    bgColors: maternal.breathing.calm.bgColors,
   },
 };
 
@@ -309,7 +294,7 @@ export default function BreathingExerciseScreen() {
                       marginTop: SPACING.md,
                     }}
                   >
-                    Toque para comecar
+                    Toque para começar
                   </Text>
                 </>
               )}
@@ -354,7 +339,7 @@ export default function BreathingExerciseScreen() {
                   fontWeight: "700",
                 }}
               >
-                {isActive ? "Pausar" : "Comecar"}
+                {isActive ? "Pausar" : "Começar"}
               </Text>
             </View>
           </Pressable>
@@ -398,7 +383,7 @@ export default function BreathingExerciseScreen() {
                 textAlign: "center",
               }}
             >
-              Escolha uma tecnica
+              Escolha uma técnica
             </Text>
             <View style={{ flexDirection: "row", gap: SPACING.md }}>
               {(Object.keys(TECHNIQUES) as BreathingTechnique[]).map((tech) => {
@@ -429,7 +414,7 @@ export default function BreathingExerciseScreen() {
                           color: isSelected ? COLORS.neutral[0] : COLORS.neutral[700],
                         }}
                       >
-                        {t.name.replace("Respiracao ", "").replace("Tecnica ", "")}
+                        {t.name.replace("Respiração ", "").replace("Técnica ", "")}
                       </Text>
                     </View>
                   </Pressable>

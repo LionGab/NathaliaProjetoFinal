@@ -58,7 +58,7 @@ export function useSpacing() {
 
 /**
  * Static spacing values for use outside components
- * Equivalent to SPACING from design-system.ts
+ * Equivalent to SPACING from Tokens
  */
 export const spacing = SPACING;
 

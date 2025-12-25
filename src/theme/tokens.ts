@@ -175,6 +175,22 @@ export const maternal = {
   },
 
   /**
+   * Respiração - Cores e gradientes para exercícios
+   */
+  breathing: {
+    box: {
+      color: "#60A5FA",
+      bgColors: ["#DBEAFE", "#BFDBFE", "#93C5FD"] as const,
+    },
+    technique478: {
+      bgColors: ["#EDE9FE", "#DDD6FE", "#C4B5FD"] as const,
+    },
+    calm: {
+      bgColors: ["#DCFCE7", "#BBF7D0", "#86EFAC"] as const,
+    },
+  },
+
+  /**
    * Gradientes maternais suaves (light backgrounds)
    */
   gradients: {

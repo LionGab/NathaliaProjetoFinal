@@ -41,13 +41,6 @@ import Animated, {
   FadeInUp,
   SlideInRight,
   SlideOutLeft,
-  useAnimatedStyle,
-  useSharedValue,
-  withSpring,
-  withTiming,
-  withSequence,
-  interpolate,
-  Easing,
   runOnJS,
 } from "react-native-reanimated";
 import {
@@ -61,396 +54,33 @@ import DateTimePicker from "@react-native-community/datetimepicker";
 import { useAppStore } from "../state/store";
 import { useNathJourneyOnboardingStore } from "../state/nath-journey-onboarding-store";
 import { logger } from "../utils/logger";
-import { brand, maternal, typography, semantic, mood, premium } from "../theme/tokens";
+import { brand, maternal, semantic, premium } from "../theme/tokens";
 import { PregnancyStage, Interest } from "../types/navigation";
 
-// ============================================
-// DESIGN SYSTEM - Using Tokens
-// ============================================
+// Config & Data
+import {
+  FONTS,
+  STORY_GRADIENTS,
+  SLIDES_ORDER,
+  MOMENT_OPTIONS,
+  OBJECTIVE_OPTIONS,
+  EMOTIONAL_OPTIONS,
+  CHECKIN_OPTIONS,
+  SEVEN_DAY_PLAN,
+} from "../config/onboarding-data";
+
+// Components
+import { StoryProgressBar } from "../components/onboarding/stories/StoryProgressBar";
+import { SelectionCard } from "../components/onboarding/stories/SelectionCard";
+import { ObjectiveChip } from "../components/onboarding/stories/ObjectiveChip";
+import { StoryButton } from "../components/onboarding/stories/StoryButton";
+import { NathSpeaks } from "../components/onboarding/stories/NathSpeaks";
+import { EpisodeCard } from "../components/onboarding/stories/EpisodeCard";
+import { EmotionalOption } from "../components/onboarding/stories/EmotionalOption";
 
 const { width: SCREEN_WIDTH } = Dimensions.get("window");
-
-// Story gradients - from Tokens.maternal.stories
-const STORY_GRADIENTS = maternal.stories;
-
-// Typography - from Tokens.typography.fontFamily
-const FONTS = {
-  display: typography.fontFamily.extrabold,
-  headline: typography.fontFamily.bold,
-  body: typography.fontFamily.medium,
-  accent: typography.fontFamily.semibold,
-  light: typography.fontFamily.base,
-};
-
-// Glass/Overlay colors - from premium.glass tokens
 const GLASS = premium.glass;
-
-// Text colors for dark immersive screens - from premium.text tokens
 const TEXT = premium.text;
-
-// Story slide type
-type StorySlide =
-  | "welcome"
-  | "moment"
-  | "date"
-  | "objectives"
-  | "emotional"
-  | "checkIn"
-  | "reward";
-
-const SLIDES_ORDER: StorySlide[] = [
-  "welcome",
-  "moment",
-  "date",
-  "objectives",
-  "emotional",
-  "checkIn",
-  "reward",
-];
-
-// Moment options (replaces stage)
-const MOMENT_OPTIONS: {
-  id: PregnancyStage;
-  emoji: string;
-  label: string;
-  subtitle: string;
-}[] = [
-  { id: "trying", emoji: "🌱", label: "Tentando engravidar", subtitle: "Cada ciclo é uma nova esperança" },
-  { id: "pregnant", emoji: "🤰", label: "Gestante", subtitle: "A vida crescendo dentro de você" },
-  { id: "postpartum", emoji: "💜", label: "Puerpério", subtitle: "Os primeiros dias são intensos" },
-];
-
-// Objectives options
-const OBJECTIVE_OPTIONS: { id: Interest; emoji: string; label: string }[] = [
-  { id: "nutrition", emoji: "🥗", label: "Alimentação" },
-  { id: "exercise", emoji: "🧘", label: "Movimento" },
-  { id: "mental_health", emoji: "🧠", label: "Mente" },
-  { id: "baby_care", emoji: "👶", label: "Bebê" },
-  { id: "breastfeeding", emoji: "🤱", label: "Amamentação" },
-  { id: "sleep", emoji: "🌙", label: "Sono" },
-  { id: "relationships", emoji: "💑", label: "Relacionamentos" },
-  { id: "career", emoji: "✨", label: "Propósito" },
-];
-
-// Emotional state options - using Tokens.mood
-const EMOTIONAL_OPTIONS: { id: string; emoji: string; label: string; color: string }[] = [
-  { id: "peaceful", emoji: "😌", label: "Em paz", color: mood.calm },
-  { id: "anxious", emoji: "😰", label: "Ansiosa", color: mood.anxious },
-  { id: "excited", emoji: "🤩", label: "Animada", color: mood.energetic },
-  { id: "tired", emoji: "😴", label: "Cansada", color: mood.tired },
-  { id: "overwhelmed", emoji: "🥺", label: "Sobrecarregada", color: mood.sensitive },
-  { id: "hopeful", emoji: "🌟", label: "Esperançosa", color: mood.happy },
-];
-
-// Check-in time options
-const CHECKIN_OPTIONS: { id: string; emoji: string; label: string; time: string }[] = [
-  { id: "morning", emoji: "🌅", label: "Manhã", time: "Acordar com calma" },
-  { id: "afternoon", emoji: "☀️", label: "Tarde", time: "Pausa do dia" },
-  { id: "evening", emoji: "🌙", label: "Noite", time: "Antes de dormir" },
-];
-
-// 7-day plan items for Episode 0
-const SEVEN_DAY_PLAN = [
-  { day: 1, title: "Conhecendo você", icon: "heart" as const },
-  { day: 2, title: "Primeiro check-in", icon: "sunny" as const },
-  { day: 3, title: "Afirmação diária", icon: "sparkles" as const },
-  { day: 4, title: "Hábito de ouro", icon: "star" as const },
-  { day: 5, title: "Comunidade", icon: "people" as const },
-  { day: 6, title: "NathIA", icon: "chatbubble-ellipses" as const },
-  { day: 7, title: "Celebração", icon: "trophy" as const },
-];
-
-// ============================================
-// COMPONENTS
-// ============================================
-
-// Progress bar at top (Stories style)
-const StoryProgressBar: React.FC<{
-  currentSlide: number;
-  totalSlides: number;
-  progress: number;
-}> = React.memo(({ currentSlide, totalSlides, progress }) => {
-  return (
-    <View style={styles.progressContainer}>
-      {Array.from({ length: totalSlides }).map((_, index) => (
-        <View key={index} style={styles.progressSegment}>
-          <View
-            style={[
-              styles.progressFill,
-              {
-                width:
-                  index < currentSlide
-                    ? "100%"
-                    : index === currentSlide
-                      ? `${progress * 100}%`
-                      : "0%",
-                backgroundColor:
-                  index <= currentSlide
-                    ? GLASS.progressActive
-                    : GLASS.strong,
-              },
-            ]}
-          />
-        </View>
-      ))}
-    </View>
-  );
-});
-
-StoryProgressBar.displayName = "StoryProgressBar";
-
-// Selection card with glow effect
-const SelectionCard: React.FC<{
-  selected: boolean;
-  onPress: () => void;
-  emoji: string;
-  label: string;
-  subtitle?: string;
-  variant?: "large" | "compact";
-}> = React.memo(({ selected, onPress, emoji, label, subtitle, variant = "large" }) => {
-  const scale = useSharedValue(1);
-  const glow = useSharedValue(selected ? 1 : 0);
-
-  React.useEffect(() => {
-    glow.value = withSpring(selected ? 1 : 0, { damping: 15 });
-  }, [selected, glow]);
-
-  const animatedStyle = useAnimatedStyle(() => ({
-    transform: [{ scale: scale.value }],
-  }));
-
-  const glowStyle = useAnimatedStyle(() => ({
-    opacity: interpolate(glow.value, [0, 1], [0, 0.6]),
-    transform: [{ scale: interpolate(glow.value, [0, 1], [0.8, 1.1]) }],
-  }));
-
-  const handlePress = async () => {
-    await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
-    scale.value = withSequence(
-      withTiming(0.95, { duration: 80 }),
-      withSpring(1, { damping: 12 })
-    );
-    onPress();
-  };
-
-  const isCompact = variant === "compact";
-
-  return (
-    <Pressable onPress={handlePress}>
-      <Animated.View style={animatedStyle}>
-        {/* Glow effect */}
-        <Animated.View
-          style={[
-            styles.cardGlow,
-            glowStyle,
-            isCompact && styles.cardGlowCompact,
-          ]}
-        />
-        <View
-          style={[
-            styles.selectionCard,
-            isCompact && styles.selectionCardCompact,
-            selected && styles.selectionCardSelected,
-          ]}
-        >
-          <Text style={[styles.cardEmoji, isCompact && styles.cardEmojiCompact]}>
-            {emoji}
-          </Text>
-          <View style={isCompact ? styles.cardContentCompact : styles.cardContent}>
-            <Text
-              style={[
-                styles.cardLabel,
-                isCompact && styles.cardLabelCompact,
-                selected && styles.cardLabelSelected,
-              ]}
-            >
-              {label}
-            </Text>
-            {subtitle && !isCompact && (
-              <Text style={styles.cardSubtitle}>{subtitle}</Text>
-            )}
-          </View>
-          {selected && (
-            <View style={styles.checkmark}>
-              <Ionicons name="checkmark" size={16} color={TEXT.primary} />
-            </View>
-          )}
-        </View>
-      </Animated.View>
-    </Pressable>
-  );
-});
-
-SelectionCard.displayName = "SelectionCard";
-
-// Chip for multi-select
-const ObjectiveChip: React.FC<{
-  selected: boolean;
-  onPress: () => void;
-  emoji: string;
-  label: string;
-}> = React.memo(({ selected, onPress, emoji, label }) => {
-  const scale = useSharedValue(1);
-
-  const animatedStyle = useAnimatedStyle(() => ({
-    transform: [{ scale: scale.value }],
-  }));
-
-  const handlePress = async () => {
-    await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-    scale.value = withSequence(
-      withTiming(0.9, { duration: 60 }),
-      withSpring(1, { damping: 15 })
-    );
-    onPress();
-  };
-
-  return (
-    <Pressable onPress={handlePress}>
-      <Animated.View style={animatedStyle}>
-        <View style={[styles.chip, selected && styles.chipSelected]}>
-          <Text style={styles.chipEmoji}>{emoji}</Text>
-          <Text style={[styles.chipLabel, selected && styles.chipLabelSelected]}>
-            {label}
-          </Text>
-        </View>
-      </Animated.View>
-    </Pressable>
-  );
-});
-
-ObjectiveChip.displayName = "ObjectiveChip";
-
-// CTA Button with glow
-const StoryButton: React.FC<{
-  label: string;
-  onPress: () => void;
-  disabled?: boolean;
-  variant?: "primary" | "secondary";
-}> = React.memo(({ label, onPress, disabled, variant = "primary" }) => {
-  const scale = useSharedValue(1);
-  const glow = useSharedValue(0);
-
-  React.useEffect(() => {
-    if (!disabled && variant === "primary") {
-      const pulse = () => {
-        glow.value = withSequence(
-          withTiming(1, { duration: 1200, easing: Easing.inOut(Easing.ease) }),
-          withTiming(0.3, { duration: 1200, easing: Easing.inOut(Easing.ease) })
-        );
-      };
-      pulse();
-      const interval = setInterval(pulse, 2400);
-      return () => clearInterval(interval);
-    }
-    return undefined;
-  }, [disabled, variant, glow]);
-
-  const animatedStyle = useAnimatedStyle(() => ({
-    transform: [{ scale: scale.value }],
-  }));
-
-  const glowStyle = useAnimatedStyle(() => ({
-    shadowOpacity: interpolate(glow.value, [0, 1], [0.3, 0.7]),
-    shadowRadius: interpolate(glow.value, [0, 1], [8, 20]),
-  }));
-
-  const handlePress = async () => {
-    if (disabled) return;
-    await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
-    scale.value = withSequence(
-      withTiming(0.96, { duration: 80 }),
-      withSpring(1, { damping: 12 })
-    );
-    onPress();
-  };
-
-  const isPrimary = variant === "primary";
-
-  return (
-    <Pressable onPress={handlePress} disabled={disabled}>
-      <Animated.View style={[animatedStyle, isPrimary && glowStyle]}>
-        {isPrimary ? (
-          <LinearGradient
-            colors={
-              disabled
-                ? [GLASS.border, GLASS.base]
-                : [brand.accent[400], brand.accent[500], brand.accent[600]]
-            }
-            start={{ x: 0, y: 0 }}
-            end={{ x: 1, y: 1 }}
-            style={[styles.ctaButton, disabled && styles.ctaButtonDisabled]}
-          >
-            <Text style={[styles.ctaText, disabled && styles.ctaTextDisabled]}>
-              {label}
-            </Text>
-          </LinearGradient>
-        ) : (
-          <View style={styles.secondaryButton}>
-            <Text style={styles.secondaryText}>{label}</Text>
-          </View>
-        )}
-      </Animated.View>
-    </Pressable>
-  );
-});
-
-StoryButton.displayName = "StoryButton";
-
-// Nath Avatar with speech bubble
-const NathSpeaks: React.FC<{ message: string; delay?: number }> = React.memo(
-  ({ message, delay = 0 }) => {
-    return (
-      <Animated.View
-        entering={FadeInUp.delay(delay).duration(500).springify()}
-        style={styles.nathContainer}
-      >
-        <View style={styles.nathAvatarWrap}>
-          <Image
-            source={require("../../assets/nathalia-avatar.jpg")}
-            style={styles.nathAvatar}
-            contentFit="cover"
-          />
-          <View style={styles.nathOnline} />
-        </View>
-        <View style={styles.speechBubble}>
-          <Text style={styles.speechText}>{message}</Text>
-          <View style={styles.speechTail} />
-        </View>
-      </Animated.View>
-    );
-  }
-);
-
-NathSpeaks.displayName = "NathSpeaks";
-
-// Episode 0 reveal card
-const EpisodeCard: React.FC<{ day: number; title: string; icon: string; delay: number }> =
-  React.memo(({ day, title, icon, delay }) => {
-    return (
-      <Animated.View
-        entering={FadeInDown.delay(delay).duration(400).springify()}
-        style={styles.episodeCard}
-      >
-        <View style={styles.episodeDay}>
-          <Text style={styles.episodeDayText}>{day}</Text>
-        </View>
-        <View style={styles.episodeContent}>
-          <Ionicons
-            name={icon as keyof typeof Ionicons.glyphMap}
-            size={18}
-            color={brand.accent[400]}
-          />
-          <Text style={styles.episodeTitle}>{title}</Text>
-        </View>
-        <View style={styles.episodeLock}>
-          <Ionicons name="lock-closed" size={14} color={TEXT.hint} />
-        </View>
-      </Animated.View>
-    );
-  });
-
-EpisodeCard.displayName = "EpisodeCard";
 
 // ============================================
 // MAIN SCREEN
@@ -825,35 +455,16 @@ export default function OnboardingStoriesScreen(): React.JSX.Element {
               style={styles.emotionalGrid}
             >
               {EMOTIONAL_OPTIONS.map((option, index) => (
-                <Animated.View
+                <EmotionalOption
                   key={option.id}
-                  entering={FadeInDown.delay(350 + index * 60).duration(300)}
-                  style={styles.emotionalItem}
-                >
-                  <Pressable
-                    onPress={() => {
-                      setEmotional(option.id);
-                      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
-                    }}
-                    style={[
-                      styles.emotionalCard,
-                      emotional === option.id && {
-                        borderColor: option.color,
-                        backgroundColor: `${option.color}20`,
-                      },
-                    ]}
-                  >
-                    <Text style={styles.emotionalEmoji}>{option.emoji}</Text>
-                    <Text
-                      style={[
-                        styles.emotionalLabel,
-                        emotional === option.id && { color: option.color },
-                      ]}
-                    >
-                      {option.label}
-                    </Text>
-                  </Pressable>
-                </Animated.View>
+                  id={option.id}
+                  emoji={option.emoji}
+                  label={option.label}
+                  color={option.color}
+                  isSelected={emotional === option.id}
+                  onSelect={setEmotional}
+                  index={index}
+                />
               ))}
             </Animated.View>
           </View>
@@ -1019,21 +630,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 8,
     paddingBottom: 12,
   },
-  progressContainer: {
-    flexDirection: "row",
-    gap: 4,
-  },
-  progressSegment: {
-    flex: 1,
-    height: 3,
-    backgroundColor: GLASS.strong,
-    borderRadius: 1.5,
-    overflow: "hidden",
-  },
-  progressFill: {
-    height: "100%",
-    borderRadius: 1.5,
-  },
 
   // Back button
   backButton: {
@@ -1136,136 +732,9 @@ const styles = StyleSheet.create({
     borderColor: GLASS.border,
   },
 
-  // Nath speaks
-  nathContainer: {
-    flexDirection: "row",
-    alignItems: "flex-start",
-    marginBottom: 24,
-  },
-  nathAvatarWrap: {
-    marginRight: 12,
-  },
-  nathAvatar: {
-    width: 48,
-    height: 48,
-    borderRadius: 24,
-    borderWidth: 2,
-    borderColor: brand.accent[400],
-  },
-  nathOnline: {
-    position: "absolute",
-    bottom: 0,
-    right: 0,
-    width: 14,
-    height: 14,
-    borderRadius: 7,
-    backgroundColor: semantic.light.success,
-    borderWidth: 2,
-    borderColor: maternal.stories.moment[0],
-  },
-  speechBubble: {
-    flex: 1,
-    backgroundColor: GLASS.medium,
-    borderRadius: 20,
-    borderTopLeftRadius: 4,
-    padding: 16,
-    position: "relative",
-  },
-  speechText: {
-    fontSize: 17,
-    fontFamily: FONTS.body,
-    color: TEXT.primary,
-    lineHeight: 24,
-  },
-  speechTail: {
-    position: "absolute",
-    top: 14,
-    left: -8,
-    width: 0,
-    height: 0,
-    borderTopWidth: 8,
-    borderTopColor: "transparent",
-    borderBottomWidth: 8,
-    borderBottomColor: "transparent",
-    borderRightWidth: 8,
-    borderRightColor: GLASS.medium,
-  },
-
   // Options
   optionsContainer: {
     gap: 12,
-  },
-
-  // Selection card
-  selectionCard: {
-    flexDirection: "row",
-    alignItems: "center",
-    backgroundColor: GLASS.light,
-    borderRadius: 20,
-    padding: 16,
-    borderWidth: 2,
-    borderColor: "transparent",
-  },
-  selectionCardCompact: {
-    padding: 14,
-    borderRadius: 16,
-  },
-  selectionCardSelected: {
-    borderColor: brand.accent[400],
-    backgroundColor: GLASS.accentLight,
-  },
-  cardGlow: {
-    position: "absolute",
-    top: -4,
-    left: -4,
-    right: -4,
-    bottom: -4,
-    borderRadius: 24,
-    backgroundColor: brand.accent[500],
-  },
-  cardGlowCompact: {
-    borderRadius: 20,
-  },
-  cardEmoji: {
-    fontSize: 32,
-    marginRight: 14,
-  },
-  cardEmojiCompact: {
-    fontSize: 24,
-    marginRight: 12,
-  },
-  cardContent: {
-    flex: 1,
-  },
-  cardContentCompact: {
-    flex: 1,
-    flexDirection: "row",
-    alignItems: "center",
-  },
-  cardLabel: {
-    fontSize: 17,
-    fontFamily: FONTS.headline,
-    color: TEXT.primary,
-  },
-  cardLabelCompact: {
-    fontSize: 15,
-  },
-  cardLabelSelected: {
-    color: brand.accent[300],
-  },
-  cardSubtitle: {
-    fontSize: 13,
-    fontFamily: FONTS.light,
-    color: TEXT.subtle,
-    marginTop: 2,
-  },
-  checkmark: {
-    width: 28,
-    height: 28,
-    borderRadius: 14,
-    backgroundColor: brand.accent[500],
-    alignItems: "center",
-    justifyContent: "center",
   },
 
   // Date
@@ -1323,32 +792,6 @@ const styles = StyleSheet.create({
     gap: 10,
     justifyContent: "center",
   },
-  chip: {
-    flexDirection: "row",
-    alignItems: "center",
-    backgroundColor: GLASS.base,
-    borderRadius: 24,
-    paddingVertical: 12,
-    paddingHorizontal: 18,
-    gap: 8,
-    borderWidth: 1.5,
-    borderColor: "transparent",
-  },
-  chipSelected: {
-    backgroundColor: GLASS.accentMedium,
-    borderColor: brand.accent[400],
-  },
-  chipEmoji: {
-    fontSize: 18,
-  },
-  chipLabel: {
-    fontSize: 14,
-    fontFamily: FONTS.accent,
-    color: TEXT.bright,
-  },
-  chipLabelSelected: {
-    color: brand.accent[300],
-  },
 
   // Emotional
   emotionalGrid: {
@@ -1356,28 +799,6 @@ const styles = StyleSheet.create({
     flexWrap: "wrap",
     gap: 12,
     justifyContent: "center",
-  },
-  emotionalItem: {
-    width: "30%",
-  },
-  emotionalCard: {
-    alignItems: "center",
-    backgroundColor: GLASS.light,
-    borderRadius: 16,
-    paddingVertical: 20,
-    paddingHorizontal: 8,
-    borderWidth: 2,
-    borderColor: "transparent",
-  },
-  emotionalEmoji: {
-    fontSize: 32,
-    marginBottom: 8,
-  },
-  emotionalLabel: {
-    fontSize: 12,
-    fontFamily: FONTS.accent,
-    color: TEXT.secondary,
-    textAlign: "center",
   },
 
   // Check-in
@@ -1422,43 +843,6 @@ const styles = StyleSheet.create({
     gap: 10,
     paddingHorizontal: 4,
   },
-  episodeCard: {
-    flexDirection: "row",
-    alignItems: "center",
-    backgroundColor: GLASS.ultraLight,
-    borderRadius: 14,
-    padding: 14,
-    borderWidth: 1,
-    borderColor: GLASS.base,
-  },
-  episodeDay: {
-    width: 36,
-    height: 36,
-    borderRadius: 18,
-    backgroundColor: GLASS.base,
-    alignItems: "center",
-    justifyContent: "center",
-    marginRight: 14,
-  },
-  episodeDayText: {
-    fontSize: 14,
-    fontFamily: FONTS.headline,
-    color: TEXT.bright,
-  },
-  episodeContent: {
-    flex: 1,
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 10,
-  },
-  episodeTitle: {
-    fontSize: 15,
-    fontFamily: FONTS.body,
-    color: TEXT.bright,
-  },
-  episodeLock: {
-    padding: 8,
-  },
   rewardFooter: {
     paddingTop: 16,
   },
@@ -1483,40 +867,6 @@ const styles = StyleSheet.create({
   footer: {
     paddingHorizontal: 24,
     paddingTop: 12,
-  },
-  ctaButton: {
-    height: 56,
-    borderRadius: 28,
-    alignItems: "center",
-    justifyContent: "center",
-    shadowColor: brand.accent[500],
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.4,
-    shadowRadius: 12,
-    elevation: 8,
-  },
-  ctaButtonDisabled: {
-    shadowOpacity: 0,
-  },
-  ctaText: {
-    fontSize: 17,
-    fontFamily: FONTS.headline,
-    color: TEXT.primary,
-  },
-  ctaTextDisabled: {
-    color: TEXT.disabled,
-  },
-  secondaryButton: {
-    height: 48,
-    borderRadius: 24,
-    alignItems: "center",
-    justifyContent: "center",
-    backgroundColor: GLASS.base,
-  },
-  secondaryText: {
-    fontSize: 15,
-    fontFamily: FONTS.accent,
-    color: TEXT.bright,
   },
   tapHint: {
     fontSize: 12,
