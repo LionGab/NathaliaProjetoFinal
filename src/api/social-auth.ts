@@ -14,6 +14,7 @@ import * as QueryParams from "expo-auth-session/build/QueryParams";
 import * as WebBrowser from "expo-web-browser";
 import { Platform } from "react-native";
 import { logger } from "../utils/logger";
+import { isExpoGo } from "../utils/expo";
 import { supabase } from "./supabase";
 
 // Permitir que o browser feche corretamente após OAuth

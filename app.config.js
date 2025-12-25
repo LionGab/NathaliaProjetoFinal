@@ -212,9 +212,9 @@ module.exports = {
         },
       ],
 
-      // Audio/Video
+      // Audio (expo-audio replaces expo-av for SDK 54+)
       [
-        "expo-av",
+        "expo-audio",
         {
           microphonePermission: "O app precisa do microfone para você gravar mensagens de áudio.",
         },

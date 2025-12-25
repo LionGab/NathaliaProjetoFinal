@@ -4,14 +4,10 @@
  * Gerencia playback de voz da NathIA com ElevenLabs TTS.
  * Verifica status premium antes de permitir reproducao.
  * Cacheia audio gerado para replay sem custo adicional.
- *
- * ⚠️ NOTA: expo-av está deprecated e será removido no SDK 54.
- * Migração para expo-audio/expo-video planejada para versão futura.
  */
 
 import { useCallback, useEffect, useRef, useState } from "react";
-// expo-av deprecated, será migrado para expo-audio em versão futura
-import { Audio, AVPlaybackStatus } from "expo-av";
+import { AudioPlayer, AudioStatus } from "expo-audio";
 import { generateSpeech, isElevenLabsConfigured, playAudio, stopAudio } from "../api/elevenlabs";
 import { useHasVoiceAccess, usePremiumStore } from "../state/premium-store";
 import { logger } from "../utils/logger";
@@ -75,7 +71,7 @@ export function useVoice(): UseVoiceReturn {
   });
 
   // Refs
-  const soundRef = useRef<Audio.Sound | null>(null);
+  const playerRef = useRef<AudioPlayer | null>(null);
 
   // Premium access
   const hasVoiceAccess = useHasVoiceAccess();
@@ -89,16 +85,16 @@ export function useVoice(): UseVoiceReturn {
    * Limpa recursos de audio
    */
   const cleanup = useCallback(async () => {
-    if (soundRef.current) {
+    if (playerRef.current) {
       try {
-        await stopAudio(soundRef.current);
+        await stopAudio(playerRef.current);
       } catch (err) {
         // Log de cleanup failure para debug
         logger.warn("Audio cleanup failed", "useVoice", {
           error: err instanceof Error ? err.message : String(err),
         });
       }
-      soundRef.current = null;
+      playerRef.current = null;
     }
 
     setState((prev) => ({
@@ -144,14 +140,12 @@ export function useVoice(): UseVoiceReturn {
   }, []);
 
   /**
-   * Callback de status do playback
+   * Callback de status do playback (expo-audio)
    */
-  const onPlaybackStatusUpdate = useCallback((status: AVPlaybackStatus) => {
-    if (!status.isLoaded) return;
-
+  const onPlaybackStatusUpdate = useCallback((status: AudioStatus) => {
     // Calcular progresso
-    if (status.durationMillis && status.positionMillis) {
-      const progress = status.positionMillis / status.durationMillis;
+    if (status.duration && status.currentTime) {
+      const progress = status.currentTime / status.duration;
       setState((prev) => ({ ...prev, progress }));
     }
 
@@ -164,14 +158,16 @@ export function useVoice(): UseVoiceReturn {
         currentMessageId: null,
       }));
 
-      // Descarregar som
-      if (soundRef.current) {
-        soundRef.current.unloadAsync().catch((error) => {
-          logger.debug("Sound already unloaded", "useVoice", {
+      // Liberar player
+      if (playerRef.current) {
+        try {
+          playerRef.current.release();
+        } catch (error) {
+          logger.debug("Player already released", "useVoice", {
             error: error instanceof Error ? error.message : String(error),
           });
-        });
-        soundRef.current = null;
+        }
+        playerRef.current = null;
       }
     }
   }, []);
@@ -260,11 +256,11 @@ export function useVoice(): UseVoiceReturn {
           currentMessageId: messageId,
         }));
 
-        const sound = await playAudio(fileUri);
-        soundRef.current = sound;
+        const player = await playAudio(fileUri);
+        playerRef.current = player;
 
-        // Configurar listener de status
-        sound.setOnPlaybackStatusUpdate(onPlaybackStatusUpdate);
+        // Configurar listener de status (expo-audio)
+        player.addListener("playbackStatusUpdate", onPlaybackStatusUpdate);
 
         setState((prev) => ({
           ...prev,
@@ -311,9 +307,9 @@ export function useVoice(): UseVoiceReturn {
     async (messageId: string, text: string): Promise<void> => {
       if (state.isPlaying && state.currentMessageId === messageId) {
         // Pausar
-        if (soundRef.current) {
+        if (playerRef.current) {
           try {
-            await soundRef.current.pauseAsync();
+            playerRef.current.pause();
             setState((prev) => ({ ...prev, isPlaying: false }));
           } catch (error) {
             // Se erro ao pausar, parar completamente
@@ -323,10 +319,10 @@ export function useVoice(): UseVoiceReturn {
             await stopPlayback();
           }
         }
-      } else if (!state.isPlaying && state.currentMessageId === messageId && soundRef.current) {
+      } else if (!state.isPlaying && state.currentMessageId === messageId && playerRef.current) {
         // Retomar
         try {
-          await soundRef.current.playAsync();
+          playerRef.current.play();
           setState((prev) => ({ ...prev, isPlaying: true }));
         } catch (error) {
           // Se erro ao retomar, regenerar

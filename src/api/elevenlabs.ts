@@ -3,15 +3,11 @@
  *
  * Servico para converter texto em fala usando Supabase Edge Function.
  * API key mantida segura no servidor - NUNCA exposta no client.
- * Audio playback gerenciado pelo expo-av.
- *
- * ⚠️ NOTA: expo-av está deprecated e será removido no SDK 54.
- * Migração para expo-audio planejada para versão futura.
+ * Audio playback gerenciado pelo expo-audio.
  */
 
 import * as FileSystem from "expo-file-system/legacy";
-// expo-av deprecated, será migrado para expo-audio em versão futura
-import { Audio } from "expo-av";
+import { createAudioPlayer, AudioPlayer, setAudioModeAsync } from "expo-audio";
 import { AppError, ErrorCode, wrapError } from "../utils/error-handler";
 import { logger } from "../utils/logger";
 import { supabase } from "./supabase";
@@ -226,29 +222,27 @@ export async function generateSpeech(options: GenerateSpeechOptions): Promise<st
 }
 
 /**
- * Reproduz arquivo de audio usando expo-av
+ * Reproduz arquivo de audio usando expo-audio
  *
  * @param fileUri - URI do arquivo de audio
- * @returns Instancia do Audio.Sound para controle de playback
+ * @returns Instancia do AudioPlayer para controle de playback
  */
-export async function playAudio(fileUri: string): Promise<Audio.Sound> {
+export async function playAudio(fileUri: string): Promise<AudioPlayer> {
   try {
     // Configurar sessao de audio
-    await Audio.setAudioModeAsync({
-      playsInSilentModeIOS: true, // Tocar mesmo no silencioso
-      staysActiveInBackground: false, // Nao continuar em background
-      shouldDuckAndroid: true, // Reduzir volume de outros apps
+    await setAudioModeAsync({
+      playsInSilentMode: true, // Tocar mesmo no silencioso
+      shouldPlayInBackground: false, // Nao continuar em background
+      interruptionModeAndroid: "duckOthers", // Reduzir volume de outros apps
     });
 
-    // Criar e reproduzir som
-    const { sound } = await Audio.Sound.createAsync(
-      { uri: fileUri },
-      { shouldPlay: true, volume: 1.0 }
-    );
+    // Criar player e reproduzir
+    const player = createAudioPlayer({ uri: fileUri });
+    player.play();
 
     logger.info("Audio playback started", "ElevenLabs", { fileUri });
 
-    return sound;
+    return player;
   } catch (error) {
     logger.error(
       "Audio playback failed",
@@ -260,18 +254,18 @@ export async function playAudio(fileUri: string): Promise<Audio.Sound> {
 }
 
 /**
- * Para e descarrega um som
+ * Para e libera um player de audio
  */
-export async function stopAudio(sound: Audio.Sound | null): Promise<void> {
-  if (!sound) return;
+export async function stopAudio(player: AudioPlayer | null): Promise<void> {
+  if (!player) return;
 
   try {
-    await sound.stopAsync();
-    await sound.unloadAsync();
-    logger.info("Audio stopped and unloaded", "ElevenLabs");
+    player.pause();
+    player.release();
+    logger.info("Audio stopped and released", "ElevenLabs");
   } catch (error) {
-    // Pode ja estar descarregado - log apenas em debug
-    logger.debug("Audio already unloaded or stopped", "ElevenLabs", {
+    // Pode ja estar liberado - log apenas em debug
+    logger.debug("Audio already released or stopped", "ElevenLabs", {
       error: error instanceof Error ? error.message : String(error),
     });
   }

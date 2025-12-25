@@ -2,15 +2,16 @@
  * useVoiceRecording Hook
  *
  * Gerencia gravação de áudio para mensagens de voz no chat.
- * Usa expo-av para gravação e Supabase Edge Function para transcrição.
- *
- * ⚠️ NOTA: expo-av está deprecated e será removido no SDK 54.
- * Migração para expo-audio planejada para versão futura.
+ * Usa expo-audio para gravação e Supabase Edge Function para transcrição.
  */
 
 import { useCallback, useEffect, useRef, useState } from "react";
-// expo-av deprecated, será migrado para expo-audio em versão futura
-import { Audio } from "expo-av";
+import {
+  useAudioRecorder,
+  AudioModule,
+  RecordingPresets,
+  setAudioModeAsync,
+} from "expo-audio";
 import * as FileSystem from "expo-file-system";
 import * as Haptics from "expo-haptics";
 import { supabase } from "../api/supabase";
@@ -44,35 +45,8 @@ interface UseVoiceRecordingReturn extends RecordingState {
 
 const FUNCTIONS_URL = process.env.EXPO_PUBLIC_SUPABASE_FUNCTIONS_URL;
 
-const RECORDING_OPTIONS: Audio.RecordingOptions = {
-  isMeteringEnabled: true,
-  android: {
-    extension: ".m4a",
-    outputFormat: Audio.AndroidOutputFormat.MPEG_4,
-    audioEncoder: Audio.AndroidAudioEncoder.AAC,
-    sampleRate: 44100,
-    numberOfChannels: 1,
-    bitRate: 128000,
-  },
-  ios: {
-    extension: ".m4a",
-    outputFormat: Audio.IOSOutputFormat.MPEG4AAC,
-    audioQuality: Audio.IOSAudioQuality.HIGH,
-    sampleRate: 44100,
-    numberOfChannels: 1,
-    bitRate: 128000,
-    linearPCMBitDepth: 16,
-    linearPCMIsBigEndian: false,
-    linearPCMIsFloat: false,
-  },
-  web: {
-    mimeType: "audio/webm",
-    bitsPerSecond: 128000,
-  },
-};
-
 // Limite de gravação (2 minutos)
-const MAX_DURATION_MS = 120000;
+const MAX_DURATION_MS = 120 * 1000;
 
 // =======================
 // HOOK
@@ -87,17 +61,27 @@ export function useVoiceRecording(): UseVoiceRecordingReturn {
   });
 
   const [permissionGranted, setPermissionGranted] = useState(false);
-  const recordingRef = useRef<Audio.Recording | null>(null);
   const durationIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const startTimeRef = useRef<number>(0);
+
+  // Usar hook do expo-audio para criar recorder
+  const recorder = useAudioRecorder(RecordingPresets.HIGH_QUALITY, (status) => {
+    // Status listener - atualiza estado quando gravação termina
+    if (status.isFinished) {
+      setState((prev) => ({ ...prev, isRecording: false }));
+    }
+    if (status.hasError && status.error) {
+      setState((prev) => ({ ...prev, error: status.error }));
+    }
+  });
 
   /**
    * Verifica permissões de áudio
    */
   const checkPermissions = useCallback(async () => {
     try {
-      const { granted } = await Audio.getPermissionsAsync();
-      setPermissionGranted(granted);
+      const status = await AudioModule.getRecordingPermissionsAsync();
+      setPermissionGranted(status.granted);
     } catch (error) {
       logger.error(
         "Failed to check audio permissions",
@@ -123,9 +107,9 @@ export function useVoiceRecording(): UseVoiceRecordingReturn {
    */
   const requestPermissions = useCallback(async (): Promise<boolean> => {
     try {
-      const { granted } = await Audio.requestPermissionsAsync();
-      setPermissionGranted(granted);
-      return granted;
+      const status = await AudioModule.requestRecordingPermissionsAsync();
+      setPermissionGranted(status.granted);
+      return status.granted;
     } catch (error) {
       logger.error(
         "Failed to request audio permissions",
@@ -153,18 +137,16 @@ export function useVoiceRecording(): UseVoiceRecordingReturn {
         }
       }
 
-      // Configurar modo de áudio
-      await Audio.setAudioModeAsync({
-        allowsRecordingIOS: true,
-        playsInSilentModeIOS: true,
+      // Configurar modo de áudio para gravação
+      await setAudioModeAsync({
+        allowsRecording: true,
+        playsInSilentMode: true,
       });
 
-      // Criar e iniciar gravação
-      const recording = new Audio.Recording();
-      await recording.prepareToRecordAsync(RECORDING_OPTIONS);
-      await recording.startAsync();
+      // Preparar e iniciar gravação
+      await recorder.prepareToRecordAsync();
+      recorder.record();
 
-      recordingRef.current = recording;
       startTimeRef.current = Date.now();
 
       // Iniciar contador de duração
@@ -173,8 +155,8 @@ export function useVoiceRecording(): UseVoiceRecordingReturn {
         setState((prev) => ({ ...prev, duration: elapsed }));
 
         // Auto-stop se atingir limite
-        if (elapsed * 1000 >= MAX_DURATION_MS) {
-          recordingRef.current?.stopAndUnloadAsync();
+        if (Date.now() - startTimeRef.current >= MAX_DURATION_MS) {
+          recorder.stop();
           setState((prev) => ({
             ...prev,
             isRecording: false,
@@ -206,16 +188,12 @@ export function useVoiceRecording(): UseVoiceRecordingReturn {
         isRecording: false,
       }));
     }
-  }, [permissionGranted, requestPermissions]);
+  }, [permissionGranted, requestPermissions, recorder]);
 
   /**
    * Para gravação e transcreve o áudio
    */
   const stopRecording = useCallback(async (): Promise<string | null> => {
-    if (!recordingRef.current) {
-      return null;
-    }
-
     // Parar contador
     if (durationIntervalRef.current) {
       clearInterval(durationIntervalRef.current);
@@ -226,18 +204,17 @@ export function useVoiceRecording(): UseVoiceRecordingReturn {
       setState((prev) => ({ ...prev, isRecording: false, isTranscribing: true }));
       await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
 
-      // Parar gravação
-      await recordingRef.current.stopAndUnloadAsync();
-      const uri = recordingRef.current.getURI();
-      recordingRef.current = null;
+      // Parar gravação e obter URI
+      recorder.stop();
+      const uri = recorder.uri;
 
       if (!uri) {
         throw new Error("Falha ao obter URI do áudio");
       }
 
       // Restaurar modo de áudio
-      await Audio.setAudioModeAsync({
-        allowsRecordingIOS: false,
+      await setAudioModeAsync({
+        allowsRecording: false,
       });
 
       // Ler arquivo como base64
@@ -322,7 +299,7 @@ export function useVoiceRecording(): UseVoiceRecordingReturn {
 
       return null;
     }
-  }, []);
+  }, [recorder]);
 
   /**
    * Cancela gravação sem transcrever
@@ -334,24 +311,21 @@ export function useVoiceRecording(): UseVoiceRecordingReturn {
       durationIntervalRef.current = null;
     }
 
-    if (recordingRef.current) {
-      try {
-        await recordingRef.current.stopAndUnloadAsync();
-        const uri = recordingRef.current.getURI();
-        recordingRef.current = null;
+    try {
+      recorder.stop();
+      const uri = recorder.uri;
 
-        // Limpar arquivo
-        if (uri) {
-          await FileSystem.deleteAsync(uri, { idempotent: true });
-        }
-
-        // Restaurar modo de áudio
-        await Audio.setAudioModeAsync({
-          allowsRecordingIOS: false,
-        });
-      } catch {
-        // Ignorar erros de cleanup
+      // Limpar arquivo
+      if (uri) {
+        await FileSystem.deleteAsync(uri, { idempotent: true });
       }
+
+      // Restaurar modo de áudio
+      await setAudioModeAsync({
+        allowsRecording: false,
+      });
+    } catch {
+      // Ignorar erros de cleanup
     }
 
     setState({
@@ -363,7 +337,7 @@ export function useVoiceRecording(): UseVoiceRecordingReturn {
 
     await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
     logger.info("Recording cancelled", "useVoiceRecording");
-  }, []);
+  }, [recorder]);
 
   return {
     // State
