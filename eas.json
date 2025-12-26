@@ -13,8 +13,7 @@
         "resourceClass": "m-medium"
       },
       "android": {
-        "buildType": "apk",
-        "gradleCommand": ":app:assembleDebug"
+        "buildType": "apk"
       },
       "env": {
         "EXPO_PUBLIC_ENV": "development",

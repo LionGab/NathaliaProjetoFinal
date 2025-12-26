@@ -56,7 +56,7 @@ module.exports = {
     assetBundlePatterns: ["**/*"],
     ios: {
       supportsTablet: true,
-      bundleIdentifier: "com.nossamaternidade.app",
+      bundleIdentifier: "br.com.nossamaternidade.app",
       buildNumber: "1",
       icon: "./assets/icon.png",
       requireFullScreen: false,
@@ -180,9 +180,9 @@ module.exports = {
       enableAIFeatures: process.env.EXPO_PUBLIC_ENABLE_AI_FEATURES === "true" || false,
       enableGamification: process.env.EXPO_PUBLIC_ENABLE_GAMIFICATION === "true" || false,
       enableAnalytics: process.env.EXPO_PUBLIC_ENABLE_ANALYTICS === "true" || false,
-      // EAS Project ID (must match app.json and DEPLOY_STORES.md)
+      // EAS Project ID
       eas: {
-        projectId: "ceee9479-e404-47b8-bc37-4f913c18f270",
+        projectId: "d22475be-2b7c-41a1-90e5-bfe531524f41",
       },
       backendUrl: process.env.EXPO_PUBLIC_BACKEND_URL || "",
     },
