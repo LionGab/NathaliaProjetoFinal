@@ -839,8 +839,8 @@ Deno.serve(async (req) => {
 
     // Construct final system prompt
     const baseSystemPrompt = systemPrompt || DEFAULT_SYSTEM_PROMPT;
-    const finalSystemPrompt = isCrisisMessage 
-      ? (systemPrompt || CRISIS_SYSTEM_PROMPT) 
+    const finalSystemPrompt = isCrisisMessage
+      ? (systemPrompt || CRISIS_SYSTEM_PROMPT)
       : (baseSystemPrompt + contextSuffix);
 
     // Log request start
