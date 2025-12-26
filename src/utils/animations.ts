@@ -43,41 +43,56 @@ import {
 
 /**
  * Configurações de spring animation para diferentes feels
+ * Premium Design: Animações mais suaves e elegantes
  */
 export const SPRING = {
   /** Suave e elegante - padrão para a maioria das animações */
   gentle: {
-    damping: 15,
-    stiffness: 150,
+    damping: 18,
+    stiffness: 120,
     mass: 1,
   } as WithSpringConfig,
 
   /** Rápido e responsivo - para feedback de UI */
   snappy: {
-    damping: 12,
-    stiffness: 200,
-    mass: 0.8,
+    damping: 14,
+    stiffness: 180,
+    mass: 0.9,
   } as WithSpringConfig,
 
   /** Divertido com bounce - para celebrações e destaque */
   bouncy: {
-    damping: 8,
-    stiffness: 180,
+    damping: 10,
+    stiffness: 160,
     mass: 1,
   } as WithSpringConfig,
 
   /** Muito bouncy - para confetti e badges */
   wobbly: {
-    damping: 6,
-    stiffness: 120,
+    damping: 8,
+    stiffness: 100,
     mass: 1,
   } as WithSpringConfig,
 
   /** Rígido - para snap e posicionamento preciso */
   stiff: {
+    damping: 22,
+    stiffness: 280,
+    mass: 0.9,
+  } as WithSpringConfig,
+
+  /** Premium - para transições de tela e modais (ultra suave) */
+  premium: {
     damping: 20,
-    stiffness: 300,
-    mass: 0.8,
+    stiffness: 100,
+    mass: 1.1,
+  } as WithSpringConfig,
+
+  /** Silk - para animações de scroll e parallax (sedoso) */
+  silk: {
+    damping: 25,
+    stiffness: 90,
+    mass: 1.2,
   } as WithSpringConfig,
 } as const;
 
@@ -149,22 +164,27 @@ export const DURATION = {
 
 /**
  * Valores de micro-interação
+ * Premium Design: Valores mais sutis e elegantes
  */
 export const MICRO = {
-  /** Escala quando pressionado */
-  pressScale: 0.97,
+  /** Escala quando pressionado - mais sutil para premium */
+  pressScale: 0.98,
   /** Escala no hover (web) */
-  hoverScale: 1.02,
+  hoverScale: 1.015,
   /** Escala para badges/badges */
-  popScale: 1.15,
+  popScale: 1.1,
   /** Distância de float para partículas */
-  floatDistance: 10,
+  floatDistance: 8,
   /** Rotação sutil */
-  tiltAngle: 3,
+  tiltAngle: 2,
   /** Opacidade mínima de glow */
-  glowMin: 0.3,
+  glowMin: 0.2,
   /** Opacidade máxima de glow */
-  glowMax: 0.7,
+  glowMax: 0.5,
+  /** Escala premium para CTAs */
+  ctaScale: 0.985,
+  /** Blur para efeitos de foco */
+  focusBlur: 8,
 } as const;
 
 // ===========================================

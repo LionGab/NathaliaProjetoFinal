@@ -606,10 +606,10 @@ const styles = StyleSheet.create({
     gap: spacing.sm,
   },
   greeting: {
-    fontSize: 24,
+    fontSize: 26,
     fontWeight: "700",
     fontFamily: "Manrope_700Bold",
-    letterSpacing: -0.5,
+    letterSpacing: -0.6,
   },
   pregnancyInfo: {
     fontSize: 14,
@@ -621,12 +621,16 @@ const styles = StyleSheet.create({
     borderRadius: 999,
     borderWidth: 2.5,
   },
-  // Hero Card
+  // Hero Card - Premium Design
   heroCard: {
-    height: 200,
-    borderRadius: radius["2xl"],
+    height: 220,
+    borderRadius: 24,
     overflow: "hidden",
-    ...shadows.lg,
+    shadowColor: "#F8B4C4",
+    shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 0.2,
+    shadowRadius: 20,
+    elevation: 8,
   },
   heroImage: {
     ...StyleSheet.absoluteFillObject,
@@ -644,11 +648,11 @@ const styles = StyleSheet.create({
     gap: 4,
   },
   heroTitle: {
-    fontSize: 22,
+    fontSize: 24,
     fontWeight: "700",
     fontFamily: "Manrope_700Bold",
     color: neutral[0],
-    letterSpacing: -0.3,
+    letterSpacing: -0.4,
   },
   heroSubtitle: {
     fontSize: 14,
@@ -696,19 +700,19 @@ const styles = StyleSheet.create({
     marginBottom: spacing.xs,
   },
 
-  // Feature Card
+  // Feature Card - Premium Design
   featureCard: {
     flexDirection: "row",
     alignItems: "center",
     gap: spacing.md,
-    padding: spacing.lg,
-    borderRadius: radius.xl,
+    padding: spacing.lg + 2,
+    borderRadius: 20,
     borderWidth: 1,
   },
   featureIconContainer: {
-    width: 48,
-    height: 48,
-    borderRadius: 24,
+    width: 52,
+    height: 52,
+    borderRadius: 16,
     alignItems: "center",
     justifyContent: "center",
   },

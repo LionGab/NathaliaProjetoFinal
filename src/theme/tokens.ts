@@ -25,42 +25,42 @@
 
 export const brand = {
   /**
-   * Primary: Blue Clean ✨
-   * - Transmite: frescor, leveza, confiança, modernidade
+   * Primary: Azul Pastel Premium ✨
+   * - Transmite: serenidade, confiança, leveza, sofisticação
    * - Uso: superfícies, navegação, estrutura, elementos principais
-   * - Inspiração: Céu limpo, água cristalina, digital wellness
+   * - Inspiração: Calm, Headspace, apps de wellness premium
    */
   primary: {
-    50: "#F0FAFF", // Background principal - quase branco azulado
-    100: "#E0F4FF", // Highlights, cards - azul clarinho
-    200: "#B8E8FF", // Border subtle - baby blue suave
-    300: "#7DD8FF", // Hover states - sky blue
-    400: "#4AC8FF", // Active elements - azul vibrante
-    500: "#1AB8FF", // Principal - azul clean e fresco ✨
-    600: "#0099E6", // CTA secundário
-    700: "#007ACC", // Links, ícones
-    800: "#005C99", // Textos sobre claro
-    900: "#004066", // Headings
+    50: "#F5FBFD", // Background principal - off-white azulado
+    100: "#E8F6FA", // Highlights, cards - azul muito claro
+    200: "#D1EDF5", // Border subtle - azul pastel suave
+    300: "#A8DDF0", // Hover states - azul pastel médio
+    400: "#7EC8E3", // Active elements - azul pastel principal ✨
+    500: "#5BB5D6", // Principal - azul pastel vibrante
+    600: "#3A9FC4", // CTA secundário
+    700: "#2D7A99", // Links, ícones
+    800: "#1F5A70", // Textos sobre claro
+    900: "#143D4D", // Headings
   },
 
   /**
-   * Accent: Pink Clean ✨
-   * - Transmite: calor humano, feminilidade, energia positiva
+   * Accent: Rosa Claro Premium ✨
+   * - Transmite: feminilidade suave, acolhimento, ternura
    * - Uso: CTAs principais, badges especiais, "momentos de alegria"
    * - REGRA: usar pontualmente (máx 10-15% da tela)
-   * - Inspiração: Flores frescas, blush natural, Instagram aesthetic
+   * - Inspiração: Flo, Clue, apps de saúde feminina premium
    */
   accent: {
-    50: "#FFF5F8", // Background accent suave - quase branco rosado
-    100: "#FFE5ED", // Highlight rosa - rosa clarinho
-    200: "#FFD0E0", // Border rosa - rosa suave
-    300: "#FFA8C5", // Hover - rosa médio
-    400: "#FF7AA8", // Active - rosa vibrante
-    500: "#FF5C94", // CTA PRINCIPAL - pink clean e Instagram-worthy ✨
-    600: "#E84D82", // CTA pressed
-    700: "#CC3E6F", // Links rosa
-    800: "#A8335B", // Text accent
-    900: "#852848", // Heading accent (raro)
+    50: "#FEF7F9", // Background accent suave - quase branco rosado
+    100: "#FDEEF2", // Highlight rosa - rosa muito claro
+    200: "#FBDDE5", // Border rosa - rosa pastel suave
+    300: "#F8C8D4", // Hover - rosa pastel médio
+    400: "#F8B4C4", // Active - rosa pastel principal ✨
+    500: "#F49DB2", // CTA PRINCIPAL - rosa claro premium
+    600: "#E8849D", // CTA pressed
+    700: "#D66B86", // Links rosa
+    800: "#B8526D", // Text accent
+    900: "#8A3D52", // Heading accent (raro)
   },
 
   /**
@@ -247,20 +247,22 @@ export const maternal = {
 
 export const surface = {
   light: {
-    /** Base: Blue Clean clarinho (nunca branco puro) */
-    base: "#F0FAFF",
+    /** Base: Off-white premium (clean e sofisticado) */
+    base: "#FAFCFD",
     /** Cards: branco puro */
     card: "#FFFFFF",
     /** Elevated: cards com elevação */
     elevated: "#FFFFFF",
     /** Tertiary: separadores, dividers */
-    tertiary: "#E0F4FF",
+    tertiary: "#F5F8FA",
+    /** Soft: background alternativo suave */
+    soft: "#F8FAFC",
     /** Overlay: modais, sheets */
-    overlay: "rgba(0, 0, 0, 0.5)",
+    overlay: "rgba(0, 0, 0, 0.4)",
     /** Glass: elementos com blur */
-    glass: "rgba(240, 250, 255, 0.85)",
+    glass: "rgba(250, 252, 253, 0.88)",
     /** Card com transparência */
-    cardAlpha: "rgba(255, 255, 255, 0.96)",
+    cardAlpha: "rgba(255, 255, 255, 0.97)",
   },
   dark: {
     /** Base: Blue Clean escuro (não preto puro - OLED friendly) */
@@ -807,32 +809,34 @@ export const overlay = {
 export const premium = {
   /**
    * Premium Gradient Background
-   * Deep purple/violet for luxurious feel
+   * Soft, elegant gradient for luxurious feel
    * Used in: Paywall, Premium features
    */
   gradient: {
-    top: "#0F0A1F",
-    mid: "#1A1030",
-    bottom: "#251540",
-    accent: "#301A55",
+    top: "#1A1525",
+    mid: "#251D35",
+    bottom: "#2D2340",
+    accent: "#3D2D55",
   },
 
   /**
    * Glow effects for premium screens
+   * Rosa claro e azul pastel premium
    */
   glow: {
-    accent: "rgba(255, 92, 148, 0.25)",
-    secondary: "rgba(139, 92, 246, 0.2)",
-    primary: "rgba(26, 184, 255, 0.2)",
+    accent: "rgba(248, 180, 196, 0.3)",
+    secondary: "rgba(168, 221, 240, 0.25)",
+    primary: "rgba(126, 200, 227, 0.25)",
   },
 
   /**
    * Aurora effects for cinematic screens (Login, onboarding)
+   * Tons pastel suaves
    */
   aurora: {
-    pink: "rgba(255, 92, 148, 0.3)",
-    purple: "rgba(139, 92, 246, 0.3)",
-    blue: "rgba(26, 184, 255, 0.25)",
+    pink: "rgba(248, 180, 196, 0.35)",
+    purple: "rgba(200, 180, 230, 0.3)",
+    blue: "rgba(126, 200, 227, 0.3)",
   },
 
   /**

@@ -13,36 +13,37 @@ module.exports = {
     // NOTE to AI: You can extend the theme with custom colors or styles here.
     extend: {
       colors: {
-        // Nossa Maternidade - Sistema Calm FemTech 2025
-        // Híbrido: Azul (base calm) + Rosa (accent CTA)
+        // Nossa Maternidade - Sistema Premium FemTech 2025
+        // Paleta Minimalista: Azul Pastel (calm) + Rosa Claro (accent)
+        // Inspirado em Calm, Flo, Clue - Design de Cinema
         //
-        // Primary: Blue Clean ✨ (frescor, leveza, confiança)
+        // Primary: Azul Pastel Premium ✨ (serenidade, confiança, leveza)
         primary: {
-          DEFAULT: "#1AB8FF",
-          50: "#F0FAFF",
-          100: "#E0F4FF",
-          200: "#B8E8FF",
-          300: "#7DD8FF",
-          400: "#4AC8FF",
-          500: "#1AB8FF",
-          600: "#0099E6",
-          700: "#007ACC",
-          800: "#005C99",
-          900: "#004066",
+          DEFAULT: "#7EC8E3",
+          50: "#F5FBFD",
+          100: "#E8F6FA",
+          200: "#D1EDF5",
+          300: "#A8DDF0",
+          400: "#7EC8E3",
+          500: "#5BB5D6",
+          600: "#3A9FC4",
+          700: "#2D7A99",
+          800: "#1F5A70",
+          900: "#143D4D",
         },
-        // Accent: Pink Clean ✨ (feminilidade, energia positiva)
+        // Accent: Rosa Claro Premium ✨ (feminilidade suave, acolhimento)
         accent: {
-          DEFAULT: "#FF5C94",
-          50: "#FFF5F8",
-          100: "#FFE5ED",
-          200: "#FFD0E0",
-          300: "#FFA8C5",
-          400: "#FF7AA8",
-          500: "#FF5C94",
-          600: "#E84D82",
-          700: "#CC3E6F",
-          800: "#A8335B",
-          900: "#852848",
+          DEFAULT: "#F8B4C4",
+          50: "#FEF7F9",
+          100: "#FDEEF2",
+          200: "#FBDDE5",
+          300: "#F8C8D4",
+          400: "#F8B4C4",
+          500: "#F49DB2",
+          600: "#E8849D",
+          700: "#D66B86",
+          800: "#B8526D",
+          900: "#8A3D52",
         },
         // Secondary: Lilás/Roxo (apoio, meditação, introspecção)
         secondary: {
@@ -174,13 +175,14 @@ module.exports = {
           accent: "#FF5C94",
           link: "#007ACC",
         },
-        // Background colors - Blue Clean base
+        // Background colors - Off-White Premium (mais clean e sofisticado)
         background: {
-          DEFAULT: "#F0FAFF",
-          primary: "#F0FAFF",
+          DEFAULT: "#FAFCFD",
+          primary: "#FAFCFD",
           secondary: "#FFFFFF",
-          tertiary: "#E0F4FF",
+          tertiary: "#F5F8FA",
           elevated: "#FFFFFF",
+          soft: "#F8FAFC",
         },
         // Neutral colors
         neutral: {
@@ -412,92 +414,150 @@ module.exports = {
       });
 
       // ===================
-      // CARD STYLES
+      // CARD STYLES - Premium Minimalista
       // ===================
       addUtilities({
+        // Card elevado: Sombra suave e elegante
         ".card-elevated": {
           backgroundColor: "#FFFFFF",
-          borderRadius: 16,
-          shadowColor: "#111827",
-          shadowOffset: { width: 0, height: 4 },
-          shadowOpacity: 0.08,
-          shadowRadius: 12,
-          elevation: 4,
+          borderRadius: 20,
+          shadowColor: "#1F2937",
+          shadowOffset: { width: 0, height: 2 },
+          shadowOpacity: 0.04,
+          shadowRadius: 8,
+          elevation: 2,
         },
+        // Card flat: Borda muito sutil
         ".card-flat": {
           backgroundColor: "#FFFFFF",
-          borderRadius: 16,
+          borderRadius: 20,
           borderWidth: 1,
-          borderColor: "#E7E5E4",
+          borderColor: "#F0F4F8",
         },
+        // Card accent: Rosa pastel suave
         ".card-accent": {
-          backgroundColor: "#FFF5F8",
-          borderRadius: 16,
+          backgroundColor: "#FEF7F9",
+          borderRadius: 20,
           borderWidth: 1,
-          borderColor: "#FFD0E0",
+          borderColor: "#FBDDE5",
         },
+        // Card primary: Azul pastel suave
         ".card-primary": {
-          backgroundColor: "#F0FAFF",
-          borderRadius: 16,
+          backgroundColor: "#F5FBFD",
+          borderRadius: 20,
           borderWidth: 1,
-          borderColor: "#B8E8FF",
+          borderColor: "#D1EDF5",
+        },
+        // Card glass: Efeito vidro premium
+        ".card-glass": {
+          backgroundColor: "rgba(255, 255, 255, 0.85)",
+          borderRadius: 20,
+          borderWidth: 1,
+          borderColor: "rgba(255, 255, 255, 0.5)",
+          backdropFilter: "blur(12px)",
+        },
+        // Card premium: Para conteúdo especial
+        ".card-premium": {
+          backgroundColor: "#FFFFFF",
+          borderRadius: 24,
+          shadowColor: "#F8B4C4",
+          shadowOffset: { width: 0, height: 4 },
+          shadowOpacity: 0.15,
+          shadowRadius: 16,
+          elevation: 4,
         },
       });
 
       // ===================
-      // BUTTON STYLES
+      // BUTTON STYLES - Premium Minimalista
       // ===================
       addUtilities({
+        // Botão primário: Rosa claro premium com sombra suave
         ".btn-primary": {
-          backgroundColor: "#FF5C94",
-          borderRadius: 12,
-          paddingVertical: 14,
-          paddingHorizontal: 24,
+          backgroundColor: "#F8B4C4",
+          borderRadius: 16,
+          paddingVertical: 16,
+          paddingHorizontal: 28,
+          shadowColor: "#F8B4C4",
+          shadowOffset: { width: 0, height: 4 },
+          shadowOpacity: 0.25,
+          shadowRadius: 8,
+          elevation: 4,
         },
+        // Botão secundário: Azul pastel premium
         ".btn-secondary": {
-          backgroundColor: "#1AB8FF",
-          borderRadius: 12,
-          paddingVertical: 14,
-          paddingHorizontal: 24,
+          backgroundColor: "#7EC8E3",
+          borderRadius: 16,
+          paddingVertical: 16,
+          paddingHorizontal: 28,
+          shadowColor: "#7EC8E3",
+          shadowOffset: { width: 0, height: 4 },
+          shadowOpacity: 0.2,
+          shadowRadius: 8,
+          elevation: 3,
         },
+        // Botão outline: Borda fina e elegante
         ".btn-outline": {
           backgroundColor: "transparent",
-          borderRadius: 12,
-          borderWidth: 2,
-          borderColor: "#FF5C94",
-          paddingVertical: 12,
-          paddingHorizontal: 22,
+          borderRadius: 16,
+          borderWidth: 1.5,
+          borderColor: "#F8B4C4",
+          paddingVertical: 14,
+          paddingHorizontal: 26,
         },
+        // Botão ghost: Minimalista, sem fundo
         ".btn-ghost": {
           backgroundColor: "transparent",
-          borderRadius: 12,
-          paddingVertical: 14,
+          borderRadius: 16,
+          paddingVertical: 16,
+          paddingHorizontal: 28,
+        },
+        // Botão soft: Fundo suave, sem sombra
+        ".btn-soft": {
+          backgroundColor: "#FEF7F9",
+          borderRadius: 16,
+          paddingVertical: 16,
+          paddingHorizontal: 28,
+        },
+        // Botão pill: Arredondado completo (para CTAs pequenos)
+        ".btn-pill": {
+          backgroundColor: "#F8B4C4",
+          borderRadius: 9999,
+          paddingVertical: 12,
           paddingHorizontal: 24,
+          shadowColor: "#F8B4C4",
+          shadowOffset: { width: 0, height: 2 },
+          shadowOpacity: 0.2,
+          shadowRadius: 4,
+          elevation: 2,
         },
       });
 
       // ===================
-      // INPUT STYLES
+      // INPUT STYLES - Premium Minimalista
       // ===================
       addUtilities({
+        // Input base: Clean e elegante
         ".input-base": {
           backgroundColor: "#FFFFFF",
-          borderRadius: 12,
+          borderRadius: 14,
           borderWidth: 1,
-          borderColor: "#E7E5E4",
-          paddingVertical: 14,
-          paddingHorizontal: 16,
+          borderColor: "#E8F0F5",
+          paddingVertical: 16,
+          paddingHorizontal: 18,
           fontSize: 15,
         },
+        // Input focus: Azul pastel suave
         ".input-focus": {
-          borderColor: "#1AB8FF",
-          shadowColor: "#1AB8FF",
+          borderColor: "#7EC8E3",
+          shadowColor: "#7EC8E3",
           shadowOffset: { width: 0, height: 0 },
-          shadowOpacity: 0.2,
-          shadowRadius: 4,
+          shadowOpacity: 0.15,
+          shadowRadius: 6,
         },
+        // Input error: Vermelho suave
         ".input-error": {
-          borderColor: "#EF4444",
+          borderColor: "#F8B4C4",
           backgroundColor: "#FEF2F2",
         },
       });

@@ -131,6 +131,7 @@ export default function RootNavigator() {
     <Stack.Navigator
       screenOptions={{
         headerShown: false,
+        // Animação premium: slide suave do iOS
         animation: "slide_from_right",
         contentStyle: { backgroundColor: COLORS.background.primary },
       }}
@@ -147,8 +148,9 @@ export default function RootNavigator() {
             name="EmailAuth"
             component={EmailAuthScreen}
             options={{
-              animation: "slide_from_right",
-              presentation: "card",
+              // Modal premium com animação suave
+              presentation: "modal",
+              animation: "slide_from_bottom",
             }}
           />
           {/* Legacy Login screen kept for deep link compatibility */}
@@ -241,7 +243,9 @@ export default function RootNavigator() {
             name="NewPost"
             component={NewPostScreen}
             options={{
+              // Modal premium com animação suave
               presentation: "modal",
+              animation: "slide_from_bottom",
               headerShown: true,
               headerTitle: "Nova Publicação",
               headerTintColor: COLORS.primary[600],
@@ -253,7 +257,9 @@ export default function RootNavigator() {
             component={DailyLogScreen}
             options={{
               headerShown: false,
+              // Modal premium com animação suave
               presentation: "modal",
+              animation: "slide_from_bottom",
             }}
           />
           <Stack.Screen
@@ -317,6 +323,7 @@ export default function RootNavigator() {
             component={BreathingExerciseScreen}
             options={{
               headerShown: false,
+              // Animação fade suave para exercícios de respiração
               presentation: "modal",
               animation: "fade",
             }}
@@ -326,6 +333,7 @@ export default function RootNavigator() {
             component={RestSoundsScreen}
             options={{
               headerShown: false,
+              // Modal premium com animação suave
               presentation: "modal",
               animation: "slide_from_bottom",
             }}
@@ -353,6 +361,7 @@ export default function RootNavigator() {
             component={Paywall}
             options={{
               headerShown: false,
+              // Modal premium com animação suave para Paywall
               presentation: "modal",
               animation: "slide_from_bottom",
             }}
