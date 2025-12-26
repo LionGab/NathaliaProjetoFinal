@@ -8,6 +8,21 @@ const fs = require('fs');
 const path = require('path');
 const { execSync } = require('child_process');
 
+// Detectar qual comando CLI está disponível (Cursor ou VS Code)
+function detectCliCommand() {
+  try {
+    execSync('cursor --version', { stdio: 'pipe' });
+    return 'cursor';
+  } catch (error) {
+    try {
+      execSync('code --version', { stdio: 'pipe' });
+      return 'code';
+    } catch (err) {
+      return null;
+    }
+  }
+}
+
 console.log('🔍 Verificando sincronização de configurações...\n');
 
 let errors = 0;
@@ -54,15 +69,21 @@ if (fs.existsSync(extensionsFile)) {
   const config = JSON.parse(jsonWithoutComments);
   const required = config.recommendations || [];
 
-  let installed;
-  try {
-    installed = execSync('code --list-extensions', { encoding: 'utf-8' })
-      .split('\n')
-      .filter(Boolean);
-  } catch (error) {
-    console.log('   ⚠️  Não foi possível listar extensões (comando "code" não encontrado)');
+  const cliCommand = detectCliCommand();
+  let installed = [];
+
+  if (cliCommand) {
+    try {
+      installed = execSync(`${cliCommand} --list-extensions`, { encoding: 'utf-8' })
+        .split('\n')
+        .filter(Boolean);
+    } catch (error) {
+      console.log(`   ⚠️  Não foi possível listar extensões (comando "${cliCommand}" falhou)`);
+      warnings++;
+    }
+  } else {
+    console.log('   ⚠️  Cursor ou VS Code CLI não encontrado (não é possível verificar extensões)');
     warnings++;
-    installed = [];
   }
 
   required.forEach((ext) => {

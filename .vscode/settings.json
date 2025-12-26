@@ -202,6 +202,12 @@
   "errorLens.followCursor": "allLines",
 
   // ============================================
+  // Jest / Testing
+  // ============================================
+  "jest.jestCommandLine": "npx jest",
+  "jest.runMode": "watch",
+
+  // ============================================
   // Telemetria (Opcional - Desabilitar se preferir privacidade)
   // ============================================
   "redhat.telemetry.enabled": false,

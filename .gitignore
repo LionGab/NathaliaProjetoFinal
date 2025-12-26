@@ -65,6 +65,14 @@ docs/archive/
 .cursor/
 core
 
+# Claude Code export (permitir .json, bloquear arquivos sensíveis)
+.claude-export/.env
+.claude-export/.env.*
+.claude-export/*.key
+.claude-export/*.pem
+.claude-export/*.p12
+.claude-export/*.backup
+
 # Google Play Service Account (credenciais sensíveis)
 google-play-service-account.json
 

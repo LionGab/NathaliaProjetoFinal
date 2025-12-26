@@ -467,6 +467,6 @@ Após seguir todos os passos, você deve ter:
 
 ---
 
-**Criado em**: 2025-01-XX
-**Última atualização**: 2025-01-XX
+**Criado em**: 2025-01-26
+**Última atualização**: 2025-01-26
 **Versão**: 1.0.0
