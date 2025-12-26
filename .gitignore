@@ -83,3 +83,4 @@ supabase/.temp/
 
 # Downloads incompletos
 *.part
+coverage/

@@ -352,6 +352,47 @@ Para verificar quais MCPs estão disponíveis, use:
 - Verifique se o arquivo está aberto no Figma
 - Confirme que o fileKey está correto
 
+## MCP Inspector - Teste e Debug
+
+O **MCP Inspector** é uma ferramenta web para testar e debugar servidores MCP antes de integrá-los ao Cursor.
+
+### Como usar
+
+```bash
+# Testar servidor filesystem
+npx -y @modelcontextprotocol/inspector npx @modelcontextprotocol/server-filesystem /Users/lion/Documents/Lion/NossaMaternidade
+
+# Testar outros servidores
+npx -y @modelcontextprotocol/inspector npx <package-name> <args>
+```
+
+### Interface do Inspector
+
+Quando executado, o inspector abre uma interface web onde você pode:
+
+1. **Ver todas as capabilities** do servidor
+2. **Testar chamadas de API** em tempo real
+3. **Navegar pelo filesystem** (se for servidor filesystem)
+4. **Ver respostas detalhadas** de cada chamada
+5. **Debugar problemas** de conexão ou configuração
+
+### Configuração no Inspector
+
+Para o servidor filesystem do projeto:
+
+- **Transport Type**: STDIO
+- **Command**: `npx`
+- **Arguments**: `@modelcontextprotocol/server-filesystem /Users/lion/Documents/Lion/NossaMaternidade`
+- **Status**: Connected ✅
+
+### Servidores disponíveis para teste
+
+- `@modelcontextprotocol/server-filesystem` - Acesso ao filesystem
+- `@modelcontextprotocol/server-supabase` - Supabase (se configurado)
+- Outros servidores MCP disponíveis no npm
+
+**Nota**: Servidores SSE (como Figma DevMode) não funcionam com o inspector - eles precisam estar rodando localmente.
+
 ### Expo MCP não funciona
 
 **Windows:**
