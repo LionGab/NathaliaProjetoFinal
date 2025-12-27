@@ -1,5 +1,5 @@
 import React from "react";
-import { Pressable, PressableProps, ViewStyle, StyleProp } from "react-native";
+import { Pressable, PressableProps, ViewStyle, StyleProp, GestureResponderEvent } from "react-native";
 import * as Haptics from "expo-haptics";
 import { accessibility } from "../../theme/tokens";
 
@@ -40,7 +40,7 @@ export function AppPressable({
   ...props
 }: AppPressableProps) {
   
-  const handlePress = async (event: any) => {
+  const handlePress = async (event: GestureResponderEvent) => {
     if (haptic !== "none") {
       switch (haptic) {
         case "light":

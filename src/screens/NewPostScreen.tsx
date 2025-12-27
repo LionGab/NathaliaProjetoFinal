@@ -83,7 +83,7 @@ export default function NewPostScreen({ navigation }: RootStackScreenProps<"NewP
         "Seu post foi enviado e será analisado. Você será notificada quando for aprovado.",
         [{ text: "OK", onPress: () => navigation.goBack() }]
       );
-    } catch (e) {
+    } catch {
       Alert.alert("Erro", "Não foi possível enviar o post. Tente novamente.");
     } finally {
       setLoading(false);
@@ -132,7 +132,7 @@ export default function NewPostScreen({ navigation }: RootStackScreenProps<"NewP
                 setMediaType("text");
               }}
             >
-              <Ionicons name="close" size={20} color="white" />
+              <Ionicons name="close" size={20} color={Tokens.neutral[0]} />
             </Pressable>
           </View>
         ) : (
@@ -204,7 +204,7 @@ export default function NewPostScreen({ navigation }: RootStackScreenProps<"NewP
           ]}
         >
           {loading ? (
-            <ActivityIndicator color="white" />
+            <ActivityIndicator color={Tokens.neutral[0]} />
           ) : (
             <Text style={styles.submitBtnText}>Publicar</Text>
           )}
@@ -251,7 +251,7 @@ const styles = StyleSheet.create({
     position: "absolute",
     top: SPACING.sm,
     right: SPACING.sm,
-    backgroundColor: "rgba(0,0,0,0.6)",
+    backgroundColor: Tokens.overlay.dark,
     padding: 6,
     borderRadius: RADIUS.full,
   },
@@ -273,5 +273,5 @@ const styles = StyleSheet.create({
   switchLabel: { flex: 1, fontSize: 14 },
   footer: { padding: SPACING.lg, borderTopWidth: 1 },
   submitBtn: { padding: SPACING.lg, borderRadius: RADIUS.full, alignItems: "center" },
-  submitBtnText: { color: "white", fontSize: 16, fontWeight: "700" },
+  submitBtnText: { color: Tokens.neutral[0], fontSize: 16, fontWeight: "700" },
 });

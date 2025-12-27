@@ -262,14 +262,14 @@ const PostCard: React.FC<{
                 <View
                   style={{
                     height: 250,
-                    backgroundColor: "black",
+                    backgroundColor: Tokens.neutral[900],
                     alignItems: "center",
                     justifyContent: "center",
                   }}
                 >
                   {/* TODO: Implementar Video Player Real */}
-                  <Ionicons name="play-circle-outline" size={64} color="white" />
-                  <Text style={{ color: "white", marginTop: 8 }}>Reproduzir Vídeo</Text>
+                  <Ionicons name="play-circle-outline" size={64} color={Tokens.neutral[0]} />
+                  <Text style={{ color: Tokens.neutral[0], marginTop: 8 }}>Reproduzir Vídeo</Text>
                 </View>
               ) : (
                 <Image

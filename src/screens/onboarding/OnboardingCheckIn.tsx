@@ -11,15 +11,15 @@ import React, { useEffect, useState } from "react";
 import { Platform, Pressable, ScrollView, StyleSheet, Switch, Text, View } from "react-native";
 import Animated, { FadeInDown } from "react-native-reanimated";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-
-// Imagem da Nath com Thales
-const CHECKIN_IMAGE = require("../../../assets/onboarding/images/checkin-nath-thales.jpg");
 import { ProgressBar } from "../../components/onboarding/ProgressBar";
 import { useTheme } from "../../hooks/useTheme";
 import { useNathJourneyOnboardingStore } from "../../state/nath-journey-onboarding-store";
 import { Tokens } from "../../theme/tokens";
 import { RootStackScreenProps } from "../../types/navigation";
 import { logger } from "../../utils/logger";
+
+// Imagem da Nath com Thales
+const CHECKIN_IMAGE = require("../../../assets/onboarding/images/checkin-nath-thales.jpg");
 
 type Props = RootStackScreenProps<"OnboardingCheckIn">;
 

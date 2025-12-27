@@ -77,23 +77,23 @@ export const CommunityPostCard: React.FC<PostCardProps> = React.memo(
           return {
             label: "Aprovado",
             color: Tokens.semantic.light.success,
-            bg: "#DCFCE7",
+            bg: Tokens.semantic.light.successLight,
             icon: "checkmark-circle-outline",
-          }; // Green-100
+          };
         case "rejected":
           return {
             label: "Não Aprovado",
             color: Tokens.semantic.light.error,
-            bg: "#FEE2E2",
+            bg: Tokens.semantic.light.errorLight,
             icon: "alert-circle-outline",
-          }; // Red-100
+          };
         case "needs_changes":
           return {
             label: "Precisa de Ajustes",
             color: Tokens.semantic.light.warning,
-            bg: "#FEF3C7",
+            bg: Tokens.semantic.light.warningLight,
             icon: "create-outline",
-          }; // Amber-100
+          };
         default: // draft
           return {
             label: "Rascunho",
