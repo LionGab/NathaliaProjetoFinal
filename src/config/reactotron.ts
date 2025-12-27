@@ -48,7 +48,6 @@ if (__DEV__) {
     .connect();
 
   // Make Reactotron available globally for manual logging
-  // eslint-disable-next-line no-console
   (console as { tron?: typeof Reactotron }).tron = Reactotron;
 
   // Clear on every refresh in development for clean slate
